@@ -1,0 +1,205 @@
+.panel {
+  width: 320px;
+  flex-shrink: 0;
+  background: rgba(10, 10, 10, 0.72);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-left: 1px solid rgba(201,168,76,0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: inset 1px 0 0 rgba(255,255,255,0.03);
+}
+
+/* ── Top half: log ── */
+
+.logSection {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(201,168,76,0.6);
+  padding: 1rem 1.25rem 0.8rem;
+  border-bottom: 1px solid rgba(201,168,76,0.08);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(201,168,76,0.03);
+}
+
+.turnBadge {
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: rgba(201,168,76,0.5);
+  font-weight: 500;
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.15);
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+}
+
+.log {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.log::-webkit-scrollbar { width: 2px; }
+.log::-webkit-scrollbar-track { background: transparent; }
+.log::-webkit-scrollbar-thumb {
+  background: rgba(201,168,76,0.2);
+  border-radius: 2px;
+}
+
+.entry {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 300;
+  font-size: 0.82rem;
+  color: rgba(240, 236, 228, 0.55);
+  line-height: 1.6;
+  animation: slideIn 180ms ease;
+  padding: 0.18rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.entry:last-of-type {
+  color: rgba(240, 236, 228, 0.8);
+  border-bottom: none;
+}
+
+.prefixP1 {
+  font-weight: 600;
+  color: rgba(201,168,76,0.7);
+  font-size: 0.78rem;
+}
+
+.prefixP2 {
+  font-weight: 600;
+  color: rgba(168,180,192,0.7);
+  font-size: 0.78rem;
+}
+
+.empty {
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-style: italic;
+  opacity: 0.5;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Mobile close button (hidden on desktop) ── */
+.closeBtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  transition: color 150ms;
+}
+.closeBtn:hover { color: var(--white); }
+.closeBtn svg { width: 14px; height: 14px; }
+
+/* ────────────────────────────────────────────────────────────────
+   RESPONSIVE — TABLET  (640px – 1023px)
+────────────────────────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .panel {
+    width: 200px;
+  }
+  .fightLogicImg {
+    max-width: 130px;
+  }
+  .log {
+    padding: 0.6rem 0.9rem;
+  }
+  .header {
+    padding: 0.75rem 0.9rem 0.6rem;
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────
+   RESPONSIVE — MOBILE  (< 640px)
+   Hidden by default; shown as a full-screen overlay
+────────────────────────────────────────────────────────────────── */
+@media (max-width: 639px) {
+  .panel {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 200;
+    border-left: none;
+    flex-direction: column;
+    background: rgba(8, 8, 12, 0.97);
+  }
+  .panel.mobileOpen {
+    display: flex;
+  }
+  .closeBtn {
+    display: flex;
+  }
+  /* Bigger scrollbar for touch */
+  .log::-webkit-scrollbar { width: 5px; }
+}
+
+/* ── Bottom half: combat reminder ── */
+
+.reminderSection {
+  flex: 1;
+  min-height: 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0 0.75rem;
+  background: rgba(255,255,255,0.01);
+  overflow: hidden;
+}
+
+.reminderTitle {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.18);
+  margin-bottom: 0.35rem;
+}
+
+.fightLogicImg {
+  max-width: 170px;
+  max-height: 100%;
+  width: 100%;
+  object-fit: contain;
+  opacity: 0.55;
+}

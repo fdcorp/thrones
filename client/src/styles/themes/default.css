@@ -1,0 +1,47 @@
+/* THEME DEFAULT — Dark Luxury Medieval · Glassmorphism Edition */
+/* All board-related visual variables — swappable for future themes */
+:root {
+  /* Plateau — cells */
+  --hex-fill:             rgba(16, 16, 16, 0.82);
+  --hex-stroke:           rgba(150, 150, 150, 0.18);
+  --hex-stroke-width:     1px;
+  --hex-fill-selected:    rgba(201,168,76,0.18);
+  --hex-stroke-selected:  rgba(201,168,76,0.9);
+  --board-bg:             #0a0a0a;
+
+  /* Mouvements légaux */
+  --hex-fill-legal-p1:    rgba(201,168,76,0.22);
+  --hex-stroke-legal-p1:  rgba(201,168,76,0.55);
+  --hex-fill-legal-p2:    rgba(168,180,192,0.22);
+  --hex-stroke-legal-p2:  rgba(168,180,192,0.55);
+  --hex-stroke-legal:     rgba(255,255,255,0.3);
+
+  /* Réapparition */
+  --hex-fill-respawn:     rgba(255,255,255,0.06);
+  --hex-stroke-respawn:   rgba(255,255,255,0.25);
+
+  /* Attaques */
+  --hex-fill-attack:      rgba(200,30,30,0.32);
+  --hex-stroke-attack:    rgba(255,60,60,0.7);
+
+  /* Tours */
+  --tower-halo-active:    rgba(255,255,255,0.05);
+  --tower-halo-blocked:   rgba(220,60,60,0.2);
+  --tower-halo-inactive:  rgba(255,255,255,0.04);
+  --tower-stroke-active:  rgba(255,255,255,0.2);
+  --tower-stroke-blocked: rgba(255,80,80,0.5);
+  --tower-stroke-inactive:rgba(255,255,255,0.12);
+
+  /* Trônes */
+  --throne-halo-p1:       rgba(201,168,76,0.2);
+  --throne-halo-p2:       rgba(168,180,192,0.2);
+
+  /* Dernière action */
+  --hex-fill-last-move:   rgba(255,200,60,0.1);
+  --hex-stroke-last-move: rgba(255,200,60,0.35);
+
+  /* Unités */
+  --unit-fill-p1:         #c9a84c;
+  --unit-fill-p2:         #a8b4c0;
+  --unit-opacity-stun:    0.4;
+}

@@ -1,0 +1,8 @@
+node_modules/
+client/dist/
+client/.vite/
+server/dist/
+*.local
+.env
+.DS_Store
+Thumbs.db

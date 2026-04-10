@@ -1,0 +1,54 @@
+/* ── Ash particles — rising/falling embers ───────────────────── */
+
+.container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* ── Individual ash speck ── */
+.ash {
+  position: absolute;
+  border-radius: 55% 45% 50% 50% / 40% 60% 40% 60%;
+  will-change: transform, opacity;
+}
+
+/* ── P1 — rises from bottom (gold) ── */
+.ashP1 {
+  bottom: 0;
+  animation:
+    ashRise var(--dur) ease-in-out infinite var(--delay),
+    ashWobble calc(var(--dur) * 0.6) ease-in-out infinite calc(var(--delay) + 0.3s);
+}
+
+/* ── P2 — falls from top (silver) ── */
+.ashP2 {
+  top: 0;
+  animation:
+    ashFall var(--dur) ease-in-out infinite var(--delay),
+    ashWobble calc(var(--dur) * 0.55) ease-in-out infinite var(--delay);
+}
+
+/* ── Keyframes ── */
+@keyframes ashRise {
+  0%   { transform: translateY(0px) scale(1) rotate(0deg); opacity: 0; }
+  8%   { opacity: 1; }
+  85%  { opacity: 0.35; }
+  100% { transform: translateY(-320px) scale(0.3) rotate(25deg); opacity: 0; }
+}
+
+@keyframes ashFall {
+  0%   { transform: translateY(0px) scale(1) rotate(0deg); opacity: 0; }
+  8%   { opacity: 1; }
+  85%  { opacity: 0.3; }
+  100% { transform: translateY(320px) scale(0.3) rotate(-20deg); opacity: 0; }
+}
+
+@keyframes ashWobble {
+  0%   { margin-left: 0px; }
+  30%  { margin-left: 8px; }
+  70%  { margin-left: -6px; }
+  100% { margin-left: 0px; }
+}

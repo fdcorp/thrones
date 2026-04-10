@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>THRONES — Livret de Règles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold:        #c9a84c;
+    --gold-light:  #e8c96a;
+    --gold-dim:    #7a6030;
+    --bg:          #0a0a0f;
+    --bg2:         #0e0e16;
+    --bg3:         #131320;
+    --white:       #f0ece4;
+    --muted:       #8a8480;
+    --border:      rgba(201,168,76,0.18);
+  }
+
+  html { font-size: 15px; }
+  body {
+    font-family: 'Lexend', sans-serif;
+    background: var(--bg);
+    color: var(--white);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* ── Page layout ── */
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2.5rem;
+  }
+
+  @media print {
+    body { background: #fff; color: #111; }
+    :root {
+      --bg: #fff; --bg2: #f8f6f0; --bg3: #f0ede4;
+      --white: #111; --muted: #555; --border: rgba(140,100,20,0.3);
+      --gold: #9a7020; --gold-light: #b89030; --gold-dim: #c4a050;
+    }
+    .page { padding: 1.5rem 2rem; }
+    .cover { min-height: auto; padding: 3rem 0 2rem; }
+    .page-break { page-break-before: always; }
+    .no-break { page-break-inside: avoid; }
+  }
+
+  /* ── Cover ── */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4rem;
+    padding: 4rem 0;
+    position: relative;
+  }
+
+  .crown-cover {
+    width: 90px;
+    height: 64px;
+    filter: drop-shadow(0 0 20px rgba(201,168,76,0.5));
+  }
+
+  .cover h1 {
+    font-size: 5rem;
+    font-weight: 900;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dim) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-left: 0.35em;
+  }
+
+  .cover .tagline {
+    font-size: 0.95rem;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .cover .edition {
+    font-size: 0.72rem;
+    font-weight: 200;
+    letter-spacing: 0.2em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+    width: 100%;
+  }
+
+  /* ── Section ── */
+  .section { margin-bottom: 3.5rem; }
+
+  h2 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  h3 {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin: 1.5rem 0 0.75rem;
+  }
+
+  p { margin-bottom: 0.85rem; font-size: 0.9rem; }
+  p:last-child { margin-bottom: 0; }
+
+  strong { font-weight: 700; color: var(--white); }
+  em { font-style: normal; color: var(--gold); font-weight: 500; }
+
+  /* ── Callout ── */
+  .callout {
+    border: 1px solid var(--border);
+    background: rgba(201,168,76,0.04);
+    padding: 1rem 1.25rem;
+    border-radius: 2px;
+    margin: 1.25rem 0;
+    font-size: 0.88rem;
+  }
+  .callout.red { border-color: rgba(200,60,60,0.35); background: rgba(200,60,60,0.05); }
+  .callout strong { color: var(--gold); }
+
+  /* ── Rule key ── */
+  .rule-key {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.87rem;
+  }
+  .rule-key:last-child { border-bottom: none; }
+  .rule-key-label {
+    min-width: 110px;
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding-top: 0.1rem;
+  }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin: 1rem 0 1.5rem;
+  }
+  th {
+    font-weight: 700;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+  }
+  td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top;
+    color: rgba(240,236,228,0.8);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.015); }
+
+  /* ── Unit cards ── */
+  .unit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.25rem 0;
+  }
+
+  .unit-card {
+    border: 1px solid var(--border);
+    background: rgba(201,168,76,0.03);
+    padding: 1.1rem 1.1rem 1rem;
+    border-radius: 2px;
+  }
+
+  .unit-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .unit-icon-wrap {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(201,168,76,0.25);
+    background: rgba(201,168,76,0.06);
+    padding: 5px;
+  }
+
+  .unit-icon-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) saturate(100%) invert(70%) sepia(50%) saturate(400%) hue-rotate(5deg);
+  }
+
+  .unit-card-name {
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+  }
+
+  .unit-card-count {
+    font-size: 0.65rem;
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .unit-stat {
+    display: flex;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    margin-bottom: 0.3rem;
+    line-height: 1.4;
+  }
+
+  .stat-label {
+    font-weight: 600;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    min-width: 62px;
+    padding-top: 0.05rem;
+  }
+
+  .stat-val { color: rgba(240,236,228,0.8); }
+
+  .unit-card.hook { border-color: rgba(200,60,60,0.3); background: rgba(200,60,60,0.03); }
+  .unit-card.hook .unit-card-name { color: rgba(220,120,100,0.9); }
+
+  /* ── Combat triangle ── */
+  .triangle-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0 1.5rem;
+  }
+
+  .triangle-svg-wrap {
+    position: relative;
+    width: 300px;
+    height: 260px;
+  }
+
+  .tri-label {
+    position: absolute;
+    text-align: center;
+    transform: translate(-50%, -50%);
+  }
+
+  .tri-unit-name {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    display: block;
+    margin-top: 4px;
+  }
+
+  .tri-icon {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    filter: brightness(0) saturate(100%) invert(70%) sepia(50%) saturate(400%) hue-rotate(5deg);
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* ── Board diagram ── */
+  .board-diag {
+    display: flex;
+    justify-content: center;
+    margin: 1.5rem 0;
+  }
+
+  /* ── Turn flow ── */
+  .turn-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  .turn-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    border-radius: 2px;
+    font-size: 0.87rem;
+  }
+
+  .turn-step-num {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--gold);
+    min-width: 24px;
+    line-height: 1.3;
+  }
+
+  /* ── Tower states ── */
+  .tower-states {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+
+  .tower-state {
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 0.85rem;
+    border-radius: 2px;
+    text-align: center;
+    font-size: 0.8rem;
+  }
+
+  .tower-state.active  { border-color: rgba(60,200,100,0.35); background: rgba(60,200,100,0.04); }
+  .tower-state.blocked { border-color: rgba(200,60,60,0.35);  background: rgba(200,60,60,0.04); }
+  .tower-state.inactive{ border-color: rgba(255,255,255,0.1);  background: rgba(255,255,255,0.02); }
+
+  .tower-state-title {
+    font-weight: 800;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .active .tower-state-title  { color: rgba(80,220,120,0.9); }
+  .blocked .tower-state-title { color: rgba(220,80,80,0.9); }
+  .inactive .tower-state-title{ color: var(--muted); }
+
+  /* ── Quick ref ── */
+  .quick-ref {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin: 1rem 0;
+  }
+
+  .quick-card {
+    border: 1px solid var(--border);
+    padding: 0.8rem 0.9rem;
+    border-radius: 2px;
+    font-size: 0.78rem;
+  }
+
+  .quick-card-title {
+    font-weight: 700;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+    margin-top: 4rem;
+    font-size: 0.72rem;
+    font-weight: 200;
+    letter-spacing: 0.2em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+  }
+
+  .page-break { margin-top: 4rem; }
+
+  /* ── Divider ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5rem 0;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══════════════════════════════════════════════════════════ COVER -->
+  <div class="cover">
+    <svg class="crown-cover" viewBox="0 0 4961 3508" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4002.592,3296.176L997.408,3296.176L505.478,522.686L1796.783,1719.495L2500,218.744L3203.217,1719.495L4494.522,522.686L4002.592,3296.176Z" fill="#c9a84c"/>
+    </svg>
+
+    <h1>THRONES</h1>
+    <div class="tagline">Stratégie médiévale · 2 joueurs · Plateau hexagonal</div>
+
+    <div style="max-width:440px; color:var(--muted); font-size:0.85rem; line-height:1.8; margin-top:0.5rem;">
+      Deux armées s'affrontent sur un plateau de 37 hexagones. Chaque joueur commande 7 unités aux capacités distinctes. La victoire appartient à celui qui parvient à détruire le Trône ennemi avec son Guerrier.
+    </div>
+
+    <div class="edition">Première Édition · 2026 · Livret officiel de règles</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ SOMMAIRE -->
+  <div class="section">
+    <h2>Sommaire</h2>
+    <table>
+      <tr><td style="color:var(--gold); font-weight:600; width:2rem;">1</td><td>Le plateau de jeu</td></tr>
+      <tr><td style="color:var(--gold); font-weight:600;">2</td><td>Les unités</td></tr>
+      <tr><td style="color:var(--gold); font-weight:600;">3</td><td>Structure du tour</td></tr>
+      <tr><td style="color:var(--gold); font-weight:600;">4</td><td>Déplacements</td></tr>
+      <tr><td style="color:var(--gold); font-weight:600;">5</td><td>Le triangle de combat</td></tr>
+      <tr><td style="color:var(--gold); font-weight:600;">6</td><td>Règles de combat détaillées</td></tr>
+      <tr><td style="color:var(--gold); font-weight:600;">7</td><td>Le Grappin</td></tr>
+      <tr><td style="color:var(--gold); font-weight:600;">8</td><td>Zone de contrôle (Bouclier)</td></tr>
+      <tr><td style="color:var(--gold); font-weight:600;">9</td><td>Les Tours et le Respawn</td></tr>
+      <tr><td style="color:var(--gold); font-weight:600;">10</td><td>Conditions de victoire et de nul</td></tr>
+      <tr><td style="color:var(--gold); font-weight:600;">11</td><td>Référence rapide</td></tr>
+    </table>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════════════════════ 1. PLATEAU -->
+  <div class="section">
+    <h2>1 — Le plateau de jeu</h2>
+
+    <p>
+      Thrones se joue sur un <strong>plateau hexagonal de 37 cases</strong> (rayon 3 depuis le centre). Chaque case est un hexagone orienté pointe en haut. Les deux joueurs se font face : le <em>Joueur 1</em> (or) en bas, le <em>Joueur 2</em> (argent) en haut.
+    </p>
+
+    <div class="callout">
+      <strong>Disposition initiale par joueur :</strong><br/>
+      — 1 <strong>Trône</strong> (couronne) au centre arrière<br/>
+      — 2 <strong>Tours</strong> aux coins arrière<br/>
+      — 2 Béliers sur la rangée avant-arrière<br/>
+      — 1 Bouclier · 1 Grappin · 1 Bouclier sur la rangée centrale<br/>
+      — 2 Guerriers entre les Tours, flanquant le Trône<br/>
+      — 1 Bouclier au centre avant
+    </div>
+
+    <h3>Cases spéciales</h3>
+
+    <div class="rule-key">
+      <div class="rule-key-label">Trône</div>
+      <div>Case de couronne. <strong>Aucune unité ne peut s'y déplacer.</strong> Seul le Guerrier peut l'attaquer. Si le Trône est détruit, le joueur perd immédiatement.</div>
+    </div>
+    <div class="rule-key">
+      <div class="rule-key-label">Tours</div>
+      <div>Cases de réapparition. Les unités peuvent <strong>librement s'y déplacer</strong>. Leur état (Active / Bloquée / Inactive) détermine si elles peuvent être utilisées pour faire réapparaître des unités capturées.</div>
+    </div>
+    <div class="rule-key">
+      <div class="rule-key-label">Cases libres</div>
+      <div>Toutes les autres cases. Une unité ne peut occuper qu'une seule case à la fois.</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ 2. UNITÉS -->
+  <div class="section page-break">
+    <h2>2 — Les unités</h2>
+
+    <p>Chaque joueur dispose de <strong>7 unités</strong> au début de la partie. Elles sont colorées selon leur camp : <em>or</em> pour le Joueur 1, <em>argent</em> pour le Joueur 2.</p>
+
+    <div class="unit-grid">
+
+      <div class="unit-card no-break">
+        <div class="unit-card-header">
+          <div class="unit-icon-wrap">
+            <img src="client/public/assets/units/Bouclier.svg" alt="Bouclier" />
+          </div>
+          <div>
+            <div class="unit-card-name">Bouclier</div>
+            <div class="unit-card-count">×3 par joueur</div>
+          </div>
+        </div>
+        <div class="unit-stat"><span class="stat-label">Déplace</span><span class="stat-val">1 hex, toutes directions</span></div>
+        <div class="unit-stat"><span class="stat-label">Attaque</span><span class="stat-val">Guerrier ou Grappin adjacent</span></div>
+        <div class="unit-stat"><span class="stat-label">Tué par</span><span class="stat-val">Bélier</span></div>
+        <div class="unit-stat"><span class="stat-label">Spécial</span><span class="stat-val">Zone de contrôle sur les cases adjacentes</span></div>
+      </div>
+
+      <div class="unit-card no-break">
+        <div class="unit-card-header">
+          <div class="unit-icon-wrap">
+            <img src="client/public/assets/units/Belier.svg" alt="Bélier" />
+          </div>
+          <div>
+            <div class="unit-card-name">Bélier</div>
+            <div class="unit-card-count">×2 par joueur</div>
+          </div>
+        </div>
+        <div class="unit-stat"><span class="stat-label">Déplace</span><span class="stat-val">1–2 hex, ligne droite, saute par-dessus les unités</span></div>
+        <div class="unit-stat"><span class="stat-label">Attaque</span><span class="stat-val">Bouclier ou Grappin (charge droite 1–2 hex, ligne dégagée)</span></div>
+        <div class="unit-stat"><span class="stat-label">Tué par</span><span class="stat-val">Guerrier</span></div>
+        <div class="unit-stat"><span class="stat-label">Note</span><span class="stat-val">Déplacement et charge sont deux actions séparées</span></div>
+      </div>
+
+      <div class="unit-card no-break">
+        <div class="unit-card-header">
+          <div class="unit-icon-wrap">
+            <img src="client/public/assets/units/Guerrier.svg" alt="Guerrier" />
+          </div>
+          <div>
+            <div class="unit-card-name">Guerrier</div>
+            <div class="unit-card-count">×2 par joueur</div>
+          </div>
+        </div>
+        <div class="unit-stat"><span class="stat-label">Déplace</span><span class="stat-val">1 hex (toutes dir.) OU 2 hex en L (changement de direction obligatoire)</span></div>
+        <div class="unit-stat"><span class="stat-label">Attaque</span><span class="stat-val">Bélier à 1–2 hex (chemin libre) · <strong>Trône ennemi</strong> · <em>Ne peut pas capturer le Grappin</em></span></div>
+        <div class="unit-stat"><span class="stat-label">Tué par</span><span class="stat-val">Bouclier</span></div>
+        <div class="unit-stat"><span class="stat-label">Spécial</span><span class="stat-val">Reste en place après avoir tué le Trône</span></div>
+      </div>
+
+      <div class="unit-card hook no-break">
+        <div class="unit-card-header">
+          <div class="unit-icon-wrap" style="border-color:rgba(200,60,60,0.4);">
+            <img src="client/public/assets/units/Grappin.svg" alt="Grappin" style="filter:brightness(0) saturate(100%) invert(50%) sepia(30%) saturate(300%) hue-rotate(320deg);" />
+          </div>
+          <div>
+            <div class="unit-card-name">Grappin</div>
+            <div class="unit-card-count">×1 par joueur · mort permanente</div>
+          </div>
+        </div>
+        <div class="unit-stat"><span class="stat-label">Déplace</span><span class="stat-val">1 hex (toutes directions), sauf s'il a grappé ce tour</span></div>
+        <div class="unit-stat"><span class="stat-label">Attaque</span><span class="stat-val">Grappin : tire un ennemi à 2–7 hex, le stunne</span></div>
+        <div class="unit-stat"><span class="stat-label">Tué par</span><span class="stat-val">Bouclier, Bélier (le Guerrier ne peut pas capturer le Grappin)</span></div>
+        <div class="unit-stat"><span class="stat-label">⚠ Spécial</span><span class="stat-val"><strong>Ne peut jamais réapparaître.</strong> Sa destruction est permanente.</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ 3. STRUCTURE TOUR -->
+  <div class="section page-break">
+    <h2>3 — Structure du tour</h2>
+
+    <p>Les joueurs alternent les tours. À chaque tour, vous effectuez <strong>exactement UNE action</strong> — pas plus, pas moins. Choisissez une option :</p>
+
+    <div class="turn-flow">
+      <div class="turn-step no-break">
+        <div class="turn-step-num">A</div>
+        <div>
+          <strong>RÉAPPARITION</strong> — Si vous possédez au moins une Tour Active, placez une unité capturée (sauf le Grappin) directement sur cette Tour. <strong>C'est votre action complète</strong> — vous ne pouvez pas aussi déplacer ou attaquer ce tour. L'unité réapparue peut agir normalement dès votre prochain tour.
+        </div>
+      </div>
+      <div class="turn-step no-break">
+        <div class="turn-step-num">B</div>
+        <div>
+          <strong>JOUER UNE UNITÉ</strong> — Choisissez une de vos unités et faites l'une des deux choses : <em>déplacez-la</em> selon ses règles de mouvement, OU utilisez son <em>attaque / capacité</em>. Vous ne pouvez pas déplacer ET attaquer avec la même unité dans le même tour.
+        </div>
+      </div>
+    </div>
+
+    <div class="callout red">
+      <strong>Règle fondamentale :</strong> Une seule action par tour — soit A soit B, jamais les deux. Si vous réapparaissez une unité, vous ne jouez aucune autre unité ce tour-là. Si vous jouez une unité, vous ne réapparaissez rien.
+    </div>
+
+    <h3>Unité stunnée</h3>
+    <p>Une unité stunnée <strong>passe son tour entier</strong>. Elle ne peut ni se déplacer ni attaquer. Le stun disparaît automatiquement au tour suivant et l'unité peut agir normalement.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ 4. DÉPLACEMENTS -->
+  <div class="section">
+    <h2>4 — Déplacements</h2>
+
+    <div class="callout">
+      <strong>Règle générale :</strong> Aucune unité ne peut se déplacer sur un hex de Trône. Les hexagones de Tour sont librement occupables.
+    </div>
+
+    <div class="rule-key">
+      <div class="rule-key-label">Bouclier</div>
+      <div>Se déplace d'<strong>1 hex dans n'importe quelle direction</strong> vers une case libre.</div>
+    </div>
+    <div class="rule-key">
+      <div class="rule-key-label">Bélier</div>
+      <div>Se déplace de <strong>1 ou 2 hexagones en ligne droite uniquement</strong>. Peut <strong>sauter par-dessus les unités</strong> (alliées ou ennemies) durant son déplacement — seule la case d'arrivée doit être libre. Ne peut pas traverser le Trône.</div>
+    </div>
+    <div class="rule-key">
+      <div class="rule-key-label">Guerrier</div>
+      <div>
+        <strong>Option 1 :</strong> 1 hex dans n'importe quelle direction (case libre).<br/>
+        <strong>Option 2 :</strong> 2 hexes en forme de L — le deuxième pas doit changer de direction par rapport au premier (pas de ligne droite). La case intermédiaire doit être libre.
+      </div>
+    </div>
+    <div class="rule-key">
+      <div class="rule-key-label">Grappin</div>
+      <div>Se déplace d'<strong>1 hex dans n'importe quelle direction</strong> vers une case libre. Ne peut pas se déplacer le même tour où il a utilisé son grappin.</div>
+    </div>
+
+    <h3>Le mouvement en L du Guerrier</h3>
+    <p>Le mouvement en L du Guerrier fonctionne en deux étapes : un premier pas dans une direction, puis un deuxième pas dans une direction <em>différente</em>. Un Guerrier ne peut pas se déplacer de 2 cases tout droit (cela serait un mouvement en ligne droite, interdit). La case intermédiaire entre les deux pas doit être libre.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ 5. TRIANGLE COMBAT -->
+  <div class="section page-break">
+    <h2>5 — Le Triangle de combat</h2>
+
+    <p>
+      Thrones repose sur une dynamique <strong>Pierre-Feuille-Ciseaux</strong> entre trois types d'unités. Chacun en bat un autre, et est battu par le troisième.
+    </p>
+
+    <div class="triangle-wrap">
+      <div style="position:relative; width:300px; height:260px;">
+        <svg viewBox="0 0 300 260" width="300" height="260" style="position:absolute;top:0;left:0;">
+          <defs>
+            <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="rgba(201,168,76,0.7)" />
+            </marker>
+          </defs>
+          <!-- Bélier top, Bouclier bottom-left, Guerrier bottom-right -->
+          <!-- Arrow Bélier→Bouclier (top→bottom-left, outward curve) -->
+          <path d="M 137 52 Q 60 70 82 156" stroke="rgba(201,168,76,0.55)" stroke-width="2.2" fill="none" marker-end="url(#ah)" />
+          <!-- Arrow Bouclier→Guerrier (bottom-left→bottom-right, outward curve) -->
+          <path d="M 108 178 Q 150 215 192 178" stroke="rgba(201,168,76,0.55)" stroke-width="2.2" fill="none" marker-end="url(#ah)" />
+          <!-- Arrow Guerrier→Bélier (bottom-right→top, outward curve) -->
+          <path d="M 218 156 Q 240 70 163 52" stroke="rgba(201,168,76,0.55)" stroke-width="2.2" fill="none" marker-end="url(#ah)" />
+        </svg>
+
+        <!-- Bélier — top -->
+        <div style="position:absolute; left:150px; top:30px; transform:translate(-50%,-50%); text-align:center;">
+          <img src="client/public/assets/units/Belier.svg" class="tri-icon" alt="Bélier"/>
+          <span class="tri-unit-name">Bélier</span>
+        </div>
+        <!-- Bouclier — bottom-left -->
+        <div style="position:absolute; left:80px; top:190px; transform:translate(-50%,-50%); text-align:center;">
+          <img src="client/public/assets/units/Bouclier.svg" class="tri-icon" alt="Bouclier"/>
+          <span class="tri-unit-name">Bouclier</span>
+        </div>
+        <!-- Guerrier — bottom-right -->
+        <div style="position:absolute; left:220px; top:190px; transform:translate(-50%,-50%); text-align:center;">
+          <img src="client/public/assets/units/Guerrier.svg" class="tri-icon" alt="Guerrier"/>
+          <span class="tri-unit-name">Guerrier</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; font-size:0.78rem; color:var(--muted); margin-bottom:1.5rem; letter-spacing:0.05em;">
+      La flèche signifie « bat » — Bélier bat Bouclier · Bouclier bat Guerrier · Guerrier bat Bélier
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Attaquant</th>
+          <th>Cibles valides</th>
+          <th>Battu par</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Bélier</strong></td>
+          <td>Bouclier, Grappin</td>
+          <td>Guerrier</td>
+        </tr>
+        <tr>
+          <td><strong>Bouclier</strong></td>
+          <td>Guerrier, Grappin</td>
+          <td>Bélier</td>
+        </tr>
+        <tr>
+          <td><strong>Guerrier</strong></td>
+          <td>Bélier, <em>Trône</em></td>
+          <td>Bouclier</td>
+        </tr>
+        <tr>
+          <td><strong>Grappin</strong></td>
+          <td>— (stun uniquement)</td>
+          <td>Bouclier, Bélier</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>Le Grappin est hors triangle :</strong> Il ne tue aucune unité par lui-même — sa force réside dans la capacité à stunner les ennemis et à les repositionner. Il peut être capturé par le Bouclier (adjacent) ou le Bélier (charge). <strong>Le Guerrier ne peut pas capturer le Grappin.</strong>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ 6. COMBAT DÉTAILLÉ -->
+  <div class="section page-break">
+    <h2>6 — Règles de combat détaillées</h2>
+
+    <p>Toute attaque est une <strong>capture</strong> : l'unité attaquante se déplace sur la case de l'unité capturée, qui est retirée du plateau. Exception : le Guerrier qui tue le Trône reste sur sa case.</p>
+
+    <h3>Bouclier — Attaque adjacente</h3>
+    <p>Le Bouclier peut attaquer un <strong>Guerrier ou un Grappin adverse adjacent</strong> (1 hex). Il se déplace sur la case de la cible qui est capturée.</p>
+
+    <h3>Bélier — Charge</h3>
+    <p>Le Bélier charge en <strong>ligne droite</strong> sur 1 ou 2 hexes pour capturer un <strong>Bouclier ou un Grappin adverse</strong>. La ligne entre le Bélier et la cible doit être dégagée (aucune unité entre les deux qui ne soit pas la cible). Le Bélier se déplace sur la case de la cible.</p>
+    <div class="callout">
+      <strong>Attention :</strong> déplacement et charge sont deux actions distinctes. Un Bélier peut se déplacer OU charger lors de son tour, pas les deux.
+    </div>
+
+    <h3>Guerrier — Attaque</h3>
+    <p>Le Guerrier attaque un <strong>Bélier adverse</strong> adjacent (1 hex) ou en L (2 hexes), avec chemin libre. Le Guerrier capture le Bélier et se déplace sur sa case. <strong>Le Guerrier ne peut pas capturer le Grappin.</strong></p>
+
+    <h3>Guerrier — Tuer le Trône</h3>
+    <p>C'est la condition de victoire. Un Guerrier situé à <strong>1 ou 2 hexes du Trône ennemi</strong> (chemin libre) peut l'attaquer. Le Trône est détruit et le propriétaire perd immédiatement. <strong>Le Guerrier reste sur sa case</strong> — il ne se déplace pas sur le Trône.</p>
+    <div class="callout red">
+      <strong>Seul le Guerrier peut attaquer le Trône.</strong> Aucune autre unité ne peut le détruire.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ 7. GRAPPIN -->
+  <div class="section">
+    <h2>7 — Le Grappin</h2>
+
+    <p>Le Grappin est une unité unique et précieuse. Il ne tue pas — mais il peut <strong>tirer des unités ennemies et les stunner</strong>, créant des opportunités tactiques décisives.</p>
+
+    <div class="rule-key">
+      <div class="rule-key-label">Portée</div>
+      <div>2 à 7 hexes en <strong>ligne droite</strong>. Le Grappin ne peut pas attraper une unité adjacente (distance minimale = 2). Il vise la première unité ennemie visible dans chacune des 6 directions (ligne de vue — toute unité entre le Grappin et la cible bloque).</div>
+    </div>
+    <div class="rule-key">
+      <div class="rule-key-label">Destination</div>
+      <div>La cible est tirée vers le hex situé <strong>1 pas du Grappin</strong> dans la direction de la cible. Cette case doit être libre.</div>
+    </div>
+    <div class="rule-key">
+      <div class="rule-key-label">Effet</div>
+      <div>Une unité <strong>ennemie</strong> tirée est <em>stunnée</em> — elle passe son prochain tour entier.</div>
+    </div>
+    <div class="rule-key">
+      <div class="rule-key-label">Règles</div>
+      <div>
+        — Le Grappin ne peut pas grapper un allié<br/>
+        — Le Grappin ne peut pas grapper un autre Grappin<br/>
+        — Utiliser le grappin est l'action complète du tour (il ne peut pas aussi se déplacer)<br/>
+        — Le Grappin ne peut <strong>jamais réapparaître</strong> : sa mort est permanente
+      </div>
+    </div>
+
+    <div class="callout red">
+      <strong>Protégez votre Grappin.</strong> Sa perte est définitive et représente un désavantage tactique majeur pour le reste de la partie.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ 8. ZOC -->
+  <div class="section page-break">
+    <h2>8 — Zone de contrôle (Bouclier)</h2>
+
+    <p>Le Bouclier est une unité défensive redoutable grâce à sa <strong>Zone de Contrôle (ZdC)</strong>. Tout hex adjacent à un Bouclier est sous sa zone de contrôle.</p>
+
+    <h3>Effet de la Zone de contrôle</h3>
+    <p>
+      Toute unité ennemie qui <strong>commence son tour</strong> sur un hex adjacent à votre Bouclier est sous ZdC. Cette unité doit <strong>dépenser son action entière pour quitter ce hex</strong>. Elle ne peut ni attaquer, ni utiliser sa capacité spéciale ce tour-là — elle peut seulement se déplacer pour s'échapper.
+    </p>
+
+    <div class="callout">
+      <strong>Précisions :</strong><br/>
+      — La ZdC n'empêche pas le mouvement à travers les hexes contrôlés<br/>
+      — La ZdC affecte uniquement l'unité qui <em>part</em> d'un hex contrôlé<br/>
+      — Plusieurs Boucliers peuvent cumuler leurs zones de contrôle<br/>
+      — Une unité stunnée ne peut de toute façon pas agir — la ZdC ne la rend pas doublement stunnée
+    </div>
+
+    <h3>Usage tactique</h3>
+    <p>Positionner un Bouclier à côté du Guerrier ennemi l'empêche d'attaquer ce tour-là. Utiliser plusieurs Boucliers pour verrouiller des zones clés du plateau est une stratégie défensive puissante.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ 9. TOURS & RESPAWN -->
+  <div class="section">
+    <h2>9 — Les Tours et la Réapparition</h2>
+
+    <p>Les Tours sont les structures qui permettent à vos unités capturées de revenir sur le plateau. Chaque joueur possède <strong>2 Tours</strong>, situées aux coins arrière.</p>
+
+    <h3>États des Tours</h3>
+
+    <div class="tower-states">
+      <div class="tower-state active no-break">
+        <div class="tower-state-title">Active</div>
+        <div style="font-size:0.78rem; color:rgba(240,236,228,0.7);">Au moins 1 de vos unités est adjacente à cette Tour ET aucune unité ennemie n'est adjacente. <strong>Disponible pour réapparaître.</strong></div>
+      </div>
+      <div class="tower-state blocked no-break">
+        <div class="tower-state-title">Bloquée</div>
+        <div style="font-size:0.78rem; color:rgba(240,236,228,0.7);">Au moins 1 unité ennemie est adjacente à cette Tour. <strong>Aucun respawn possible</strong>, même si vous avez aussi une unité adjacente.</div>
+      </div>
+      <div class="tower-state inactive no-break">
+        <div class="tower-state-title">Inactive</div>
+        <div style="font-size:0.78rem; color:rgba(240,236,228,0.7);">Aucune de vos unités n'est adjacente. Non utilisable pour le moment.</div>
+      </div>
+    </div>
+
+    <h3>Règles de réapparition</h3>
+
+    <div class="rule-key">
+      <div class="rule-key-label">Action complète</div>
+      <div>Réapparaître une unité <strong>est votre action complète</strong>. Vous ne pouvez pas aussi déplacer ou attaquer ce tour.</div>
+    </div>
+    <div class="rule-key">
+      <div class="rule-key-label">Placement</div>
+      <div>L'unité réapparaît <strong>directement sur le hex de la Tour Active</strong> (pas sur les cases adjacentes). Ce hex doit être libre.</div>
+    </div>
+    <div class="rule-key">
+      <div class="rule-key-label">Limite</div>
+      <div>Maximum <strong>1 réapparition par tour</strong>.</div>
+    </div>
+    <div class="rule-key">
+      <div class="rule-key-label">Activation</div>
+      <div>L'unité réapparue peut agir normalement <strong>dès votre prochain tour</strong>.</div>
+    </div>
+    <div class="rule-key">
+      <div class="rule-key-label">Grappin</div>
+      <div>Le Grappin <strong>ne peut jamais réapparaître</strong>. Sa destruction est permanente.</div>
+    </div>
+
+    <div class="callout">
+      <strong>Tactique :</strong> Placer votre unité adjacente à la Tour ennemie la bloque pour le respawn — mais vous pouvez aussi vous y déplacer librement. Contrôler les Tours adverses est une priorité défensive.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ 10. VICTOIRE & NUL -->
+  <div class="section page-break">
+    <h2>10 — Conditions de victoire et de nul</h2>
+
+    <h3>Victoire</h3>
+    <p>
+      La partie se termine immédiatement lorsqu'un <strong>Guerrier détruit le Trône ennemi</strong>. Le joueur dont le Trône est détruit perd. Le Guerrier reste sur sa case — il ne se déplace pas sur le Trône.
+    </p>
+    <div class="callout red">
+      <strong>Protégez votre Trône à tout prix.</strong> Sa destruction met fin à la partie instantanément. Ne laissez pas un Guerrier adverse à portée de votre Trône sans défense.
+    </div>
+
+    <h3>Nul — Règle des 40 tours</h3>
+    <p>Si 40 tours s'écoulent sans aucune capture <strong>et</strong> sans qu'un Guerrier établisse un nouveau record de proximité avec le Trône ennemi, la partie se termine par un match nul. Cette règle prévient les parties défensives infinies.</p>
+
+    <h3>Nul — Répétition de position</h3>
+    <p>Si la même position exacte de plateau (positions de toutes les unités + joueur actif) se répète <strong>3 fois</strong>, la partie se termine par un match nul. Cela évite les boucles infinies de déplacement.</p>
+
+    <h3>Nul — Accord mutuel</h3>
+    <p>Les deux joueurs peuvent convenir d'un match nul à tout moment.</p>
+
+    <h3>Abandon</h3>
+    <p>Un joueur peut <strong>abandonner</strong> à tout moment, ce qui donne la victoire immédiate à son adversaire.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════ 11. RÉFÉRENCE RAPIDE -->
+  <div class="section">
+    <h2>11 — Référence rapide</h2>
+
+    <div class="quick-ref">
+      <div class="quick-card no-break">
+        <div class="quick-card-title">Votre tour</div>
+        <div>Choisissez <strong>UNE</strong> action : réapparition (A) OU jouer une unité (B). Jamais les deux.</div>
+      </div>
+      <div class="quick-card no-break">
+        <div class="quick-card-title">Réapparition (A)</div>
+        <div>Tour Active requise. L'unité (pas le Grappin) sur le hex de la Tour. Action complète.</div>
+      </div>
+      <div class="quick-card no-break">
+        <div class="quick-card-title">Jouer une unité (B)</div>
+        <div>Déplacer OU attaquer/capacité. Pas les deux. Une seule unité par tour.</div>
+      </div>
+      <div class="quick-card no-break">
+        <div class="quick-card-title">Grappin</div>
+        <div>Portée 2–7 hex. 1 clic sur la cible = action complète. Ne peut pas aussi se déplacer.</div>
+      </div>
+      <div class="quick-card no-break">
+        <div class="quick-card-title">Stun</div>
+        <div>L'unité stunnée passe son prochain tour entier. Le stun disparaît après.</div>
+      </div>
+      <div class="quick-card no-break">
+        <div class="quick-card-title">Victoire</div>
+        <div>Guerrier à 1–2 hex du Trône ennemi → attaque → partie terminée.</div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:2rem;">Tableau récapitulatif des unités</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Unité</th>
+          <th>Déplacement</th>
+          <th>Tue</th>
+          <th>Tué par</th>
+          <th>Respawn</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Bouclier ×2</strong></td>
+          <td>1 hex, toutes dir.</td>
+          <td>Guerrier, Grappin</td>
+          <td>Bélier</td>
+          <td>✓</td>
+        </tr>
+        <tr>
+          <td><strong>Bélier ×2</strong></td>
+          <td>1–2 hex droit, saute</td>
+          <td>Bouclier, Grappin</td>
+          <td>Guerrier</td>
+          <td>✓</td>
+        </tr>
+        <tr>
+          <td><strong>Guerrier ×2</strong></td>
+          <td>1 hex ou L à 2 hex</td>
+          <td>Bélier, <em>Trône</em></td>
+          <td>Bouclier</td>
+          <td>✓</td>
+        </tr>
+        <tr>
+          <td><strong>Grappin ×1</strong></td>
+          <td>1 hex, toutes dir.</td>
+          <td>— (stun)</td>
+          <td>Bouclier, Bélier</td>
+          <td>✗ Permanent</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    THRONES · Première Édition 2026 · Livret de règles officiel<br/>
+    <span style="font-size:0.65rem; opacity:0.6;">Imprimer via Fichier → Imprimer → Enregistrer en PDF</span>
+  </div>
+
+</div>
+</body>
+</html>

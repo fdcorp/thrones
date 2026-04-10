@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>THRONES — Plan de Corrections v2 · 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:           #07070e;
+    --bg2:          #0c0c18;
+    --bg3:          #111128;
+    --bg4:          #16162e;
+    --gold:         #c9a84c;
+    --gold-light:   #e8c96a;
+    --gold-dim:     #7a6030;
+    --silver:       #a8b4c0;
+    --silver-light: #cdd6de;
+    --silver-dim:   #5a6470;
+    --red:          #c0392b;
+    --red-light:    #e74c3c;
+    --red-dim:      #7a1e14;
+    --green:        #27ae60;
+    --green-light:  #2ecc71;
+    --orange:       #e67e22;
+    --purple:       #9b59b6;
+    --purple-light: #bf7fff;
+    --white:        #f0ece4;
+    --muted:        #6b6760;
+    --border:       rgba(255,255,255,0.07);
+    --border-bright:rgba(255,255,255,0.18);
+  }
+
+  html { font-size: 15px; scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Lexend', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+  }
+
+  /* COVER */
+  .cover {
+    text-align: center;
+    padding: 5rem 0 4rem;
+    border-bottom: 1px solid var(--border-bright);
+    margin-bottom: 3.5rem;
+    position: relative;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(46,204,113,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cover-label {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--green-light); margin-bottom: 1rem;
+  }
+  .cover h1 { font-size: 2.6rem; font-weight: 800; letter-spacing: 0.04em; line-height: 1.1; margin-bottom: 0.5rem; }
+  .cover h1 em { color: var(--green-light); font-style: normal; }
+  .cover-sub { font-size: 0.82rem; font-weight: 300; color: var(--muted); margin-top: 0.9rem; }
+  .cover-ref {
+    display: inline-block;
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--gold-dim);
+    border: 1px solid var(--gold-dim); padding: 0.25rem 0.8rem;
+    border-radius: 2px; margin-top: 1.2rem;
+  }
+
+  /* TOC */
+  .toc {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 4px; padding: 1.5rem 2rem; margin-bottom: 3rem;
+  }
+  .toc-title { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold-dim); margin-bottom: 0.9rem; }
+  .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2rem; }
+  @media (max-width: 600px) { .toc-grid { grid-template-columns: 1fr; } }
+  .toc li { font-size: 0.8rem; color: var(--silver); line-height: 2.1; list-style: none; }
+  .toc a { color: var(--silver); text-decoration: none; }
+  .toc a:hover { color: var(--green-light); }
+  .toc-tag {
+    display: inline-block; font-size: 0.58rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; padding: 0.1rem 0.4rem;
+    border-radius: 2px; margin-left: 0.4rem; vertical-align: middle;
+  }
+  .toc-bug    { background: rgba(155,89,182,0.2); color: var(--purple-light); }
+  .toc-bal    { background: rgba(192,57,43,0.15); color: var(--red-light); }
+  .toc-open   { background: rgba(230,126,34,0.15); color: var(--orange); }
+  .toc-rules  { background: rgba(39,174,96,0.12); color: var(--green-light); }
+
+  /* SECTIONS */
+  section { margin-bottom: 3.5rem; }
+  .section-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold-dim); display: block; margin-bottom: 0.45rem; }
+  h2 { font-size: 1.55rem; font-weight: 700; color: var(--white); padding-bottom: 0.65rem; margin-bottom: 1.3rem; border-bottom: 1px solid var(--border); line-height: 1.15; }
+  h3 { font-size: 1rem; font-weight: 600; color: var(--gold-light); margin: 2rem 0 0.65rem; }
+  h4 { font-size: 0.82rem; font-weight: 600; color: var(--silver-light); text-transform: uppercase; letter-spacing: 0.1em; margin: 1.3rem 0 0.45rem; }
+  p { font-size: 0.875rem; color: rgba(240,236,228,0.82); margin-bottom: 0.85rem; }
+  strong { color: var(--white); font-weight: 600; }
+  ul { padding-left: 1.4rem; }
+  li { font-size: 0.875rem; color: rgba(240,236,228,0.82); line-height: 1.7; margin-bottom: 0.2rem; }
+
+  /* FIX BLOCKS */
+  .fix-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin: 1.3rem 0;
+    overflow: hidden;
+  }
+  .fix-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0 1rem;
+    align-items: center;
+    padding: 0.9rem 1.3rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .fix-num { font-size: 1.2rem; font-weight: 800; color: var(--gold-dim); line-height: 1; }
+  .fix-title { font-size: 0.95rem; font-weight: 700; color: var(--white); }
+  .fix-type {
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 2px;
+    white-space: nowrap;
+  }
+  .fix-bug    { background: rgba(155,89,182,0.18); color: var(--purple-light); border: 1px solid rgba(155,89,182,0.3); }
+  .fix-bal    { background: rgba(192,57,43,0.15); color: var(--red-light); border: 1px solid rgba(192,57,43,0.3); }
+  .fix-open   { background: rgba(230,126,34,0.14); color: var(--orange); border: 1px solid rgba(230,126,34,0.3); }
+  .fix-doc    { background: rgba(52,152,219,0.12); color: #7ec8e3; border: 1px solid rgba(52,152,219,0.25); }
+
+  .fix-body { padding: 1.2rem 1.3rem; }
+  .fix-body p { margin-bottom: 0.75rem; }
+  .fix-body p:last-child { margin-bottom: 0; }
+
+  .fix-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.4rem; margin-top: 0.9rem; }
+  @media (max-width: 600px) { .fix-cols { grid-template-columns: 1fr; } }
+  .fix-col-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .fix-col-label.before { color: var(--red-light); }
+  .fix-col-label.after  { color: var(--green-light); }
+  .fix-col-content {
+    background: var(--bg3); border-radius: 3px; padding: 0.8rem 1rem;
+    font-size: 0.8rem; color: rgba(240,236,228,0.8); line-height: 1.6;
+  }
+
+  .impact-row {
+    display: flex; align-items: center; gap: 0.7rem; margin: 0.35rem 0; font-size: 0.8rem;
+  }
+  .impact-label { min-width: 140px; color: var(--muted); font-size: 0.75rem; }
+  .impact-before { color: var(--red-light); font-weight: 500; min-width: 100px; }
+  .impact-arrow { color: var(--gold-dim); }
+  .impact-after { color: var(--green-light); font-weight: 600; }
+
+  /* CALLOUTS */
+  .callout { border-left: 3px solid var(--gold); padding: 0.85rem 1.1rem; margin: 1.1rem 0; background: rgba(201,168,76,0.05); font-size: 0.84rem; color: rgba(240,236,228,0.83); border-radius: 0 3px 3px 0; }
+  .callout.danger  { border-color: var(--red); background: rgba(192,57,43,0.06); }
+  .callout.warning { border-color: var(--orange); background: rgba(230,126,34,0.06); }
+  .callout.success { border-color: var(--green); background: rgba(39,174,96,0.05); }
+  .callout.info    { border-color: var(--silver); background: rgba(168,180,192,0.05); }
+  .callout.purple  { border-color: var(--purple); background: rgba(155,89,182,0.06); }
+  .callout-title { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.35rem; display: block; }
+  .callout .callout-title      { color: var(--gold); }
+  .callout.danger .callout-title  { color: var(--red-light); }
+  .callout.warning .callout-title { color: var(--orange); }
+  .callout.success .callout-title { color: var(--green-light); }
+  .callout.info .callout-title    { color: var(--silver-light); }
+  .callout.purple .callout-title  { color: var(--purple-light); }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; margin: 1.1rem 0; font-size: 0.82rem; }
+  th { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); padding: 0.55rem 0.8rem; text-align: left; border-bottom: 1px solid var(--border-bright); }
+  td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); color: rgba(240,236,228,0.82); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.015); }
+  .td-unit { font-weight: 600; color: var(--white); }
+  .td-ok   { color: var(--green-light); font-weight: 500; }
+  .td-warn { color: var(--orange); font-weight: 500; }
+  .td-bad  { color: var(--red-light); font-weight: 500; }
+  .td-new  { color: var(--gold-light); font-weight: 600; }
+  td del   { color: var(--muted); text-decoration-color: var(--red-light); }
+  td ins   { color: var(--green-light); text-decoration: none; font-weight: 600; }
+
+  /* STAT BOXES */
+  .stat-boxes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9rem; margin: 1.3rem 0; }
+  @media (max-width: 640px) { .stat-boxes { grid-template-columns: repeat(2, 1fr); } }
+  .stat-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 1rem; text-align: center; }
+  .stat-box-val { font-size: 1.6rem; font-weight: 800; color: var(--gold); display: block; line-height: 1; margin-bottom: 0.35rem; }
+  .stat-box-val.green { color: var(--green-light); }
+  .stat-box-val.red   { color: var(--red-light); }
+  .stat-box-val.silver{ color: var(--silver-light); }
+  .stat-box-label { font-size: 0.63rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+
+  /* PROGRESS */
+  .progress-row { display: flex; align-items: center; gap: 0.7rem; margin: 0.38rem 0; font-size: 0.79rem; }
+  .progress-label { min-width: 190px; color: rgba(240,236,228,0.75); }
+  .progress-bar { flex: 1; height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; position: relative; }
+  .progress-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+  .progress-fill.before { position: absolute; top: 0; left: 0; height: 100%; opacity: 0.3; }
+  .progress-val { min-width: 40px; text-align: right; font-weight: 600; color: var(--silver-light); }
+
+  /* HEX GRID VISUAL */
+  .hex-visual { text-align: center; margin: 1.5rem 0; }
+
+  /* TRIANGLE SVG */
+  .triangle-wrap { text-align: center; margin: 1.4rem 0; }
+
+  /* DIVIDER */
+  hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+  /* CODE */
+  code { font-family: 'Courier New', monospace; font-size: 0.82rem; background: rgba(255,255,255,0.06); padding: 0.1rem 0.35rem; border-radius: 2px; color: var(--silver-light); }
+
+  /* CHANGE-LOG TABLE */
+  .changelog {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 4px;
+    overflow: hidden; margin: 1.3rem 0;
+  }
+  .changelog-head { padding: 0.8rem 1.2rem; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 2rem 1fr 1.8fr 1.8fr; gap: 0 1rem; align-items: center; }
+  .changelog-row  { padding: 0.7rem 1.2rem; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 2rem 1fr 1.8fr 1.8fr; gap: 0 1rem; align-items: start; }
+  .changelog-row:last-child { border-bottom: none; }
+  .changelog-row:hover { background: rgba(255,255,255,0.015); }
+  .cl-id { font-size: 0.7rem; font-weight: 700; color: var(--gold-dim); }
+  .cl-label { font-size: 0.72rem; font-weight: 600; color: var(--white); }
+  .cl-sub { font-size: 0.65rem; color: var(--muted); margin-top: 0.15rem; }
+  .cl-before { font-size: 0.75rem; color: var(--red-light); line-height: 1.5; }
+  .cl-after  { font-size: 0.75rem; color: var(--green-light); font-weight: 500; line-height: 1.5; }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(39,174,96,0.06) 0%, rgba(39,174,96,0.02) 100%);
+    border: 1px solid rgba(39,174,96,0.2); border-radius: 4px; padding: 1.3rem 1.5rem; margin: 1.3rem 0;
+  }
+  .highlight-box h4 { color: var(--green-light); margin-top: 0; font-size: 0.78rem; }
+  .highlight-box ul { list-style: none; padding: 0; margin: 0; }
+  .highlight-box ul li { font-size: 0.82rem; color: rgba(240,236,228,0.82); padding: 0.2rem 0 0.2rem 1.2rem; position: relative; }
+  .highlight-box ul li::before { content: '✓'; position: absolute; left: 0; color: var(--green-light); font-weight: 700; }
+
+  /* FILE CHANGE PILLS */
+  .file-pill {
+    display: inline-block; font-size: 0.68rem; font-weight: 600;
+    font-family: 'Courier New', monospace;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+    padding: 0.2rem 0.6rem; border-radius: 3px; margin: 0.2rem 0.2rem 0.2rem 0; color: var(--silver-light);
+  }
+
+  /* PRIORITY BADGE */
+  .prio { display: inline-block; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.15rem 0.5rem; border-radius: 2px; margin-left: 0.5rem; vertical-align: middle; }
+  .prio-1 { background: rgba(192,57,43,0.18); color: var(--red-light); }
+  .prio-2 { background: rgba(230,126,34,0.18); color: var(--orange); }
+  .prio-3 { background: rgba(39,174,96,0.12); color: var(--green-light); }
+
+  /* VERDICT BADGES */
+  .badge { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.15rem 0.55rem; border-radius: 2px; margin-left: 0.5rem; vertical-align: middle; }
+  .badge-ok   { background: rgba(39,174,96,0.15); color: var(--green-light); border: 1px solid rgba(39,174,96,0.3); }
+  .badge-bug  { background: rgba(155,89,182,0.15); color: var(--purple-light); border: 1px solid rgba(155,89,182,0.3); }
+  .badge-bal  { background: rgba(192,57,43,0.12); color: var(--red-light); border: 1px solid rgba(192,57,43,0.3); }
+
+  /* FOOTER */
+  .footer { text-align: center; font-size: 0.68rem; color: var(--muted); margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <p class="cover-label">Plan de corrections · Suite à l'analyse · Édition 2026</p>
+  <h1>THRONES — <em>Game Fix v2</em></h1>
+  <p style="font-size:0.95rem; font-weight:300; color:rgba(240,236,228,0.5); margin-top:0.4rem;">
+    Solutions détaillées · Corrections d'équilibre · Nouvelles règles officielles
+  </p>
+  <p class="cover-sub">Basé sur ANALYSE_JEU.html · 4 bugs critiques · 3 déséquilibres majeurs · Ouverture et cadence</p>
+  <span class="cover-ref">Fait suite à ANALYSE_JEU.html</span>
+</div>
+
+<!-- SOMMAIRE -->
+<nav class="toc">
+  <p class="toc-title">Sommaire</p>
+  <div class="toc-grid">
+    <ul>
+      <li><a href="#overview">1. Vue d'ensemble des changements</a></li>
+      <li><a href="#bug1">2. Bug #1 — Guerrier : attaque adjacente <span class="toc-tag toc-bug">Bug</span></a></li>
+      <li><a href="#bug2">3. Bug #2 — Bélier : saut en charge <span class="toc-tag toc-bug">Bug</span></a></li>
+      <li><a href="#bug3">4. Bug #3 — Règle des 80 tours <span class="toc-tag toc-bug">Bug</span></a></li>
+      <li><a href="#bug4">5. Bug #4 — Tutoriel Guerrier <span class="toc-tag toc-bug">Bug</span></a></li>
+      <li><a href="#bal1">6. Équilibre — Bouclier ×3 → ×2 <span class="toc-tag toc-bal">Balance</span></a></li>
+    </ul>
+    <ul>
+      <li><a href="#bal2">7. Équilibre — Grappin : prédateurs réduits <span class="toc-tag toc-bal">Balance</span></a></li>
+      <li><a href="#bal3">8. Équilibre — Règle de nul 80 → 40 tours <span class="toc-tag toc-bal">Balance</span></a></li>
+      <li><a href="#opening">9. Ouverture — Densité et position de départ <span class="toc-tag toc-open">Opening</span></a></li>
+      <li><a href="#rules">10. Nouvelles règles officielles <span class="toc-tag toc-rules">Règles</span></a></li>
+      <li><a href="#impact">11. Impact prévu — Nouvelles métriques</a></li>
+      <li><a href="#files">12. Fichiers à modifier</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- 1. VUE D'ENSEMBLE -->
+<section id="overview">
+  <span class="section-label">Section 01</span>
+  <h2>Vue d'ensemble de tous les changements</h2>
+
+  <div class="changelog">
+    <div class="changelog-head">
+      <span style="font-size:0.6rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted);">ID</span>
+      <span style="font-size:0.6rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted);">Changement</span>
+      <span style="font-size:0.6rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted);">Avant</span>
+      <span style="font-size:0.6rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted);">Après</span>
+    </div>
+
+    <div class="changelog-row">
+      <span class="cl-id">B1</span>
+      <span><span class="cl-label">Guerrier — portée d'attaque</span><br><span class="cl-sub">combat.ts + moves.ts</span></span>
+      <span class="cl-before">Guerrier ne peut attaquer qu'à portée L (dist=2 uniquement). Cible adjacente impossible à capturer.</span>
+      <span class="cl-after">Guerrier peut attaquer à dist=1 (adjacent) ET à portée L (dist=2). Cohérent avec RULES.md.</span>
+    </div>
+
+    <div class="changelog-row">
+      <span class="cl-id">B2</span>
+      <span><span class="cl-label">Bélier — saut en charge</span><br><span class="cl-sub">RULES.md + tutorial</span></span>
+      <span class="cl-before">Les règles disent "ligne dégagée obligatoire". Le code est plus permissif (saut par-dessus non-cibles). Incohérence non documentée.</span>
+      <span class="cl-after">Règle officielle : le Bélier PEUT sauter par-dessus Guerriers et Béliers lors d'une charge. Documenté dans RULES.md et tutoriel.</span>
+    </div>
+
+    <div class="changelog-row">
+      <span class="cl-id">B3</span>
+      <span><span class="cl-label">Règle des 80 tours — incomplète</span><br><span class="cl-sub">victory.ts</span></span>
+      <span class="cl-before">Vérifie uniquement captures (turnsSinceLastCapture ≥ 80). La condition "Guerrier qui progresse" est ignorée bien qu'implémentée partiellement.</span>
+      <span class="cl-after">Vérifie captures ET progression du Guerrier. Si un Guerrier s'approche du Trône ennemi, le compteur se réinitialise. Seuil réduit à 40 tours.</span>
+    </div>
+
+    <div class="changelog-row">
+      <span class="cl-id">B4</span>
+      <span><span class="cl-label">Tutoriel — mouvement Guerrier</span><br><span class="cl-sub">TutorialFlow.tsx</span></span>
+      <span class="cl-before">"Pas de mouvement en ligne droite, pas de déplacement en 1 seule case." (Faux depuis la correction du code.)</span>
+      <span class="cl-after">"1 case dans n'importe quelle direction OU 2 cases en L — changement de direction obligatoire."</span>
+    </div>
+
+    <div class="changelog-row">
+      <span class="cl-id">E1</span>
+      <span><span class="cl-label">Bouclier — quantité</span><br><span class="cl-sub">board.ts + règles</span></span>
+      <span class="cl-before">3 Boucliers par joueur. ZoC couvre ~40 % du plateau. Stratégie défensive dominante.</span>
+      <span class="cl-after">2 Boucliers par joueur. ZoC couvre ~27 % du plateau. Équilibre numérique 2 vs 2 Béliers. Centre du plateau ouvert dès le départ.</span>
+    </div>
+
+    <div class="changelog-row">
+      <span class="cl-id">E2</span>
+      <span><span class="cl-label">Grappin — prédateurs</span><br><span class="cl-sub">combat.ts + règles</span></span>
+      <span class="cl-before">Grappin tué par : Bouclier, Bélier, Guerrier (tous les 3). Mort permanente. Trop fragile pour son rôle.</span>
+      <span class="cl-after">Grappin tué par : Bouclier ET Bélier uniquement. Le Guerrier ne peut plus capturer le Grappin. Rend le Grappin plus viable.</span>
+    </div>
+
+    <div class="changelog-row">
+      <span class="cl-id">E3</span>
+      <span><span class="cl-label">Règle de nul — seuil</span><br><span class="cl-sub">victory.ts + règles</span></span>
+      <span class="cl-before">Nul après 80 tours sans capture. Trop long : une "tortue" peut durer presque une heure.</span>
+      <span class="cl-after">Nul après 40 tours sans capture NI progression de Guerrier. Pression anti-passif significative.</span>
+    </div>
+
+    <div class="changelog-row">
+      <span class="cl-id">O1</span>
+      <span><span class="cl-label">Position de départ — densité</span><br><span class="cl-sub">board.ts</span></span>
+      <span class="cl-before">22 pièces / 37 hexes = 59,5 %. Bouclier central au centre (0,1,-1). Ouverture congestionnée. Mobilité tour 1 quasi nulle pour la moitié des unités.</span>
+      <span class="cl-after">20 pièces / 37 hexes = 54,1 %. Centre du plateau libre. Bouclier retiré de la case (0,1,-1). Ouverture immédiate pour la lutte au centre.</span>
+    </div>
+  </div>
+</section>
+
+<!-- BUG 1 -->
+<section id="bug1">
+  <span class="section-label">Section 02</span>
+  <h2>Bug #1 — Le Guerrier ne peut pas attaquer une cible adjacente <span class="badge badge-bug">Bug critique</span></h2>
+
+  <h3>Diagnostic précis</h3>
+  <p>
+    La fonction <code>warriorCanReach(board, warrior, targetHex)</code> dans <code>moves.ts</code> appelle
+    <code>isLandable(board, hex, unit)</code> pour vérifier la portée à distance 1 (adjacent).
+    Or <code>isLandable</code> retourne <code>false</code> dès que le hex cible est occupé par une unité —
+    ce qui est toujours le cas pour une cible d'attaque. Conséquence : un Guerrier adjacent à un Bélier
+    ou au Trône ennemi <strong>ne peut jamais les capturer/détruire</strong>.
+  </p>
+
+  <div class="fix-block">
+    <div class="fix-header">
+      <span class="fix-num">B1</span>
+      <span class="fix-title">Séparer la logique de portée pour le mouvement et pour l'attaque</span>
+      <span class="fix-type fix-bug">Correction de bug</span>
+    </div>
+    <div class="fix-body">
+      <p>
+        La solution est de différencier la validation de "portée de déplacement" et "portée d'attaque".
+        Pour le déplacement (dist=1), le hex doit être <strong>vide et non-Trône</strong>.
+        Pour l'attaque (dist=1), le hex doit être <strong>sur le plateau</strong> et la vérification
+        d'occupation est gérée par l'appelant (<code>getWarriorAttacks</code>) qui filtre déjà
+        par type d'ennemi vivant.
+      </p>
+
+      <div class="fix-cols">
+        <div>
+          <p class="fix-col-label before">Comportement actuel (bugué)</p>
+          <div class="fix-col-content">
+            <strong>warriorCanReach, dist=1 :</strong><br>
+            → Appelle isLandable(targetHex)<br>
+            → isLandable = false si hex occupé<br>
+            → Résultat : Guerrier adjacent à un Bélier ennemi = 0 attaque possible<br>
+            → Guerrier adjacent au Trône = ne peut pas tuer<br>
+            → En pratique : Guerrier UNIQUEMENT en L pour attaquer
+          </div>
+        </div>
+        <div>
+          <p class="fix-col-label after">Comportement corrigé</p>
+          <div class="fix-col-content">
+            <strong>warriorCanReach, dist=1 :</strong><br>
+            → Pour attaque : retourne true si hex adjacent et sur plateau<br>
+            → Pour mouvement : garde isLandable (hex vide)<br>
+            → Résultat : Guerrier adjacent à un Bélier = peut capturer<br>
+            → Guerrier adjacent au Trône = victoire immédiate<br>
+            → Portée effective : dist=1 OU dist=2 en L ✓
+          </div>
+        </div>
+      </div>
+
+      <h4 style="margin-top:1.2rem;">Modification à apporter dans moves.ts</h4>
+      <p>
+        Ajouter un paramètre optionnel <code>forAttack?: boolean</code> à <code>warriorCanReach</code>.
+        Quand <code>forAttack = true</code> et <code>dist === 1</code> : retourner
+        <code>isOnBoard(targetHex)</code> au lieu de <code>isLandable(targetHex)</code>.
+        La distinction dist=2 (L-shape) reste identique — le chemin intermédiaire doit être libre.
+      </p>
+
+      <h4>Impact stratégique</h4>
+      <div class="fix-cols">
+        <div>
+          <div class="impact-row"><span class="impact-label">Fluidité des combats</span><span class="impact-before">Rigide</span><span class="impact-arrow">→</span><span class="impact-after">Naturelle</span></div>
+          <div class="impact-row"><span class="impact-label">Menace sur le Trône</span><span class="impact-before">Uniquement dist=2</span><span class="impact-arrow">→</span><span class="impact-after">Dist=1 ou dist=2</span></div>
+          <div class="impact-row"><span class="impact-label">Vitesse de fin de partie</span><span class="impact-before">Lente</span><span class="impact-arrow">→</span><span class="impact-after">+15% plus rapide</span></div>
+        </div>
+        <div>
+          <div class="callout success" style="margin:0;">
+            <span class="callout-title">Pourquoi c'est meilleur</span>
+            Un Guerrier adjacent au Trône ennemi crée une pression immédiate : le joueur adverse
+            <em>doit</em> répondre maintenant. Ce "check" permanent rend les fins de partie
+            beaucoup plus intenses, comme un "échec au roi" aux échecs.
+          </div>
+        </div>
+      </div>
+
+      <h4>Fichiers concernés</h4>
+      <span class="file-pill">client/src/engine/moves.ts</span>
+      <span class="file-pill">client/src/engine/combat.ts</span>
+      <span class="file-pill">RULES.md</span>
+    </div>
+  </div>
+</section>
+
+<!-- BUG 2 -->
+<section id="bug2">
+  <span class="section-label">Section 03</span>
+  <h2>Bug #2 — Le Bélier saute par-dessus les non-cibles lors d'une charge <span class="badge badge-bug">Incohérence</span></h2>
+
+  <div class="fix-block">
+    <div class="fix-header">
+      <span class="fix-num">B2</span>
+      <span class="fix-title">Officialiser et documenter le saut-en-charge du Bélier</span>
+      <span class="fix-type fix-doc">Documentation</span>
+    </div>
+    <div class="fix-body">
+      <p>
+        Le code permet au Bélier de <strong>sauter par-dessus les Guerriers et Béliers</strong>
+        (amis comme ennemis) lors d'une charge, pour atteindre un Bouclier ou Grappin situé
+        derrière. Cette mécanique est présente dans le moteur depuis le début mais n'est jamais
+        mentionnée dans RULES.md ni dans le tutoriel. RULES.md indique même le contraire
+        ("ligne dégagée obligatoire").
+      </p>
+
+      <div class="callout warning">
+        <span class="callout-title">Décision — Garder le comportement du code</span>
+        Cette mécanique est tactiquement intéressante et ajoute de la profondeur : un Bélier peut
+        "plonger" à travers une ligne de Guerriers pour frapper le Bouclier qui les soutient.
+        C'est contre-intuitif mais créateur de combinaisons. Elle doit être officialisée dans les règles.
+      </div>
+
+      <div class="fix-cols">
+        <div>
+          <p class="fix-col-label before">Règle actuelle dans RULES.md (incorrect)</p>
+          <div class="fix-col-content">
+            "Charge (attaque) : Bouclier ou Grappin à 1 ou 2 cases, ligne dégagée obligatoire."<br><br>
+            "Jump for movement only — charge still requires clear line."
+          </div>
+        </div>
+        <div>
+          <p class="fix-col-label after">Nouvelle règle officielle</p>
+          <div class="fix-col-content">
+            "Charge : Le Bélier peut sauter par-dessus les Guerriers et Béliers (amis ou ennemis) lors de sa charge. Il s'arrête au premier Bouclier ou Grappin ennemi rencontré dans la ligne et le capture. Les Trônes et Tours bloquent la charge."
+          </div>
+        </div>
+      </div>
+
+      <h4>Implication tactique nouvelle (une fois documentée)</h4>
+      <p>
+        Les joueurs pourront désormais <em>consciemment</em> utiliser cette technique : poster
+        un Guerrier devant un Bouclier ne protège pas ce dernier d'un Bélier qui chargerait dans
+        la même ligne. Seul un autre Bouclier ou Grappin en chemin peut bloquer la charge
+        (car ce sont des "cibles valides" qui arrêtent le Bélier).
+        Cette connaissance ouvre de nouvelles décisions de placement.
+      </p>
+
+      <h4>Fichiers concernés</h4>
+      <span class="file-pill">RULES.md</span>
+      <span class="file-pill">client/src/components/tutorial/TutorialFlow.tsx</span>
+    </div>
+  </div>
+</section>
+
+<!-- BUG 3 -->
+<section id="bug3">
+  <span class="section-label">Section 04</span>
+  <h2>Bug #3 — Règle des 80 tours incomplète et trop permissive <span class="badge badge-bug">Bug</span></h2>
+
+  <div class="fix-block">
+    <div class="fix-header">
+      <span class="fix-num">B3</span>
+      <span class="fix-title">Implémenter la règle de nul complète avec progression du Guerrier</span>
+      <span class="fix-type fix-bug">Correction de bug + balance</span>
+    </div>
+    <div class="fix-body">
+      <p>
+        Le code actuel dans <code>victory.ts</code> vérifie uniquement <code>turnsSinceLastCapture >= 80</code>.
+        La condition sur l'avancement des Guerriers est partiellement implémentée dans
+        <code>GameState</code> (champs <code>minWarriorDistanceP1</code> et <code>minWarriorDistanceP2</code>)
+        mais jamais utilisée dans le check de nul. Le seuil de 80 tours est aussi beaucoup trop élevé.
+      </p>
+
+      <div class="fix-cols">
+        <div>
+          <p class="fix-col-label before">Comportement actuel</p>
+          <div class="fix-col-content">
+            Nul si : turnsSinceLastCapture ≥ 80<br><br>
+            Le compteur se réinitialise uniquement lors d'une capture.<br><br>
+            Un joueur qui avance ses Guerriers sans rien capturer peut jouer 80 tours "propres" → jeu très lent.
+          </div>
+        </div>
+        <div>
+          <p class="fix-col-label after">Comportement corrigé</p>
+          <div class="fix-col-content">
+            Nul si : compteur ≥ 40 tours<br><br>
+            Compteur se réinitialise sur :<br>
+            • Toute capture<br>
+            • Guerrier qui atteint une distance minimale<br>&nbsp;&nbsp;plus courte au Trône ennemi que jamais<br><br>
+            Pression constante : avancer OU capturer.
+          </div>
+        </div>
+      </div>
+
+      <h4>Logique du compteur étendu (dans gameState.ts)</h4>
+      <p>
+        À chaque action résolue, comparer la nouvelle distance minimale de chaque Guerrier au Trône
+        ennemi avec le minimum historique enregistré. Si la nouvelle distance est inférieure au minimum
+        enregistré, réinitialiser le compteur et mettre à jour le minimum.
+        Les champs <code>minWarriorDistanceP1</code> et <code>minWarriorDistanceP2</code> sont déjà
+        présents dans <code>GameState</code> — il suffit de les utiliser.
+      </p>
+
+      <div class="callout success">
+        <span class="callout-title">Impact anti-tortue</span>
+        Avec ce compteur à 40 tours, un joueur ne peut plus "stagner" indéfiniment. Il doit
+        soit capturer une unité, soit progresser un Guerrier vers le Trône toutes les 40 actions.
+        Cela élimine la stratégie du "je respawne et j'attends" sans forcer un rythme artificiel.
+      </div>
+
+      <h4>Fichiers concernés</h4>
+      <span class="file-pill">client/src/engine/victory.ts</span>
+      <span class="file-pill">client/src/engine/gameState.ts</span>
+      <span class="file-pill">RULES.md</span>
+    </div>
+  </div>
+</section>
+
+<!-- BUG 4 -->
+<section id="bug4">
+  <span class="section-label">Section 05</span>
+  <h2>Bug #4 — Tutoriel : mouvement du Guerrier incorrect <span class="badge badge-bug">Incohérence UI</span></h2>
+
+  <div class="fix-block">
+    <div class="fix-header">
+      <span class="fix-num">B4</span>
+      <span class="fix-title">Corriger la description du Guerrier dans le tutoriel</span>
+      <span class="fix-type fix-doc">Correction tutoriel</span>
+    </div>
+    <div class="fix-body">
+      <p>
+        L'étape "Guerrier" du tutoriel (<code>TutorialFlow.tsx</code>) contient deux bullets incorrects
+        depuis la correction du bug de mouvement adjacente lors d'une session précédente.
+      </p>
+
+      <div class="fix-cols">
+        <div>
+          <p class="fix-col-label before">Bullets actuels (incorrects)</p>
+          <div class="fix-col-content">
+            ❌ "Déplacement : 2 cases en L uniquement — il doit changer de direction entre les 2 pas"<br><br>
+            ❌ "Pas de mouvement en ligne droite, pas de déplacement en 1 seule case"
+          </div>
+        </div>
+        <div>
+          <p class="fix-col-label after">Nouveaux bullets (corrects)</p>
+          <div class="fix-col-content">
+            ✓ "Déplacement : 1 case dans n'importe quelle direction OU 2 cases en L"<br><br>
+            ✓ "En L = changement de direction obligatoire entre les 2 pas — jamais tout droit"<br><br>
+            ✓ "Attaque : Bélier ou Grappin à 1 case (adjacent) ou 2 cases en L"
+          </div>
+        </div>
+      </div>
+
+      <h4>Fichiers concernés</h4>
+      <span class="file-pill">client/src/components/tutorial/TutorialFlow.tsx</span>
+    </div>
+  </div>
+</section>
+
+<!-- ÉQUILIBRE 1 -->
+<section id="bal1">
+  <span class="section-label">Section 06</span>
+  <h2>Équilibre #1 — Bouclier ×3 → ×2 <span class="badge badge-bal">Déséquilibre majeur</span></h2>
+
+  <h3>Pourquoi c'est le changement le plus impactant</h3>
+  <p>
+    Avec 3 Boucliers, la ZoC peut couvrir jusqu'à 40 % du plateau. Il y a une asymétrie numérique
+    (3 Boucliers vs 2 Béliers qui les chassent). La stratégie "Mur de Boucliers" représente
+    65 % du méta actuel. Réduire à 2 Boucliers rétablit l'équilibre sur tous ces points simultanément.
+  </p>
+
+  <div class="fix-block">
+    <div class="fix-header">
+      <span class="fix-num">E1</span>
+      <span class="fix-title">Retirer le Bouclier central avant et ajuster la configuration</span>
+      <span class="fix-type fix-bal">Rééquilibrage</span>
+    </div>
+    <div class="fix-body">
+
+      <h4>Quel Bouclier retirer ?</h4>
+      <p>
+        Il y a 3 Boucliers par joueur dans la configuration actuelle :
+      </p>
+      <ul>
+        <li><strong>Bouclier 1</strong> (coin gauche) — adjacent à la Tour gauche → active le respawn</li>
+        <li><strong>Bouclier 2</strong> (coin droite) — adjacent à la Tour droite → active le respawn</li>
+        <li><strong>Bouclier 3</strong> (avant-centre) — sur la case (0,1,-1) → ancre de la ZoC centrale</li>
+      </ul>
+      <p>
+        Le Bouclier 3 (avant-centre) est à retirer. C'est lui qui est responsable de la ZoC
+        centrale immédiate, de la congestion du centre, et de la stratégie "tortue" dominante.
+        Les deux Boucliers coin restent car ils activent les Tours dès le tour 1
+        (proximité immédiate avec les Tours de coin).
+      </p>
+
+      <div class="fix-cols">
+        <div>
+          <p class="fix-col-label before">Configuration actuelle</p>
+          <div class="fix-col-content">
+            P1 : Bouclier coin-gauche + <strong style="color:var(--red-light);">Bouclier avant-centre ← RETIRÉ</strong> + Bouclier coin-droite<br><br>
+            Densité globale : 22/37 = 59,5 %<br>
+            ZoC max : ~15 hexes (~40 %)<br>
+            Case (0,1,-1) : occupée par Bouclier<br>
+            Centre ouvert au tour 1 : Non
+          </div>
+        </div>
+        <div>
+          <p class="fix-col-label after">Nouvelle configuration</p>
+          <div class="fix-col-content">
+            P1 : Bouclier coin-gauche + Bouclier coin-droite<br><br>
+            Densité globale : 20/37 = 54,1 %<br>
+            ZoC max : ~11 hexes (~30 %)<br>
+            Case (0,1,-1) : <strong style="color:var(--green-light);">libre</strong><br>
+            Centre ouvert au tour 1 : Oui ✓
+          </div>
+        </div>
+      </div>
+
+      <h4>Équilibre numérique après correction</h4>
+      <table>
+        <thead><tr><th>Paire combat</th><th>Avant</th><th>Après</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td>Bélier (×2) vs Bouclier (×?)</td><td class="td-bad">2 vs 3 — déficit</td><td class="td-ok">2 vs 2 — égalité</td><td class="td-ok">Équilibré</td></tr>
+          <tr><td>Guerrier (×2) vs Bouclier (×?)</td><td class="td-bad">2 vs 3 — vulnérable</td><td class="td-ok">2 vs 2 — parité</td><td class="td-ok">Équilibré</td></tr>
+          <tr><td>ZoC % du plateau</td><td class="td-bad">~40 %</td><td class="td-ok">~30 %</td><td class="td-ok">Gérable</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Conséquence sur l'ouverture</h4>
+      <p>
+        La case centrale (0,1,-1) est maintenant vide au départ. Cela crée immédiatement une
+        <strong>"course au centre"</strong> : quel joueur avance en premier au centre ?
+        Avec un Guerrier ? Un Bouclier ? Le Grappin ? Cette décision dès le tour 1 est excitante
+        et crée des ouvertures distinctes identifiables — le début des "variantes nommées" nécessaires
+        à une littérature stratégique.
+      </p>
+
+      <h4>Nouvelles options d'ouverture (exemples)</h4>
+      <div class="fix-cols">
+        <div>
+          <div class="fix-col-content">
+            <strong>Ouverture "Guerrier Central" :</strong><br>
+            Avancer un Guerrier au centre dès T1. Contrôle de la route la plus courte vers le Trône.
+            Risque : Guerrier exposé sans couverture.
+          </div>
+        </div>
+        <div>
+          <div class="fix-col-content">
+            <strong>Ouverture "Bouclier de Flank" :</strong><br>
+            Avancer un Bouclier sur le côté pour créer une ZoC latérale plutôt que centrale. Zone de contrôle asymétrique — difficile à lire pour l'adversaire.
+          </div>
+        </div>
+      </div>
+
+      <h4>Fichiers concernés</h4>
+      <span class="file-pill">client/src/engine/board.ts</span>
+      <span class="file-pill">RULES.md</span>
+      <span class="file-pill">client/src/components/tutorial/TutorialFlow.tsx</span>
+    </div>
+  </div>
+</section>
+
+<!-- ÉQUILIBRE 2 -->
+<section id="bal2">
+  <span class="section-label">Section 07</span>
+  <h2>Équilibre #2 — Grappin : le Guerrier ne peut plus le capturer <span class="badge badge-bal">Déséquilibre majeur</span></h2>
+
+  <h3>Diagnostic du problème actuel</h3>
+  <p>
+    Le Grappin cumule : mort permanente + tué par tout le monde + immobile après grappin.
+    Ce triple handicap rend son utilisation active presque toujours contre-productive.
+    La mort permanente doit rester — c'est la caractéristique qui le rend unique et précieux.
+    Mais le rendre vulnérable à 3 types d'unités est excessif.
+  </p>
+
+  <div class="fix-block">
+    <div class="fix-header">
+      <span class="fix-num">E2</span>
+      <span class="fix-title">Retirer le Guerrier de la liste des prédateurs du Grappin</span>
+      <span class="fix-type fix-bal">Rééquilibrage</span>
+    </div>
+    <div class="fix-body">
+
+      <h4>Nouveau triangle de combat officiel</h4>
+      <table>
+        <thead>
+          <tr><th>Unité</th><th>Capture</th><th>Tué par</th><th>Change ?</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-unit">Bouclier</td>
+            <td>Guerrier (adjacent)<br><ins>Grappin (adjacent)</ins></td>
+            <td>Bélier</td>
+            <td class="td-ok">Inchangé</td>
+          </tr>
+          <tr>
+            <td class="td-unit">Bélier</td>
+            <td>Bouclier (charge 1–2 hex)<br><ins>Grappin (charge 1–2 hex)</ins></td>
+            <td>Guerrier</td>
+            <td class="td-ok">Inchangé</td>
+          </tr>
+          <tr>
+            <td class="td-unit">Guerrier</td>
+            <td>Bélier (dist=1 ou L)<br>Trône ennemi (dist=1 ou L)<br><del>Grappin — supprimé</del></td>
+            <td>Bouclier</td>
+            <td class="td-new">MODIFIÉ</td>
+          </tr>
+          <tr>
+            <td class="td-unit">Grappin</td>
+            <td>— (stun + repositionnement)</td>
+            <td>Bouclier (adjacent)<br>Bélier (charge)<br><del>Guerrier — supprimé</del></td>
+            <td class="td-new">MODIFIÉ</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout success">
+        <span class="callout-title">Raisonnement stratégique</span>
+        Le Guerrier doit se concentrer sur sa mission : tuer les Béliers et foncer vers le Trône.
+        L'obliger à "chasser le Grappin" est une distraction de son rôle principal. Avec ce changement,
+        un Guerrier qui passe à côté d'un Grappin le contourne naturellement — le Grappin peut
+        stunner le Guerrier, mais le Guerrier ne peut pas le tuer. Ce "pacte de non-agression"
+        entre Guerrier et Grappin crée une dynamique tactique inédite : le Grappin n'a plus besoin
+        de fuir les Guerriers, et peut se concentrer sur leur disruption.
+      </div>
+
+      <h4>Impact sur la survie du Grappin</h4>
+
+      <div class="fix-cols">
+        <div>
+          <p class="fix-col-label before">Avant — Prédateurs du Grappin</p>
+          <div class="fix-col-content">
+            Bouclier (×2) → peut capturer adjacent<br>
+            Bélier (×2) → peut charger<br>
+            Guerrier (×2) → peut atteindre<br>
+            <strong>Total : 6 prédateurs par camp</strong><br><br>
+            Survie moy. si utilisé activement : ~2 tours
+          </div>
+        </div>
+        <div>
+          <p class="fix-col-label after">Après — Prédateurs du Grappin</p>
+          <div class="fix-col-content">
+            Bouclier (×2) → peut capturer adjacent ✓<br>
+            Bélier (×2) → peut charger ✓<br>
+            <del>Guerrier</del> — ne peut plus cibler le Grappin<br>
+            <strong>Total : 4 prédateurs par camp</strong><br><br>
+            Survie moy. si utilisé activement : ~4 tours
+          </div>
+        </div>
+      </div>
+
+      <h4>Nouvelles stratégies rendues possibles</h4>
+      <ul>
+        <li><strong>Grappin + Guerrier en tandem</strong> : Le Grappin attire un Bélier ennemi proche, le Guerrier le capture L'instant suivant. Sans craindre que le Guerrier ennemi tue le Grappin entre temps.</li>
+        <li><strong>Grappin comme "harceleur" de Guerriers</strong> : Peut stunner des Guerriers en sécurité relative, les ralentissant sans pouvoir être abattu par eux.</li>
+        <li><strong>Défense du Grappin</strong> : L'adversaire doit désormais amener un Bouclier ou un Bélier <em>spécifiquement</em> pour tuer le Grappin. Pas juste n'importe quelle unité qui passe.</li>
+      </ul>
+
+      <h4>Grappin comme "Bouclier-magnet"</h4>
+      <p>
+        Avec le Bélier comme prédateur du Grappin, l'adversaire peut charger le Grappin depuis
+        1–2 hexes en ligne droite. Cela force le propriétaire du Grappin à ne pas positionner
+        celui-ci en ligne droite devant un Bélier ennemi — décision positionnelle intéressante.
+        De plus, le Bouclier ennemi (seul autre prédateur) qui avance vers le Grappin se met
+        lui-même en ZoC-duty, donc en dehors du rôle offensif contre les Guerriers.
+        Ce "coût" de capturer le Grappin est thématiquement cohérent.
+      </p>
+
+      <h4>Fichiers concernés</h4>
+      <span class="file-pill">client/src/engine/combat.ts</span>
+      <span class="file-pill">RULES.md</span>
+      <span class="file-pill">client/src/components/tutorial/TutorialFlow.tsx</span>
+      <span class="file-pill">client/src/engine/ai/evaluate.ts</span>
+    </div>
+  </div>
+</section>
+
+<!-- ÉQUILIBRE 3 -->
+<section id="bal3">
+  <span class="section-label">Section 08</span>
+  <h2>Équilibre #3 — Règle de nul : 80 tours → 40 tours + progression <span class="badge badge-bal">Balance</span></h2>
+
+  <div class="fix-block">
+    <div class="fix-header">
+      <span class="fix-num">E3</span>
+      <span class="fix-title">Réduire le seuil et ajouter la condition de progression du Guerrier</span>
+      <span class="fix-type fix-bal">Rééquilibrage</span>
+    </div>
+    <div class="fix-body">
+      <p>
+        Cette modification est intimement liée au Bug #3. C'est à la fois une correction
+        (implémenter la règle comme documentée) et un rééquilibrage (réduire 80 → 40).
+      </p>
+
+      <h4>Définition exacte du nouveau compteur</h4>
+      <p>
+        Le compteur de "stagnation" se réinitialise sur <strong>l'une ou l'autre</strong>
+        de ces conditions :
+      </p>
+      <ul>
+        <li>Une unité est capturée (quelle qu'elle soit, sauf respawn)</li>
+        <li>Un Guerrier du joueur actif atteint une distance minimale au Trône ennemi <em>plus courte que jamais auparavant dans la partie</em></li>
+      </ul>
+      <p>
+        Si 40 actions consécutives passent sans l'une de ces deux conditions, la partie est nulle
+        par règle de stagnation.
+      </p>
+
+      <div class="callout info">
+        <span class="callout-title">Note sur la variable existante</span>
+        Les champs <code>minWarriorDistanceP1</code> et <code>minWarriorDistanceP2</code> dans
+        <code>GameState</code> existent déjà mais sont initialisés à 999 et jamais mis à jour.
+        La correction consiste à (1) les mettre à jour après chaque déplacement ou attaque, et
+        (2) vérifier si la nouvelle valeur est inférieure au minimum enregistré pour déclencher
+        la réinitialisation du compteur.
+      </div>
+
+      <div class="fix-cols">
+        <div>
+          <p class="fix-col-label before">Durée d'une partie "tortue"</p>
+          <div class="fix-col-content">
+            Seuil actuel : 80 tours sans capture<br>
+            Durée max d'une tortue : 80 actions = ~40 min de jeu statique<br>
+            Frustration : maximale
+          </div>
+        </div>
+        <div>
+          <p class="fix-col-label after">Durée d'une partie "tortue"</p>
+          <div class="fix-col-content">
+            Seuil nouveau : 40 actions sans capture NI progression<br>
+            Durée max d'une tortue : 40 actions ≈ ~15 min de stagnation<br>
+            Pression : suffisante pour forcer l'action
+          </div>
+        </div>
+      </div>
+
+      <h4>Fichiers concernés</h4>
+      <span class="file-pill">client/src/engine/victory.ts</span>
+      <span class="file-pill">client/src/engine/gameState.ts</span>
+      <span class="file-pill">RULES.md</span>
+    </div>
+  </div>
+</section>
+
+<!-- OUVERTURE -->
+<section id="opening">
+  <span class="section-label">Section 09</span>
+  <h2>Ouverture — Résoudre la densité et la congestion initiale</h2>
+
+  <h3>État de la configuration après les corrections d'équilibre</h3>
+  <p>
+    La suppression du Bouclier avant-centre résout déjà le principal problème d'ouverture.
+    Voici l'état attendu après E1 :
+  </p>
+
+  <div class="stat-boxes">
+    <div class="stat-box">
+      <span class="stat-box-val red">59,5%</span>
+      <span class="stat-box-label">Densité avant</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-box-val green">54,1%</span>
+      <span class="stat-box-label">Densité après E1</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-box-val green">3+</span>
+      <span class="stat-box-label">Ouvertures distinctes</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-box-val silver">Libre</span>
+      <span class="stat-box-label">Centre au tour 1</span>
+    </div>
+  </div>
+
+  <div class="callout success">
+    <span class="callout-title">Pourquoi retirer le Bouclier central suffit</span>
+    La case (0,1,-1) est la plus importante du jeu : au centre, à équidistance des deux Trônes.
+    En la libérant, on crée immédiatement :
+    (1) une question stratégique "qui occupe le centre et avec quoi ?",
+    (2) une mobilité accrue pour les unités qui peuvent maintenant transiter par le centre,
+    (3) des lignes de grappin débloquées pour les Grappins dès les premiers tours.
+    Les parties commenceront avec une décision immédiate au lieu d'un "déblockage" obligatoire.
+  </div>
+
+  <h3>Nouvelle configuration de départ — Description complète</h3>
+
+  <table>
+    <thead>
+      <tr><th>Unité</th><th>Position P1 (or, bas)</th><th>Position P2 (argent, haut)</th><th>Statut</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="td-unit">Trône</td><td>(0, 3, -3)</td><td>(0, -3, 3)</td><td class="td-ok">Inchangé</td></tr>
+      <tr><td class="td-unit">Tour gauche</td><td>(-3, 3, 0)</td><td>(3, -3, 0)</td><td class="td-ok">Inchangé</td></tr>
+      <tr><td class="td-unit">Tour droite</td><td>(3, 0, -3)</td><td>(-3, 0, 3)</td><td class="td-ok">Inchangé</td></tr>
+      <tr><td class="td-unit">Bélier 1</td><td>(-1, 3, -2)</td><td>(1, -3, 2)</td><td class="td-ok">Inchangé</td></tr>
+      <tr><td class="td-unit">Bélier 2</td><td>(1, 2, -3)</td><td>(-1, -2, 3)</td><td class="td-ok">Inchangé</td></tr>
+      <tr><td class="td-unit">Bouclier 1</td><td>(-2, 3, -1)</td><td>(2, -3, 1)</td><td class="td-ok">Inchangé</td></tr>
+      <tr><td class="td-unit">Bouclier 2</td><td>(2, 1, -3)</td><td>(-2, -1, 3)</td><td class="td-ok">Inchangé</td></tr>
+      <tr><td class="td-unit td-bad">Bouclier 3</td><td><del>(0, 1, -1)</del></td><td><del>(0, -1, 1)</del></td><td class="td-bad">SUPPRIMÉ</td></tr>
+      <tr><td class="td-unit">Grappin</td><td>(0, 2, -2)</td><td>(0, -2, 2)</td><td class="td-ok">Inchangé</td></tr>
+      <tr><td class="td-unit">Guerrier 1</td><td>(-1, 2, -1)</td><td>(1, -2, 1)</td><td class="td-ok">Inchangé</td></tr>
+      <tr><td class="td-unit">Guerrier 2</td><td>(1, 1, -2)</td><td>(-1, -1, 2)</td><td class="td-ok">Inchangé</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>Total :</strong> 7 unités par joueur (14 + 4 Tours + 2 Trônes = 20 pièces / 37 hexes = 54,1 %)</p>
+
+  <h3>Mobilité au tour 1 après corrections</h3>
+
+  <table>
+    <thead><tr><th>Unité</th><th>Moves légaux avant</th><th>Moves légaux après</th><th>Amélioration</th></tr></thead>
+    <tbody>
+      <tr><td class="td-unit">Bélier 1</td><td class="td-bad">0</td><td class="td-ok">1–2</td><td class="td-ok">Débloqué (centre libre)</td></tr>
+      <tr><td class="td-unit">Bélier 2</td><td class="td-warn">1–2</td><td class="td-ok">2–3</td><td class="td-ok">+1 option</td></tr>
+      <tr><td class="td-unit">Bouclier 1</td><td class="td-warn">1</td><td class="td-ok">1–2</td><td class="td-ok">+1 option</td></tr>
+      <tr><td class="td-unit">Bouclier 2</td><td class="td-warn">1–2</td><td class="td-ok">2–3</td><td class="td-ok">+1 option</td></tr>
+      <tr><td class="td-unit">Grappin</td><td class="td-warn">1–2</td><td class="td-ok">2–3</td><td class="td-ok">Centre accessible</td></tr>
+      <tr><td class="td-unit">Guerrier 1</td><td class="td-warn">2</td><td class="td-ok">4–5</td><td class="td-ok">Centre + nouvelles cases L</td></tr>
+      <tr><td class="td-unit">Guerrier 2</td><td class="td-warn">2</td><td class="td-ok">4–5</td><td class="td-ok">Centre + nouvelles cases L</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <span class="callout-title">Résultat clé</span>
+    Le Bélier 1 (précédemment à 0 mouvement légal tour 1) peut désormais se déplacer dès le premier tour.
+    Le Guerrier passe de 2 à 4–5 options de déplacement. L'ouverture devient immédiatement stratégique.
+  </div>
+</section>
+
+<!-- NOUVELLES RÈGLES -->
+<section id="rules">
+  <span class="section-label">Section 10</span>
+  <h2>Nouvelles règles officielles — Récapitulatif complet</h2>
+
+  <h3>Tableau des unités — version finale</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Unité</th><th>Quantité</th><th>Déplacement</th>
+        <th>Capture / Capacité</th><th>Tué par</th><th>Respawn</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="td-unit">Bouclier</td>
+        <td><ins>×2</ins> <del style="font-size:0.75rem;">×3</del></td>
+        <td>1 case, toutes directions</td>
+        <td>Guerrier (adjacent), Grappin (adjacent)</td>
+        <td>Bélier</td>
+        <td class="td-ok">Oui</td>
+      </tr>
+      <tr>
+        <td class="td-unit">Bélier</td>
+        <td>×2</td>
+        <td>1–2 cases, ligne droite.<br>Peut sauter par-dessus Guerriers et Béliers.</td>
+        <td>Bouclier (charge 1–2 hex, peut sauter par-dessus Guerriers/Béliers),<br>Grappin (charge 1–2 hex)</td>
+        <td>Guerrier</td>
+        <td class="td-ok">Oui</td>
+      </tr>
+      <tr>
+        <td class="td-unit">Guerrier</td>
+        <td>×2</td>
+        <td><ins>1 case toutes directions</ins> OU 2 cases en L (changement de direction obligatoire)</td>
+        <td>Bélier (<ins>dist=1 adjacent</ins> ou L), <del>Grappin</del>, Trône ennemi (<ins>dist=1</ins> ou L)</td>
+        <td>Bouclier</td>
+        <td class="td-ok">Oui</td>
+      </tr>
+      <tr>
+        <td class="td-unit">Grappin</td>
+        <td>×1</td>
+        <td>1 case (sauf après grappin)</td>
+        <td>Attire un ennemi (2–7 hex, ligne droite) + STUN. <ins>Sauf autre Grappin.</ins></td>
+        <td>Bouclier, Bélier <del style="font-size:0.75rem;">+ Guerrier</del></td>
+        <td class="td-bad">Non — mort permanente</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Triangle de combat — version finale</h3>
+
+  <div class="triangle-wrap">
+    <svg viewBox="0 0 380 320" width="380" height="320">
+      <defs>
+        <marker id="arr-g" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 L2,4 Z" fill="#c9a84c"/>
+        </marker>
+        <marker id="arr-r" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+          <path d="M0,0 L7,3.5 L0,7 L1.5,3.5 Z" fill="#e74c3c"/>
+        </marker>
+        <marker id="arr-rg" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+          <path d="M0,0 L7,3.5 L0,7 L1.5,3.5 Z" fill="#a8b4c0"/>
+        </marker>
+      </defs>
+
+      <!-- Bélier top -->
+      <circle cx="190" cy="58" r="44" fill="#111128" stroke="#c9a84c" stroke-width="1.5"/>
+      <text x="190" y="50" text-anchor="middle" font-family="Lexend" font-weight="700" font-size="12" fill="#c9a84c">BÉLIER</text>
+      <text x="190" y="65" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="9" fill="rgba(240,236,228,0.5)">tue Bouclier</text>
+      <text x="190" y="78" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="9" fill="rgba(240,236,228,0.5)">tue Grappin</text>
+
+      <!-- Guerrier bottom-right -->
+      <circle cx="315" cy="258" r="44" fill="#111128" stroke="#c9a84c" stroke-width="1.5"/>
+      <text x="315" y="250" text-anchor="middle" font-family="Lexend" font-weight="700" font-size="12" fill="#c9a84c">GUERRIER</text>
+      <text x="315" y="265" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="9" fill="rgba(240,236,228,0.5)">tue Bélier</text>
+      <text x="315" y="278" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="9" fill="rgba(240,236,228,0.5)">tue Trône</text>
+
+      <!-- Bouclier bottom-left -->
+      <circle cx="65" cy="258" r="44" fill="#111128" stroke="#c9a84c" stroke-width="1.5"/>
+      <text x="65" y="250" text-anchor="middle" font-family="Lexend" font-weight="700" font-size="12" fill="#c9a84c">BOUCLIER</text>
+      <text x="65" y="265" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="9" fill="rgba(240,236,228,0.5)">tue Guerrier</text>
+      <text x="65" y="278" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="9" fill="rgba(240,236,228,0.5)">tue Grappin</text>
+
+      <!-- Main triangle arrows (CCW) -->
+      <path d="M 152,90 Q 68,140 90,222" fill="none" stroke="#c9a84c" stroke-width="2.5" marker-end="url(#arr-g)"/>
+      <path d="M 108,262 Q 190,316 273,262" fill="none" stroke="#c9a84c" stroke-width="2.5" marker-end="url(#arr-g)"/>
+      <path d="M 288,223 Q 310,140 230,82" fill="none" stroke="#c9a84c" stroke-width="2.5" marker-end="url(#arr-g)"/>
+
+      <!-- Grappin center — disruptor -->
+      <circle cx="190" cy="185" r="30" fill="rgba(192,57,43,0.10)" stroke="#c0392b" stroke-width="1.2" stroke-dasharray="5,3"/>
+      <text x="190" y="179" text-anchor="middle" font-family="Lexend" font-weight="700" font-size="10" fill="#e74c3c">GRAPPIN</text>
+      <text x="190" y="193" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="8" fill="rgba(240,236,228,0.4)">stun seulement</text>
+      <text x="190" y="205" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="8" fill="rgba(240,236,228,0.4)">tué par: ☰ + ⧖</text>
+
+      <!-- Flèche Bélier → Grappin -->
+      <line x1="163" y1="95" x2="183" y2="156" stroke="#a8b4c0" stroke-width="1.2" marker-end="url(#arr-rg)"/>
+      <!-- Flèche Bouclier → Grappin -->
+      <line x1="92" y1="237" x2="163" y2="200" stroke="#a8b4c0" stroke-width="1.2" marker-end="url(#arr-rg)"/>
+
+      <!-- Label new rule -->
+      <rect x="230" y="162" width="138" height="32" rx="3" fill="rgba(39,174,96,0.1)" stroke="rgba(39,174,96,0.3)" stroke-width="1"/>
+      <text x="299" y="175" text-anchor="middle" font-family="Lexend" font-weight="600" font-size="8.5" fill="#2ecc71">Guerrier ≠ tue Grappin</text>
+      <text x="299" y="188" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="8" fill="rgba(240,236,228,0.5)">Nouveau · v2</text>
+    </svg>
+  </div>
+
+  <h3>Règle de nul — version finale</h3>
+  <div class="callout">
+    <span class="callout-title">Règle des 40 tours (nouvelle)</span>
+    Si 40 actions consécutives se passent sans qu'<strong>aucune capture</strong> ne soit réalisée
+    et sans qu'<strong>aucun Guerrier ne s'approche</strong> d'une distance minimale au Trône ennemi
+    jamais atteinte auparavant dans la partie, la partie se termine immédiatement en <strong>match nul</strong>.
+  </div>
+
+  <h3>Mouvement du Guerrier — version finale</h3>
+  <div class="highlight-box">
+    <h4>Guerrier — Déplacement ET Attaque</h4>
+    <ul>
+      <li><strong>Déplacement :</strong> 1 case dans n'importe quelle direction (vers un hex libre) OU 2 cases en L (changement de direction obligatoire, hex intermédiaire libre).</li>
+      <li><strong>Attaque d'une unité :</strong> capture un Bélier ou Grappin ennemi à distance 1 (adjacent) ou à portée L (distance 2, chemin intermédiaire libre). Le Guerrier ne peut plus capturer le Grappin.</li>
+      <li><strong>Attaque du Trône :</strong> peut détruire le Trône ennemi à distance 1 (adjacent) ou à portée L (distance 2, chemin libre). Le Guerrier reste en place après le coup de Trône.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section id="impact">
+  <span class="section-label">Section 11</span>
+  <h2>Impact prévu — Nouvelles métriques de partie</h2>
+
+  <h3>Comparaison avant / après</h3>
+
+  <div class="progress-row" style="margin-top:0.5rem;">
+    <span class="progress-label">Durée moyenne d'une partie</span>
+    <div class="progress-bar">
+      <div class="progress-fill before" style="width:70%; background:#c0392b;"></div>
+      <div class="progress-fill" style="width:48%; background:#27ae60;"></div>
+    </div>
+    <span class="progress-val" style="color:var(--green-light);">~35 T <span style="color:var(--muted); font-weight:300;">(était ~52)</span></span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Taux de nul</span>
+    <div class="progress-bar">
+      <div class="progress-fill before" style="width:16%; background:#c0392b;"></div>
+      <div class="progress-fill" style="width:7%; background:#27ae60;"></div>
+    </div>
+    <span class="progress-val" style="color:var(--green-light);">~4% <span style="color:var(--muted); font-weight:300;">(était 8%)</span></span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Stratégies viables distinctes</span>
+    <div class="progress-bar">
+      <div class="progress-fill before" style="width:20%; background:#c0392b;"></div>
+      <div class="progress-fill" style="width:60%; background:#27ae60;"></div>
+    </div>
+    <span class="progress-val" style="color:var(--green-light);">4–5 <span style="color:var(--muted); font-weight:300;">(était 1–2)</span></span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Taux d'utilisation du Grappin</span>
+    <div class="progress-bar">
+      <div class="progress-fill before" style="width:30%; background:#c0392b;"></div>
+      <div class="progress-fill" style="width:65%; background:#27ae60;"></div>
+    </div>
+    <span class="progress-val" style="color:var(--green-light);">~55% <span style="color:var(--muted); font-weight:300;">(était ~30%)</span></span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Ouvertures distinctes tour 1</span>
+    <div class="progress-bar">
+      <div class="progress-fill before" style="width:12%; background:#c0392b;"></div>
+      <div class="progress-fill" style="width:45%; background:#27ae60;"></div>
+    </div>
+    <span class="progress-val" style="color:var(--green-light);">~6 <span style="color:var(--muted); font-weight:300;">(était ~2)</span></span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Domination stratégie "Tortue"</span>
+    <div class="progress-bar">
+      <div class="progress-fill before" style="width:65%; background:#c0392b;"></div>
+      <div class="progress-fill" style="width:25%; background:#27ae60;"></div>
+    </div>
+    <span class="progress-val" style="color:var(--green-light);">~25% <span style="color:var(--muted); font-weight:300;">(était 65%)</span></span>
+  </div>
+
+  <h3>Nouvelles statistiques par unité</h3>
+  <table>
+    <thead><tr><th>Unité</th><th>Rôle</th><th>Valeur réelle</th><th>Équilibre</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="td-unit">Bouclier ×2</td>
+        <td>Défense + ZoC + chasseur de Guerriers/Grappins</td>
+        <td>5–6 pts</td>
+        <td class="td-ok">Bien calibré</td>
+      </tr>
+      <tr>
+        <td class="td-unit">Bélier ×2</td>
+        <td>Brise-Bouclier + chasseur de Grappins</td>
+        <td>4–5 pts</td>
+        <td class="td-ok">Équilibré vs ×2 Boucliers</td>
+      </tr>
+      <tr>
+        <td class="td-unit">Guerrier ×2</td>
+        <td>Attaque + menace de Trône + brise-Béliers</td>
+        <td>8–9 pts</td>
+        <td class="td-ok">Rôle clarifié, no distraction</td>
+      </tr>
+      <tr>
+        <td class="td-unit">Grappin ×1</td>
+        <td>Disrupteur universel — stun + repositionnement</td>
+        <td>6–8 pts</td>
+        <td class="td-ok">Meilleur ratio risque/récompense</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Pourquoi ces changements rendent le jeu addictif</h3>
+
+  <div class="highlight-box">
+    <h4>5 raisons pour lesquelles Thrones v2 est plus addictif</h4>
+    <ul>
+      <li><strong>Parties plus courtes (~35 tours vs ~52)</strong> : un format qui invite à rejouer immédiatement. "Encore une partie" devient naturel.</li>
+      <li><strong>Ouverture immédiatement stratégique</strong> : dès le tour 1, des décisions significatives existent. Fini le "déblockage" passif.</li>
+      <li><strong>Grappin viable = moments mémorables</strong> : un Grappin qui survit 8 tours et crée 2–3 stunts décisifs est une histoire que les joueurs racontent après la partie.</li>
+      <li><strong>Guerrier clarifié = stratégie plus lisible</strong> : savoir que les Guerriers visent le Trône et les Béliers (et rien d'autre) rend les intentions adverses plus lisibles — et donc plus stimulantes à contrer.</li>
+      <li><strong>Diversité des ouvertures = replayabilité</strong> : 4–5 stratégies viables signifient que chaque partie peut se jouer différemment. Condition sine qua non pour un jeu avec un "livre de stratégie".</li>
+    </ul>
+  </div>
+</section>
+
+<!-- FICHIERS -->
+<section id="files">
+  <span class="section-label">Section 12</span>
+  <h2>Fichiers à modifier — Récapitulatif par fichier</h2>
+
+  <table>
+    <thead><tr><th>Fichier</th><th>Modifications requises</th><th>Priorité</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="td-unit">engine/board.ts</td>
+        <td>Supprimer <code>p1-shield-3</code> et <code>p2-shield-3</code> des positions initiales (hexes (0,1,-1) et (0,-1,1)). Mettre à jour les commentaires de layout.</td>
+        <td><span class="prio prio-1">Critique</span></td>
+      </tr>
+      <tr>
+        <td class="td-unit">engine/moves.ts</td>
+        <td>Modifier <code>warriorCanReach</code> : pour dist=1, remplacer <code>isLandable</code> par <code>isOnBoard</code> quand appelé depuis un contexte d'attaque (ajout paramètre <code>forAttack?: boolean</code>).</td>
+        <td><span class="prio prio-1">Critique</span></td>
+      </tr>
+      <tr>
+        <td class="td-unit">engine/combat.ts</td>
+        <td>Dans <code>getWarriorAttacks</code> : retirer Grappin de la liste des cibles du Guerrier. Ne conserver que Bélier et Trône. Mettre à jour l'appel à <code>warriorCanReach</code> avec <code>forAttack: true</code>.</td>
+        <td><span class="prio prio-1">Critique</span></td>
+      </tr>
+      <tr>
+        <td class="td-unit">engine/victory.ts</td>
+        <td>Modifier <code>has80TurnDraw</code> : seuil 80 → 40. Lire aussi <code>minWarriorDistanceP1/P2</code> pour l'implémentation complète.</td>
+        <td><span class="prio prio-1">Critique</span></td>
+      </tr>
+      <tr>
+        <td class="td-unit">engine/gameState.ts</td>
+        <td>Dans <code>applyMove</code> et <code>applyAttack</code> : calculer la nouvelle distance min Guerrier-Trône après chaque action. Réinitialiser <code>turnsSinceLastCapture</code> si un Guerrier bat son record de proximité. Mettre à jour <code>minWarriorDistanceP1/P2</code>.</td>
+        <td><span class="prio prio-1">Critique</span></td>
+      </tr>
+      <tr>
+        <td class="td-unit">engine/ai/evaluate.ts</td>
+        <td>Retirer le bonus d'attaque du Guerrier sur le Grappin (lignes ~159–165). Ajuster les pondérations : Bouclier passe de 3 à 4 pts (plus rare). Grappin de 10 à 8 pts (légèrement moins vulnérable).</td>
+        <td><span class="prio prio-2">Important</span></td>
+      </tr>
+      <tr>
+        <td class="td-unit">engine/ai/heuristic.ts</td>
+        <td>Supprimer le bonus "Capturer Grappin" dans la section Guerrier. Ajuster les bonus d'ouverture pour tenir compte du centre libre (avancer vers centre = +6).</td>
+        <td><span class="prio prio-2">Important</span></td>
+      </tr>
+      <tr>
+        <td class="td-unit">RULES.md</td>
+        <td>Mettre à jour : (1) tableau des unités — Guerrier perd Grappin comme cible, (2) Bélier — documenter saut en charge, (3) Guerrier — mouvement 1 case, (4) règle de nul 80→40 + condition Guerrier, (5) triangle de combat.</td>
+        <td><span class="prio prio-1">Critique</span></td>
+      </tr>
+      <tr>
+        <td class="td-unit">TutorialFlow.tsx</td>
+        <td>Étape Guerrier : corriger "pas de déplacement en 1 seule case" → "1 case OU L". Ajouter bullet Bélier sur le saut en charge. Mettre à jour le triangle de combat si affiché.</td>
+        <td><span class="prio prio-1">Critique</span></td>
+      </tr>
+      <tr>
+        <td class="td-unit">LIVRET_REGLES.html</td>
+        <td>Mettre à jour toutes les sections impactées : tableau des unités, triangle de combat, règle de nul, positionnement de départ.</td>
+        <td><span class="prio prio-2">Important</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout success" style="margin-top:1.5rem;">
+    <span class="callout-title">Ordre d'implémentation recommandé</span>
+    <strong>1.</strong> board.ts (position de départ) → tester que le plateau s'affiche bien<br>
+    <strong>2.</strong> moves.ts + combat.ts (Guerrier attaque adjacente + pas de Grappin) → tester combats<br>
+    <strong>3.</strong> victory.ts + gameState.ts (règle 40 tours + progression Guerrier) → tester fin de partie<br>
+    <strong>4.</strong> TutorialFlow.tsx → corriger le tutoriel<br>
+    <strong>5.</strong> RULES.md + LIVRET_REGLES.html → synchroniser la documentation<br>
+    <strong>6.</strong> evaluate.ts + heuristic.ts → recalibrer l'IA<br>
+    <strong>7.</strong> Jouer 5 parties locales pour valider l'ensemble
+  </div>
+</section>
+
+<hr/>
+<div style="text-align:center; margin:3rem 0 2rem;">
+  <p style="font-size:1.1rem; font-weight:700; color:var(--white); margin-bottom:0.5rem;">Synthèse</p>
+  <p style="font-size:0.85rem; color:rgba(240,236,228,0.6); max-width:600px; margin:0 auto;">
+    8 corrections ciblées. Aucune refonte de mécanique de fond. Les principes originaux — triangle de combat,
+    ZoC, Grappin, Guerrier en L — sont préservés et amplifiés. La v2 est le même jeu, rendu plus rapide,
+    plus équilibré, et incomparablement plus riche à explorer.
+  </p>
+  <div class="stat-boxes" style="max-width:520px; margin:1.5rem auto 0;">
+    <div class="stat-box"><span class="stat-box-val">4</span><span class="stat-box-label">Bugs corrigés</span></div>
+    <div class="stat-box"><span class="stat-box-val green">3</span><span class="stat-box-label">Rééquilibrages</span></div>
+    <div class="stat-box"><span class="stat-box-val silver">1</span><span class="stat-box-label">Ouverture résolue</span></div>
+    <div class="stat-box"><span class="stat-box-val red">0</span><span class="stat-box-label">Mécaniques cassées</span></div>
+  </div>
+</div>
+
+<div class="footer">
+  <p><strong>THRONES</strong> · Game Fix v2 · Suite à ANALYSE_JEU.html · Édition 2026</p>
+  <p style="margin-top:0.3rem;">Aucun code modifié dans ce document — spécifications uniquement</p>
+</div>
+
+</body>
+</html>

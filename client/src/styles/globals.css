@@ -1,0 +1,267 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import './tokens.css';
+@import './themes/default.css';
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  /* Fonds */
+  --bg:          #080808;
+  --bg2:         #0d0d0d;
+  --bg3:         #111111;
+
+  /* Joueur 1 — Or */
+  --gold:        #c9a84c;
+  --gold-light:  #e8c96a;
+  --gold-dim:    #7a6030;
+
+  /* Joueur 2 — Argent */
+  --silver:      #a8b4c0;
+  --silver-light:#cdd6de;
+  --silver-dim:  #5a6470;
+
+  /* Textes */
+  --white:       #f0ece4;
+  --muted:       #6b6760;
+
+  /* Bordures */
+  --border:        rgba(255,255,255,0.07);
+  --border-hex:    rgba(255,255,255,0.18);
+  --border-bright: rgba(255,255,255,0.28);
+
+  /* États jeu */
+  --legal-move-p1:  rgba(201,168,76,0.22);
+  --legal-move-p2:  rgba(168,180,192,0.22);
+  --attack-range:   rgba(200,30,30,0.32);
+  --tower-active:   rgba(80,200,120,0.22);
+  --tower-blocked:  rgba(200,60,60,0.22);
+
+  /* Glassmorphism */
+  --glass-bg:         rgba(12, 12, 12, 0.62);
+  --glass-bg-light:   rgba(20, 20, 20, 0.55);
+  --glass-bg-heavy:   rgba(8, 8, 8, 0.82);
+  --glass-border:     rgba(201, 168, 76, 0.14);
+  --glass-border-dim: rgba(255, 255, 255, 0.08);
+  --glass-blur:       16px;
+  --glass-blur-sm:    8px;
+
+  /* Glows */
+  --glow-gold:        0 0 24px rgba(201,168,76,0.35), 0 0 60px rgba(201,168,76,0.12);
+  --glow-gold-sm:     0 0 12px rgba(201,168,76,0.3);
+  --glow-silver:      0 0 24px rgba(168,180,192,0.3), 0 0 60px rgba(168,180,192,0.1);
+  --glow-silver-sm:   0 0 12px rgba(168,180,192,0.25);
+}
+
+html, body {
+  height: 100%;
+  background-color: var(--bg);
+  color: var(--white);
+  font-family: 'Lexend', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* SVG unit colorization via CSS filter */
+.unit-p1 {
+  filter: invert(1) brightness(0.6) sepia(1) saturate(3.5) hue-rotate(355deg) brightness(0.88);
+}
+.unit-p2 {
+  filter: invert(1) sepia(0.15) saturate(0.6) hue-rotate(185deg) brightness(0.78);
+}
+
+/* Utility */
+.font-stardom {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* Glass utility */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
+
+/* Buttons — Glassmorphism */
+.btn-primary {
+  position: relative;
+  background: linear-gradient(135deg, rgba(201,168,76,0.9) 0%, rgba(232,201,106,0.85) 50%, rgba(201,168,76,0.9) 100%);
+  color: #0a0808;
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.9rem 2.5rem;
+  border: 1px solid rgba(232,201,106,0.6);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  overflow: hidden;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, rgba(232,201,106,0.95) 0%, rgba(255,220,120,0.9) 50%, rgba(232,201,106,0.95) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(201,168,76,0.4), 0 0 0 1px rgba(232,201,106,0.5);
+}
+.btn-primary:hover::before {
+  opacity: 1;
+}
+
+.btn-ghost {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur-sm));
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm));
+  border: 1px solid rgba(201,168,76,0.28);
+  color: var(--gold);
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.9rem 2.1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  overflow: hidden;
+}
+.btn-ghost::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.btn-ghost:hover {
+  border-color: rgba(201,168,76,0.55);
+  color: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(201,168,76,0.2), inset 0 0 20px rgba(201,168,76,0.06);
+}
+.btn-ghost:hover::after {
+  opacity: 1;
+}
+
+.btn-ghost-silver {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur-sm));
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm));
+  border: 1px solid rgba(168,180,192,0.28);
+  color: var(--silver);
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.9rem 2.1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.btn-ghost-silver:hover {
+  border-color: rgba(168,180,192,0.55);
+  color: var(--silver-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(168,180,192,0.18);
+}
+
+.btn-disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ===== ANIMATIONS ===== */
+
+@keyframes gridDrift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 56px 56px; }
+}
+
+@keyframes hexPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%       { opacity: 0.9; transform: scale(1.15); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes auroraShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%) skewX(-20deg); }
+  100% { transform: translateX(200%) skewX(-20deg); }
+}
+
+@keyframes particleFloat {
+  0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0.6; }
+  33%  { transform: translateY(-30px) translateX(15px) scale(1.1); opacity: 0.9; }
+  66%  { transform: translateY(-15px) translateX(-10px) scale(0.9); opacity: 0.5; }
+  100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.6; }
+}
+
+@keyframes goldPulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(201,168,76,0.3), inset 0 0 12px rgba(201,168,76,0.05); }
+  50%       { box-shadow: 0 0 28px rgba(201,168,76,0.55), inset 0 0 20px rgba(201,168,76,0.1); }
+}
+
+@keyframes silverPulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(168,180,192,0.25), inset 0 0 12px rgba(168,180,192,0.04); }
+  50%       { box-shadow: 0 0 28px rgba(168,180,192,0.45), inset 0 0 20px rgba(168,180,192,0.08); }
+}
+
+@keyframes glowBreathe {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
+}
+
+@keyframes rotateSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes hexRing {
+  0%   { stroke-dashoffset: 200; opacity: 0; }
+  20%  { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}

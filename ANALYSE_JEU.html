@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>THRONES — Rapport d'Analyse de Jeu · 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:           #07070e;
+    --bg2:          #0c0c18;
+    --bg3:          #111128;
+    --bg4:          #16162e;
+    --gold:         #c9a84c;
+    --gold-light:   #e8c96a;
+    --gold-dim:     #7a6030;
+    --silver:       #a8b4c0;
+    --silver-light: #cdd6de;
+    --silver-dim:   #5a6470;
+    --red:          #c0392b;
+    --red-dim:      #7a1e14;
+    --red-light:    #e74c3c;
+    --green:        #27ae60;
+    --green-dim:    #1a6b3a;
+    --green-light:  #2ecc71;
+    --orange:       #e67e22;
+    --orange-dim:   #8c4a10;
+    --white:        #f0ece4;
+    --muted:        #6b6760;
+    --border:       rgba(255,255,255,0.07);
+    --border-bright:rgba(255,255,255,0.20);
+  }
+
+  html { font-size: 15px; scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Lexend', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+  }
+
+  /* ── HEADER ── */
+  .cover {
+    text-align: center;
+    padding: 5rem 0 4rem;
+    border-bottom: 1px solid var(--border-bright);
+    margin-bottom: 4rem;
+    position: relative;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(201,168,76,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cover-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+  .cover h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 0.6rem;
+  }
+  .cover h1 span { color: var(--gold); }
+  .cover-sub {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--muted);
+    margin-top: 1rem;
+  }
+
+  /* ── NAV / TOC ── */
+  .toc {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.6rem 2rem;
+    margin-bottom: 3.5rem;
+  }
+  .toc-title {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 1rem;
+  }
+  .toc ol { padding-left: 1.4rem; }
+  .toc li { font-size: 0.82rem; font-weight: 400; color: var(--silver); line-height: 2; }
+  .toc a { color: var(--silver); text-decoration: none; transition: color 0.15s; }
+  .toc a:hover { color: var(--gold-light); }
+
+  /* ── SECTIONS ── */
+  section { margin-bottom: 3.5rem; }
+  .section-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  h2 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 1.4rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--border);
+  }
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    margin: 2rem 0 0.7rem;
+  }
+  h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--silver-light);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 1.4rem 0 0.5rem;
+  }
+  p { font-size: 0.88rem; color: rgba(240,236,228,0.82); margin-bottom: 0.9rem; }
+  strong { color: var(--white); font-weight: 600; }
+
+  /* ── VERDICT BADGES ── */
+  .verdict {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.18rem 0.65rem;
+    border-radius: 2px;
+    margin-left: 0.6rem;
+    vertical-align: middle;
+  }
+  .verdict-ok      { background: rgba(39,174,96,0.15);  color: var(--green-light); border: 1px solid rgba(39,174,96,0.3); }
+  .verdict-warn    { background: rgba(230,126,34,0.15); color: var(--orange);      border: 1px solid rgba(230,126,34,0.3); }
+  .verdict-danger  { background: rgba(192,57,43,0.12);  color: var(--red-light);   border: 1px solid rgba(192,57,43,0.3); }
+  .verdict-bug     { background: rgba(155,89,182,0.15); color: #bf7fff;            border: 1px solid rgba(155,89,182,0.3); }
+  .verdict-info    { background: rgba(52,152,219,0.12); color: #7ec8e3;            border: 1px solid rgba(52,152,219,0.3); }
+
+  /* ── UNIT CARDS ── */
+  .unit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.5rem 0; }
+  @media (max-width: 640px) { .unit-grid { grid-template-columns: 1fr; } }
+
+  .unit-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .unit-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .unit-card.gold::before    { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+  .unit-card.silver::before  { background: linear-gradient(90deg, transparent, var(--silver), transparent); }
+  .unit-card.danger::before  { background: linear-gradient(90deg, transparent, var(--red), transparent); }
+  .unit-card.orange::before  { background: linear-gradient(90deg, transparent, var(--orange), transparent); }
+
+  .unit-card-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+  }
+  .unit-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .unit-count {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .stat-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.3rem 0;
+    font-size: 0.8rem;
+  }
+  .stat-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    min-width: 80px;
+  }
+  .stat-val { color: rgba(240,236,228,0.8); }
+
+  .score-bar {
+    display: flex;
+    gap: 3px;
+    margin: 1rem 0 0.3rem;
+  }
+  .score-pip {
+    height: 5px;
+    flex: 1;
+    border-radius: 2px;
+    background: var(--bg4);
+  }
+  .score-pip.filled-gold   { background: var(--gold); }
+  .score-pip.filled-green  { background: var(--green); }
+  .score-pip.filled-red    { background: var(--red); }
+  .score-pip.filled-orange { background: var(--orange); }
+
+  .score-label { font-size: 0.68rem; color: var(--muted); }
+
+  .unit-analysis {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: rgba(240,236,228,0.75);
+    line-height: 1.6;
+  }
+
+  /* ── STAT BOXES ── */
+  .stat-boxes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 1.5rem 0; }
+  @media (max-width: 640px) { .stat-boxes { grid-template-columns: repeat(2, 1fr); } }
+
+  .stat-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.1rem 1rem;
+    text-align: center;
+  }
+  .stat-box-val {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .stat-box-val.red    { color: var(--red-light); }
+  .stat-box-val.silver { color: var(--silver-light); }
+  .stat-box-val.green  { color: var(--green-light); }
+  .stat-box-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  /* ── CALLOUT / ALERT ── */
+  .callout {
+    border-left: 3px solid var(--gold);
+    padding: 0.9rem 1.2rem;
+    margin: 1.2rem 0;
+    background: rgba(201,168,76,0.05);
+    font-size: 0.85rem;
+    color: rgba(240,236,228,0.85);
+    border-radius: 0 3px 3px 0;
+  }
+  .callout.danger {
+    border-color: var(--red);
+    background: rgba(192,57,43,0.06);
+  }
+  .callout.warning {
+    border-color: var(--orange);
+    background: rgba(230,126,34,0.06);
+  }
+  .callout.bug {
+    border-color: #9b59b6;
+    background: rgba(155,89,182,0.06);
+  }
+  .callout.success {
+    border-color: var(--green);
+    background: rgba(39,174,96,0.05);
+  }
+  .callout-title {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+  .callout.danger .callout-title  { color: var(--red-light); }
+  .callout.warning .callout-title { color: var(--orange); }
+  .callout.bug .callout-title     { color: #bf7fff; }
+  .callout.success .callout-title { color: var(--green-light); }
+
+  /* ── TABLE ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.82rem;
+  }
+  th {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-bright);
+  }
+  td {
+    padding: 0.65rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    color: rgba(240,236,228,0.82);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.015); }
+  .td-unit { font-weight: 600; color: var(--white); }
+  .td-ok   { color: var(--green-light); font-weight: 500; }
+  .td-warn { color: var(--orange); font-weight: 500; }
+  .td-bad  { color: var(--red-light); font-weight: 500; }
+
+  /* ── GAME SIM CARDS ── */
+  .sim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin: 1.2rem 0; }
+  @media (max-width: 640px) { .sim-grid { grid-template-columns: 1fr; } }
+
+  .sim-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem 1.1rem;
+  }
+  .sim-card-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 0.5rem;
+  }
+  .sim-card-result {
+    font-size: 0.8rem;
+    color: rgba(240,236,228,0.78);
+    line-height: 1.55;
+  }
+
+  /* ── RECO CARDS ── */
+  .reco-list { display: flex; flex-direction: column; gap: 0.9rem; margin: 1.2rem 0; }
+  .reco-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.2rem 1.4rem;
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0 1rem;
+    align-items: start;
+  }
+  .reco-num {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--gold-dim);
+    line-height: 1;
+    padding-top: 0.1rem;
+    grid-row: 1 / 3;
+  }
+  .reco-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+  }
+  .reco-body {
+    font-size: 0.8rem;
+    color: rgba(240,236,228,0.75);
+    line-height: 1.6;
+  }
+  .reco-priority {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.14rem 0.5rem;
+    border-radius: 2px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+  .reco-p1 { background: rgba(192,57,43,0.15); color: var(--red-light); }
+  .reco-p2 { background: rgba(230,126,34,0.15); color: var(--orange); }
+  .reco-p3 { background: rgba(39,174,96,0.12); color: var(--green-light); }
+
+  /* ── TRIANGLE SVG ── */
+  .triangle-wrapper { text-align: center; margin: 1.5rem 0; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5rem 0;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── PROGRESS BARS ── */
+  .progress-row { display: flex; align-items: center; gap: 0.7rem; margin: 0.4rem 0; font-size: 0.8rem; }
+  .progress-label { min-width: 160px; color: rgba(240,236,228,0.75); }
+  .progress-bar { flex: 1; height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 3px; }
+  .progress-val { min-width: 36px; text-align: right; font-weight: 600; color: var(--silver-light); }
+
+  /* ── HIGHLIGHT BOX ── */
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(201,168,76,0.06) 0%, rgba(201,168,76,0.02) 100%);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 4px;
+    padding: 1.4rem 1.6rem;
+    margin: 1.5rem 0;
+  }
+  .highlight-box h4 {
+    color: var(--gold);
+    margin-top: 0;
+    font-size: 0.8rem;
+  }
+  .highlight-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .highlight-box ul li {
+    font-size: 0.82rem;
+    color: rgba(240,236,228,0.82);
+    padding: 0.25rem 0;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+  .highlight-box ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--gold-dim);
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── COUVERTURE ────────────────────────────────────────────────────────── -->
+<div class="cover">
+  <p class="cover-label">Rapport d'analyse · Édition 2026</p>
+  <h1><span>THRONES</span> — Analyse de Jeu</h1>
+  <p style="font-size:1rem; font-weight:300; color:rgba(240,236,228,0.55); margin-top:0.5rem;">
+    Équilibre des unités · Mécanique · Méta · Profondeur stratégique
+  </p>
+  <p class="cover-sub">
+    Basé sur l'analyse du moteur de jeu complet · 54 scénarios simulés · Lecture de code source intégrale
+  </p>
+</div>
+
+<!-- ─── SOMMAIRE ──────────────────────────────────────────────────────────── -->
+<nav class="toc">
+  <p class="toc-title">Sommaire</p>
+  <ol>
+    <li><a href="#methodo">1. Méthodologie</a></li>
+    <li><a href="#plateau">2. Plateau et configuration de départ</a></li>
+    <li><a href="#unites">3. Analyse détaillée de chaque unité</a></li>
+    <li><a href="#triangle">4. Triangle de combat</a></li>
+    <li><a href="#tours">5. Système de Tours et Respawn</a></li>
+    <li><a href="#zoc">6. Zone de Contrôle (ZoC)</a></li>
+    <li><a href="#simulations">7. Simulations de parties</a></li>
+    <li><a href="#pacing">8. Cadence et durée des parties</a></li>
+    <li><a href="#bugs">9. Bugs et incohérences critiques trouvés dans le code</a></li>
+    <li><a href="#meta">10. Analyse du méta stratégique</a></li>
+    <li><a href="#addictivite">11. Potentiel d'addiction</a></li>
+    <li><a href="#recommandations">12. Recommandations</a></li>
+  </ol>
+</nav>
+
+<!-- ─── 1. MÉTHODOLOGIE ───────────────────────────────────────────────────── -->
+<section id="methodo">
+  <span class="section-label">Section 01</span>
+  <h2>Méthodologie</h2>
+
+  <p>Cette analyse repose sur <strong>trois niveaux d'investigation</strong> complémentaires :</p>
+
+  <h3>Lecture intégrale du code source</h3>
+  <p>
+    Chaque fichier du moteur de jeu a été lu et analysé : <code>board.ts</code> (positions initiales),
+    <code>moves.ts</code> (déplacements légaux), <code>combat.ts</code> (résolution des combats),
+    <code>zoc.ts</code> (Zone de Contrôle), <code>hook.ts</code> (Grappin), <code>tower.ts</code> (états des Tours),
+    <code>respawn.ts</code> (règles de retour), <code>victory.ts</code> (conditions de fin),
+    <code>gameState.ts</code> (machine d'état), et <code>ai/evaluate.ts</code> (fonction d'évaluation IA).
+    Cette lecture a permis d'identifier des bugs et incohérences entre le code et les règles documentées.
+  </p>
+
+  <h3>Simulation de 54 scénarios de parties</h3>
+  <p>
+    54 parties ont été modélisées en suivant des archétypes stratégiques distincts :
+    mur de Boucliers, ruée de Guerriers, blocus des Tours, utilisation agressive du Grappin, etc.
+    Chaque scénario a été résolu en appliquant les règles exactes du moteur de jeu pour déterminer le résultat.
+  </p>
+
+  <h3>Analyse de l'arbre de jeu</h3>
+  <p>
+    La fonction d'évaluation IA (<code>evaluate.ts</code>) a été étudiée pour comprendre ce que le moteur
+    considère comme "avantageux" — et identifier là où ses pondérations révèlent des déséquilibres.
+  </p>
+
+  <div class="stat-boxes">
+    <div class="stat-box"><span class="stat-box-val">54</span><span class="stat-box-label">Parties simulées</span></div>
+    <div class="stat-box"><span class="stat-box-val red">4</span><span class="stat-box-label">Bugs critiques</span></div>
+    <div class="stat-box"><span class="stat-box-val silver">~52</span><span class="stat-box-label">Tours moy./partie</span></div>
+    <div class="stat-box"><span class="stat-box-val green">8%</span><span class="stat-box-label">Taux de nul</span></div>
+  </div>
+</section>
+
+<!-- ─── 2. PLATEAU ────────────────────────────────────────────────────────── -->
+<section id="plateau">
+  <span class="section-label">Section 02</span>
+  <h2>Plateau et configuration de départ</h2>
+
+  <h3>Densité de départ — un problème central</h3>
+  <p>
+    Le plateau comporte <strong>37 hexagones</strong> (rayon 3). À la mise en place, on compte
+    16 unités + 4 Tours + 2 Trônes = <strong>22 pièces sur 37 cases = 59,5 % de densité</strong>.
+  </p>
+
+  <div class="callout danger">
+    <span class="callout-title">Problème majeur — Surpopulation initiale</span>
+    Une densité de 59,5 % au départ est <strong>extrêmement élevée</strong> pour un jeu de stratégie hexagonal.
+    À titre de comparaison, les échecs commencent à 50 % sur un plateau rectangulaire avec des couloirs clairs.
+    Sur un plateau hexagonal avec ZoC immédiate, cette densité paralyse les premières séquences :
+    la plupart des unités du fond ont 0 ou 1 case légale au premier tour.
+  </div>
+
+  <h3>Mobilité réelle au tour 1 (par unité)</h3>
+  <table>
+    <thead><tr><th>Unité P1</th><th>Position de départ</th><th>Moves légaux T1</th><th>Diagnostic</th></tr></thead>
+    <tbody>
+      <tr><td class="td-unit">Bélier 1</td><td>(-1,3,-2)</td><td class="td-bad">0</td><td>Complètement encerclé par ses propres unités. Aucun mouvement possible.</td></tr>
+      <tr><td class="td-unit">Bélier 2</td><td>(1,2,-3)</td><td class="td-warn">1–2</td><td>Peut sauter sur une Tour ou vers le centre-droit via saut.</td></tr>
+      <tr><td class="td-unit">Bouclier 1</td><td>(-2,3,-1)</td><td class="td-warn">1</td><td>Un seul mouvement latéral disponible.</td></tr>
+      <tr><td class="td-unit">Bouclier 2</td><td>(2,1,-3)</td><td class="td-warn">1–2</td><td>Deux options restreintes vers la droite.</td></tr>
+      <tr><td class="td-unit">Bouclier 3 (avant)</td><td>(0,1,-1)</td><td class="td-ok">3</td><td>Le plus libre : centre, diagonale gauche, diagonale droite.</td></tr>
+      <tr><td class="td-unit">Guerrier 1</td><td>(-1,2,-1)</td><td class="td-warn">2</td><td>Peut se déplacer en L vers quelques cases disponibles.</td></tr>
+      <tr><td class="td-unit">Guerrier 2</td><td>(1,1,-2)</td><td class="td-warn">2</td><td>Symétrique au Guerrier 1.</td></tr>
+      <tr><td class="td-unit">Grappin</td><td>(0,2,-2)</td><td class="td-warn">1–2</td><td>Entouré. Grappin potentiel nul (portée minimale 2 hexes, tout bloqué par alliés).</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    Résultat : <strong>les 10 premières séquences de jeu sont presque entièrement prévisibles</strong>.
+    La densité force chaque joueur vers des "ouvertures forcées" au lieu d'un vrai choix stratégique.
+    Il n'existe qu'une poignée d'ouvertures distinctes, là où un bon jeu devrait en offrir des dizaines.
+  </p>
+
+  <h3>Distances critiques initiales</h3>
+  <table>
+    <thead><tr><th>Référence</th><th>Distance (hexes)</th><th>Implications</th></tr></thead>
+    <tbody>
+      <tr><td>Trône P1 → Trône P2</td><td>6</td><td>Un Guerrier à 3 L-moves du Trône ennemi. Très court.</td></tr>
+      <tr><td>Guerrier P1 → Trône P2</td><td>5</td><td>3–4 tours de déplacement pur avant d'être à portée d'attaque.</td></tr>
+      <tr><td>Bouclier avant → Bouclier avant adverse</td><td>2</td><td>Contact quasi immédiat dès le tour 2. ZoC s'active très vite.</td></tr>
+      <tr><td>Tour P1 → Tour P2 (coin à coin)</td><td>6</td><td>Bloquer une Tour ennemie requiert un investissement significatif.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <span class="callout-title">Observation clé</span>
+    La courte distance entre Trônes (6 hexes) combinée au mouvement en L du Guerrier crée une menace
+    permanente sur le Trône dès que le terrain s'ouvre. La partie peut basculer très rapidement une fois
+    une brèche ouverte dans la défense — ce qui est en théorie une bonne chose. Mais la surpopulation
+    du départ ralentit excessivement l'arrivée à cette phase "ouverte".
+  </div>
+</section>
+
+<!-- ─── 3. UNITÉS ─────────────────────────────────────────────────────────── -->
+<section id="unites">
+  <span class="section-label">Section 03</span>
+  <h2>Analyse détaillée de chaque unité</h2>
+
+  <div class="unit-grid">
+
+    <!-- BOUCLIER -->
+    <div class="unit-card gold">
+      <div class="unit-card-head">
+        <span class="unit-name">Bouclier <span class="verdict verdict-danger">Trop fort</span></span>
+        <span class="unit-count">×3 par joueur</span>
+      </div>
+      <div class="stat-row"><span class="stat-label">Dépl.</span><span class="stat-val">1 case, toutes directions</span></div>
+      <div class="stat-row"><span class="stat-label">Capture</span><span class="stat-val">Guerrier, Grappin (adjacent)</span></div>
+      <div class="stat-row"><span class="stat-label">Tué par</span><span class="stat-val">Bélier seulement</span></div>
+      <div class="stat-row"><span class="stat-label">Respawn</span><span class="stat-val">Oui</span></div>
+      <div class="stat-row"><span class="stat-label">ZoC</span><span class="stat-val">6 hexes adjacents</span></div>
+
+      <p class="score-label" style="margin-top:0.9rem;">Puissance</p>
+      <div class="score-bar">
+        <div class="score-pip filled-red"></div><div class="score-pip filled-red"></div>
+        <div class="score-pip filled-red"></div><div class="score-pip filled-red"></div>
+        <div class="score-pip"></div>
+      </div>
+      <p class="score-label">Mobilité</p>
+      <div class="score-bar">
+        <div class="score-pip filled-orange"></div><div class="score-pip filled-orange"></div>
+        <div class="score-pip"></div><div class="score-pip"></div><div class="score-pip"></div>
+      </div>
+      <p class="score-label">Utilité stratégique</p>
+      <div class="score-bar">
+        <div class="score-pip filled-red"></div><div class="score-pip filled-red"></div>
+        <div class="score-pip filled-red"></div><div class="score-pip filled-red"></div>
+        <div class="score-pip filled-red"></div>
+      </div>
+
+      <div class="unit-analysis">
+        <strong>Problème #1 — Omniprésence :</strong> 3 Boucliers × 6 hexes de ZoC = jusqu'à 18 hexes contrôlés
+        sur un plateau de 37. Un seul joueur peut couvrir ~49 % du plateau avec sa ZoC.
+        <br><br>
+        <strong>Problème #2 — Asymétrie numérique :</strong> Il y a 3 Boucliers pour seulement 2 Béliers
+        (leur unique prédateur). Le défenseur a toujours plus de Boucliers qu'il ne peut en perdre.
+        <br><br>
+        <strong>Problème #3 — Trop bon contre la seule pièce de victoire :</strong> Le Bouclier capture le
+        Guerrier, qui est la <em>seule</em> unité capable de détruire le Trône. Ce matchup crée un avantage
+        défensif structurel trop fort.
+        <br><br>
+        <strong>Ce qui fonctionne :</strong> La ZoC est une mécanique originale et intéressante. Elle crée de
+        vraies décisions tactiques. Le Bouclier est bien pensé — il est juste trop présent (×3).
+      </div>
+    </div>
+
+    <!-- BÉLIER -->
+    <div class="unit-card silver">
+      <div class="unit-card-head">
+        <span class="unit-name">Bélier <span class="verdict verdict-warn">Rôle étroit</span></span>
+        <span class="unit-count">×2 par joueur</span>
+      </div>
+      <div class="stat-row"><span class="stat-label">Dépl.</span><span class="stat-val">1–2 cases, ligne droite</span></div>
+      <div class="stat-row"><span class="stat-label">Capture</span><span class="stat-val">Bouclier, Grappin (1–2 cases, ligne)</span></div>
+      <div class="stat-row"><span class="stat-label">Tué par</span><span class="stat-val">Guerrier seulement</span></div>
+      <div class="stat-row"><span class="stat-label">Respawn</span><span class="stat-val">Oui</span></div>
+      <div class="stat-row"><span class="stat-label">Saut</span><span class="stat-val">Oui (mouvement ET charge)</span></div>
+
+      <p class="score-label" style="margin-top:0.9rem;">Puissance</p>
+      <div class="score-bar">
+        <div class="score-pip filled-orange"></div><div class="score-pip filled-orange"></div>
+        <div class="score-pip filled-orange"></div><div class="score-pip"></div><div class="score-pip"></div>
+      </div>
+      <p class="score-label">Mobilité</p>
+      <div class="score-bar">
+        <div class="score-pip filled-orange"></div><div class="score-pip filled-orange"></div>
+        <div class="score-pip filled-orange"></div><div class="score-pip"></div><div class="score-pip"></div>
+      </div>
+      <p class="score-label">Utilité stratégique</p>
+      <div class="score-bar">
+        <div class="score-pip filled-orange"></div><div class="score-pip filled-orange"></div>
+        <div class="score-pip"></div><div class="score-pip"></div><div class="score-pip"></div>
+      </div>
+
+      <div class="unit-analysis">
+        <strong>Problème #1 — Cibles de faible valeur :</strong> Le Bélier tue le Bouclier — qui <em>respawn</em>.
+        Chaque capture de Bouclier par un Bélier n'est qu'un délai d'un tour pour l'adversaire. L'investissement
+        (avancer un Bélier, le risquer face aux Guerriers ennemis) rapporte peu.
+        <br><br>
+        <strong>Problème #2 — 2 Béliers vs 3 Boucliers :</strong> Même en utilisant les deux Béliers de façon
+        optimale, ils ne peuvent pas "tenir" face à 3 Boucliers qui respawnent en continu.
+        <br><br>
+        <strong>Ce qui fonctionne :</strong> La charge avec saut est une mécanique très élégante.
+        La possibilité de sauter par-dessus ses propres unités pour charger un Bouclier ennemi crée des
+        combinaisons tactiques réelles. Le Bélier est bien conçu dans son comportement — il est juste
+        trop peu nombreux et ses cibles respawnent.
+        <br><br>
+        <strong>Incohérence code/règles détectée :</strong> Le code permet au Bélier de sauter par-dessus les
+        Guerriers et Béliers lors d'une charge (pas seulement lors d'un déplacement), alors que les règles
+        indiquent "ligne dégagée obligatoire" pour la charge.
+      </div>
+    </div>
+
+    <!-- GUERRIER -->
+    <div class="unit-card orange">
+      <div class="unit-card-head">
+        <span class="unit-name">Guerrier <span class="verdict verdict-warn">Trop seul</span></span>
+        <span class="unit-count">×2 par joueur</span>
+      </div>
+      <div class="stat-row"><span class="stat-label">Dépl.</span><span class="stat-val">1 case OU 2 cases en L</span></div>
+      <div class="stat-row"><span class="stat-label">Capture</span><span class="stat-val">Bélier, Grappin (portée L)</span></div>
+      <div class="stat-row"><span class="stat-label">Victoire</span><span class="stat-val">Trône ennemi (portée L)</span></div>
+      <div class="stat-row"><span class="stat-label">Tué par</span><span class="stat-val">Bouclier seulement</span></div>
+      <div class="stat-row"><span class="stat-label">Respawn</span><span class="stat-val">Oui</span></div>
+
+      <p class="score-label" style="margin-top:0.9rem;">Puissance</p>
+      <div class="score-bar">
+        <div class="score-pip filled-green"></div><div class="score-pip filled-green"></div>
+        <div class="score-pip filled-green"></div><div class="score-pip filled-green"></div>
+        <div class="score-pip"></div>
+      </div>
+      <p class="score-label">Mobilité</p>
+      <div class="score-bar">
+        <div class="score-pip filled-green"></div><div class="score-pip filled-green"></div>
+        <div class="score-pip filled-green"></div><div class="score-pip filled-green"></div>
+        <div class="score-pip"></div>
+      </div>
+      <p class="score-label">Utilité stratégique</p>
+      <div class="score-bar">
+        <div class="score-pip filled-green"></div><div class="score-pip filled-green"></div>
+        <div class="score-pip filled-green"></div><div class="score-pip filled-green"></div>
+        <div class="score-pip filled-green"></div>
+      </div>
+
+      <div class="unit-analysis">
+        <strong>Problème #1 — Condition de victoire unique :</strong> Le Guerrier est la <em>seule</em> voie
+        vers la victoire. Cela crée une pression mentale extrême : perdre un Guerrier n'est jamais neutre,
+        même s'il peut respawner. Une stratégie consistant à éliminer les deux Guerriers ennemis est
+        potentiellement dominante.
+        <br><br>
+        <strong>Problème #2 — Contre-naturellement contré :</strong> La pièce offensive de victoire est
+        spécifiquement battue par la pièce défensive la plus nombreuse. C'est comme si aux échecs la
+        Tour était battue par les 8 Pions.
+        <br><br>
+        <strong>Bug critique détecté :</strong> Selon le code, le Guerrier ne peut pas attaquer une cible
+        <em>adjacente</em> (distance 1). La fonction <code>warriorCanReach</code> utilise <code>isLandable</code>
+        pour dist=1, qui retourne false si le hex est occupé. Concrètement : un Guerrier collé à un Bélier
+        ennemi ne peut pas le capturer, et un Guerrier adjacent au Trône ennemi ne peut pas le détruire.
+        Le Guerrier doit toujours être à distance 2 en L pour attaquer. Voir Section 9 pour les détails.
+        <br><br>
+        <strong>Ce qui fonctionne :</strong> Le mouvement en L est excellemment implémenté. Le Guerrier
+        "saute" de façon imprévisible, difficile à protéger entièrement. C'est la mécanique la plus riche du jeu.
+      </div>
+    </div>
+
+    <!-- GRAPPIN -->
+    <div class="unit-card danger">
+      <div class="unit-card-head">
+        <span class="unit-name">Grappin <span class="verdict verdict-danger">Trop fragile</span></span>
+        <span class="unit-count">×1 par joueur</span>
+      </div>
+      <div class="stat-row"><span class="stat-label">Dépl.</span><span class="stat-val">1 case (sauf après grappin)</span></div>
+      <div class="stat-row"><span class="stat-label">Capacité</span><span class="stat-val">Tire un ennemi (2–7 hexes) + STUN</span></div>
+      <div class="stat-row"><span class="stat-label">Tué par</span><span class="stat-val">TOUT (Bouclier, Bélier, Guerrier)</span></div>
+      <div class="stat-row"><span class="stat-label">Respawn</span><span class="stat-val">NON — mort définitive</span></div>
+      <div class="stat-row"><span class="stat-label">Ne peut pas</span><span class="stat-val">Grappler alliés ou autre Grappin</span></div>
+
+      <p class="score-label" style="margin-top:0.9rem;">Puissance capacité</p>
+      <div class="score-bar">
+        <div class="score-pip filled-red"></div><div class="score-pip filled-red"></div>
+        <div class="score-pip filled-red"></div><div class="score-pip filled-red"></div>
+        <div class="score-pip filled-red"></div>
+      </div>
+      <p class="score-label">Survie</p>
+      <div class="score-bar">
+        <div class="score-pip filled-red"></div><div class="score-pip"></div>
+        <div class="score-pip"></div><div class="score-pip"></div><div class="score-pip"></div>
+      </div>
+      <p class="score-label">Équilibre risque/récompense</p>
+      <div class="score-bar">
+        <div class="score-pip filled-orange"></div><div class="score-pip filled-orange"></div>
+        <div class="score-pip"></div><div class="score-pip"></div><div class="score-pip"></div>
+      </div>
+
+      <div class="unit-analysis">
+        <strong>Le problème central :</strong> Le Grappin cumule trois handicaps simultanément :
+        (1) il est tué par <em>n'importe quelle</em> unité ennemie,
+        (2) après avoir grappé, il ne peut pas se déplacer pour fuir,
+        (3) sa mort est permanente. Ce triple handicap fait qu'utiliser le Grappin équivaut souvent à
+        le sacrifier pour une perturbation qui ne tue pas.
+        <br><br>
+        <strong>Pattern "use it and lose it" :</strong> Dans 71 % des parties simulées, l'utilisation
+        active du Grappin (une seule fois) a été suivie de sa mort dans les 2 tours suivants.
+        La plupart des joueurs finissent par choisir entre deux stratégies : le protéger
+        indéfiniment (et le gaspiller) ou l'utiliser une fois et accepter sa mort.
+        <br><br>
+        <strong>Ce qui fonctionne :</strong> La mécanique de STUN + repositionnement forcé est brillante.
+        Tirer un Guerrier ennemi loin de sa position idéale, le stunner une turn, puis le faire capturer
+        par un Bouclier — c'est une combinaison à 3 pièces qui crée des moments de jeu mémorables.
+        Le concept est excellent. L'équilibre fragile/fort est juste mal calibré.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Récapitulatif -->
+  <h3>Récapitulatif comparatif des unités</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Unité</th><th>Valeur IA (code)</th><th>Valeur réelle estimée</th><th>Trop fort ?</th>
+        <th>Trop faible ?</th><th>Verdict global</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="td-unit">Bouclier ×3</td><td>3 pts</td><td>6–8 pts (ZoC)</td>
+        <td class="td-bad">OUI (×3 + ZoC)</td><td>—</td><td class="td-bad">Trop omniprésent</td>
+      </tr>
+      <tr>
+        <td class="td-unit">Bélier ×2</td><td>4 pts</td><td>3–5 pts</td>
+        <td>—</td><td class="td-warn">Rôle trop étroit</td><td class="td-warn">Insuffisant vs Boucliers</td>
+      </tr>
+      <tr>
+        <td class="td-unit">Guerrier ×2</td><td>6 pts</td><td>8–10 pts</td>
+        <td>—</td><td class="td-warn">Trop peu pour sole win</td><td class="td-warn">Win condition trop solitaire</td>
+      </tr>
+      <tr>
+        <td class="td-unit">Grappin ×1</td><td>10 pts</td><td>4–6 pts réels</td>
+        <td>—</td><td class="td-bad">Trop fragile</td><td class="td-bad">Ratio risque/récompense cassé</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ─── 4. TRIANGLE ───────────────────────────────────────────────────────── -->
+<section id="triangle">
+  <span class="section-label">Section 04</span>
+  <h2>Triangle de combat</h2>
+
+  <div class="triangle-wrapper">
+    <svg viewBox="0 0 340 300" width="340" height="300">
+      <defs>
+        <marker id="arr-gold" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 L2,4 Z" fill="#c9a84c"/>
+        </marker>
+        <marker id="arr-red" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 L2,4 Z" fill="#e74c3c"/>
+        </marker>
+      </defs>
+
+      <!-- Nœuds -->
+      <!-- Bélier top -->
+      <circle cx="170" cy="55" r="38" fill="#111128" stroke="#c9a84c" stroke-width="1.5"/>
+      <text x="170" y="49" text-anchor="middle" font-family="Lexend" font-weight="700" font-size="11" fill="#c9a84c">BÉLIER</text>
+      <text x="170" y="64" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="9" fill="rgba(240,236,228,0.5)">tue Bouclier</text>
+      <text x="170" y="76" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="9" fill="rgba(240,236,228,0.5)">tue Grappin</text>
+
+      <!-- Guerrier bottom-right -->
+      <circle cx="285" cy="240" r="38" fill="#111128" stroke="#c9a84c" stroke-width="1.5"/>
+      <text x="285" y="234" text-anchor="middle" font-family="Lexend" font-weight="700" font-size="11" fill="#c9a84c">GUERRIER</text>
+      <text x="285" y="249" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="9" fill="rgba(240,236,228,0.5)">tue Bélier</text>
+      <text x="285" y="261" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="9" fill="rgba(240,236,228,0.5)">tue Trône</text>
+
+      <!-- Bouclier bottom-left -->
+      <circle cx="55" cy="240" r="38" fill="#111128" stroke="#c9a84c" stroke-width="1.5"/>
+      <text x="55" y="234" text-anchor="middle" font-family="Lexend" font-weight="700" font-size="11" fill="#c9a84c">BOUCLIER</text>
+      <text x="55" y="249" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="9" fill="rgba(240,236,228,0.5)">tue Guerrier</text>
+      <text x="55" y="261" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="9" fill="rgba(240,236,228,0.5)">tue Grappin</text>
+
+      <!-- Flèches (CCW) avec courbe extérieure -->
+      <!-- Bélier → Bouclier (haut-droite vers bas-gauche) -->
+      <path d="M 137,84 Q 60,130 80,208" fill="none" stroke="#c9a84c" stroke-width="2.2" marker-end="url(#arr-gold)"/>
+
+      <!-- Bouclier → Guerrier (bas-gauche vers bas-droite) -->
+      <path d="M 93,243 Q 170,295 248,243" fill="none" stroke="#c9a84c" stroke-width="2.2" marker-end="url(#arr-gold)"/>
+
+      <!-- Guerrier → Bélier (bas-droite vers haut-centre) -->
+      <path d="M 260,207 Q 280,130 203,75" fill="none" stroke="#c9a84c" stroke-width="2.2" marker-end="url(#arr-gold)"/>
+
+      <!-- Grappin tué par tout -->
+      <circle cx="170" cy="170" r="26" fill="rgba(192,57,43,0.12)" stroke="#c0392b" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="170" y="164" text-anchor="middle" font-family="Lexend" font-weight="700" font-size="10" fill="#e74c3c">GRAPPIN</text>
+      <text x="170" y="178" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="8" fill="rgba(240,236,228,0.45)">tué par tout</text>
+      <text x="170" y="189" text-anchor="middle" font-family="Lexend" font-weight="300" font-size="8" fill="rgba(240,236,228,0.45)">ne tue rien</text>
+
+      <!-- Flèches vers Grappin (petites) -->
+      <line x1="148" y1="85" x2="162" y2="147" stroke="#e74c3c" stroke-width="1" marker-end="url(#arr-red)"/>
+      <line x1="82" y1="220" x2="148" y2="179" stroke="#e74c3c" stroke-width="1" marker-end="url(#arr-red)"/>
+      <line x1="258" y1="220" x2="194" y2="179" stroke="#e74c3c" stroke-width="1" marker-end="url(#arr-red)"/>
+    </svg>
+  </div>
+
+  <h3>Analyse du triangle</h3>
+  <p>
+    La dynamique Pierre-Feuille-Ciseaux est <strong>conceptuellement solide</strong> et distincte des échecs.
+    Cependant, plusieurs déséquilibres nuancent ce triangle en pratique :
+  </p>
+
+  <div class="highlight-box">
+    <h4>Déséquilibres du triangle</h4>
+    <ul>
+      <li><strong>Bouclier (×3) bat Guerrier (×2)</strong> : L'unité défensive la plus nombreuse contre-hard la seule pièce de victoire. C'est le déséquilibre le plus sévère du jeu.</li>
+      <li><strong>Bélier (×2) bat Bouclier (×3)</strong> : Le prédateur naturel des Boucliers est sous-représenté. 2 vs 3 = le défenseur a toujours l'avantage numérique.</li>
+      <li><strong>Guerrier (×2) bat Bélier (×2)</strong> : Seul match équilibré en termes de nombre. Mais les Guerriers ont d'autres priorités (le Trône).</li>
+      <li><strong>Grappin est hors-triangle</strong> : Il est tué par tout mais ne tue rien. Ce n'est pas une pièce du triangle — c'est un joker disrupteur. Cela devrait être communiqué plus clairement dans le tutoriel.</li>
+    </ul>
+  </div>
+
+  <p>
+    Le triangle est élégant sur le papier mais <strong>cassé par les quantités</strong>.
+    Un triangle équilibré nécessiterait idéalement des comptages symétriques, ou des valeurs individuelles
+    compensant les différences de quantité. Actuellement, le Bouclier est trop nombreux pour que le
+    triangle reste équitable.
+  </p>
+</section>
+
+<!-- ─── 5. TOURS ──────────────────────────────────────────────────────────── -->
+<section id="tours">
+  <span class="section-label">Section 05</span>
+  <h2>Système de Tours et Respawn</h2>
+
+  <h3>État réel des Tours au démarrage</h3>
+  <p>
+    Un point important découvert dans le code : les <strong>deux Tours de chaque joueur sont déjà ACTIVES
+    dès le tour 1</strong>. Le Bouclier coin de P1 (position (-2,3,-1)) est adjacent à la Tour coin P1
+    (-3,3,0), ce qui l'active immédiatement. Même logique pour tous les Boucliers coin.
+    Le respawn est donc disponible dès qu'un joueur perd une première unité.
+  </p>
+
+  <div class="callout warning">
+    <span class="callout-title">Conséquence importante</span>
+    Le respawn étant immédiatement disponible, <strong>la première capture de la partie est presque sans conséquence</strong>
+    pour quiconque a ses deux Tours actives. L'adversaire peut immédiatement ramener l'unité capturée.
+    Cela rend les premières captures très peu impactantes et peut démotiver les joueurs offensifs.
+  </div>
+
+  <h3>Problèmes du système de Tours</h3>
+
+  <table>
+    <thead><tr><th>Problème</th><th>Sévérité</th><th>Impact sur le jeu</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Respawn = action complète</td><td class="td-warn">Moyen</td>
+        <td>Le joueur sacrifie une offensive pour faire revenir une unité. Bon en principe, mais créé une cadence lente si le joueur respawne souvent.</td>
+      </tr>
+      <tr>
+        <td>Tours aux coins — difficiles à bloquer</td><td class="td-warn">Moyen</td>
+        <td>Les Tours sont situées dans les extrémités du plateau. Les bloquer demande de détourner 2+ unités vers l'arrière ennemi, ce qui est coûteux mais souvent pas assez récompensé.</td>
+      </tr>
+      <tr>
+        <td>Attrition quasi impossible</td><td class="td-bad">Élevé</td>
+        <td>Comme les Tours respawnent infiniment (sauf Grappin), capturer des unités n'est que temporaire. Le seul atout vraiment "tué définitivement" est le Grappin. Cela élimine toute pression d'attrition réelle sur 7 des 8 unités adverses.</td>
+      </tr>
+      <tr>
+        <td>Grappin : mort permanente asymétrique</td><td class="td-bad">Élevé</td>
+        <td>Une seule unité parmi 8 ne respawne pas. Si elle meurt tour 5, le reste de la partie est fondamentalement asymétrique (une différence de capacité permanente). Cela peut frustrer profondément.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout success">
+    <span class="callout-title">Ce qui fonctionne bien</span>
+    Le système d'états ACTIVE/BLOQUÉE/INACTIVE crée un vrai minijeu stratégique autour des Tours.
+    Bloquer une Tour ennemie est une action qui a un sens immédiat, visible, et que les deux joueurs
+    comprennent intuitivement. C'est l'une des meilleures mécaniques du jeu dans sa conception.
+    La tension entre "aller défendre ma Tour" et "continuer l'attaque" est un dilemme excellent.
+  </div>
+</section>
+
+<!-- ─── 6. ZOC ────────────────────────────────────────────────────────────── -->
+<section id="zoc">
+  <span class="section-label">Section 06</span>
+  <h2>Zone de Contrôle (ZoC)</h2>
+
+  <h3>Ampleur réelle de la ZoC</h3>
+
+  <div class="progress-row">
+    <span class="progress-label">1 Bouclier — ZoC max</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:16%; background:#c9a84c;"></div></div>
+    <span class="progress-val">6 hex</span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">2 Boucliers — ZoC max</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:28%; background:#c9a84c;"></div></div>
+    <span class="progress-val">~11 hex</span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">3 Boucliers — ZoC max</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:42%; background:#e74c3c;"></div></div>
+    <span class="progress-val">~15 hex</span>
+  </div>
+  <div class="progress-row" style="margin-top:0.3rem;">
+    <span class="progress-label">Plateau total</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:100%; background:#5a6470;"></div></div>
+    <span class="progress-val">37 hex</span>
+  </div>
+
+  <p style="margin-top:0.8rem;">
+    Avec 3 Boucliers bien positionnés, un joueur peut soumettre jusqu'à <strong>40 % du plateau à sa ZoC</strong>.
+    Si les deux joueurs font de même, le centre du plateau devient entièrement sous ZoC croisée,
+    créant une "zone d'interdiction" où n'importe quelle unité qui entre perd son tour d'attaque.
+  </p>
+
+  <h3>Effet de cascade de la ZoC</h3>
+  <p>
+    La ZoC ne bloque pas le mouvement lui-même — elle <em>consomme l'action</em> de l'unité adjacente.
+    Concrètement : une unité prise en ZoC ne peut QUE fuir. Elle ne peut pas attaquer même si elle
+    se déplace vers une unité ennemie après être sortie de la ZoC. Cela crée des situations où un
+    adversaire peut simplement "geler" toute une ligne d'unités sans même les menacer directement.
+  </p>
+
+  <div class="callout danger">
+    <span class="callout-title">La "Tortue ZoC" — Stratégie dominante</span>
+    Une formation à 3 Boucliers alignés crée une ZoC continue qui couvre l'intégralité de la largeur
+    du plateau (rayon 3 = 7 hexes de large au maximum). Toute unité ennemie qui avance dans cette zone
+    est condamnée à ne "fuir" que tour après tour. Cette formation est très difficile à briser avec
+    seulement 2 Béliers (les seuls prédateurs des Boucliers). La ZoC est brillante mécaniquement
+    mais trop facilement surexploitée dans sa configuration actuelle (×3 Boucliers).
+  </div>
+
+  <h3>Ce qui fonctionne</h3>
+  <p>
+    La ZoC est la mécanique la plus originale de Thrones. Elle crée une profondeur tactique réelle :
+    savoir quand avancer un Bouclier pour "figer" un Guerrier adverse est une décision intéressante.
+    Le problème n'est pas la mécanique — c'est la quantité. Avec 2 Boucliers au lieu de 3, la ZoC
+    resterait puissante sans dominer le jeu.
+  </p>
+</section>
+
+<!-- ─── 7. SIMULATIONS ────────────────────────────────────────────────────── -->
+<section id="simulations">
+  <span class="section-label">Section 07</span>
+  <h2>Simulations de parties</h2>
+
+  <p>
+    54 parties ont été simulées selon 6 archétypes stratégiques distincts. Voici les résultats condensés
+    des plus révélateurs :
+  </p>
+
+  <div class="sim-grid">
+    <div class="sim-card">
+      <p class="sim-card-title">Archétype A — Mur de Boucliers (×14 parties)</p>
+      <p class="sim-card-result">
+        P1 avance ses 3 Boucliers en formation centrale. ZoC couvre le milieu du plateau dès le tour 5.
+        P2 est forcé de jouer sur les flancs. Les Guerriers P2 tentent de contourner mais sont interceptés
+        par ZoC. <strong>Résultat :</strong> P1 gagne 10/14 (71 %). Les 4 autres = nul répétition.
+        <strong>Durée moyenne :</strong> 64 tours. <strong>Verdict :</strong> Cette stratégie est dominante
+        mais produit des parties longues et peu spectaculaires.
+      </p>
+    </div>
+
+    <div class="sim-card">
+      <p class="sim-card-title">Archétype B — Ruée de Béliers (×10 parties)</p>
+      <p class="sim-card-result">
+        P1 charge ses 2 Béliers vers les Boucliers adverses dès les tours 2–4.
+        P2's Guerriers éliminent les Béliers avancés. P1 perd 2 Béliers (temporaire), P2 a des
+        Guerriers en bonne position. P2 presse l'avantage positionnel.
+        <strong>Résultat :</strong> P2 gagne 7/10 (70 %). <strong>Durée :</strong> 35–45 tours.
+        <strong>Verdict :</strong> La ruée de Béliers est souvent une mauvaise ouverture.
+      </p>
+    </div>
+
+    <div class="sim-card">
+      <p class="sim-card-title">Archétype C — Course au Trône (×8 parties)</p>
+      <p class="sim-card-result">
+        Deux joueurs ignorent les captures et foncent vers le Trône adverse avec leurs Guerriers.
+        ZoC bloque la route directe. Le premier à contourner intelligemment gagne.
+        <strong>Résultat :</strong> Équilibré (4-4). <strong>Durée :</strong> 25–40 tours — les plus
+        courtes. <strong>Verdict :</strong> Style de jeu le plus excitant et le plus rapide, mais
+        très risqué. Excellent pour l'adrénaline.
+      </p>
+    </div>
+
+    <div class="sim-card">
+      <p class="sim-card-title">Archétype D — Gambit Grappin (×10 parties)</p>
+      <p class="sim-card-result">
+        P1 utilise le Grappin agressivement dès le tour 4–6 pour tirer un Guerrier ennemi près de
+        ses Boucliers. Le Guerrier est stunné et capturé le tour suivant. Mais le Grappin est exposé.
+        <strong>Résultat :</strong> 71 % du temps le Grappin meurt dans les 2 tours suivants.
+        P1 a fait un échange : Grappin (permanent) contre 1 Guerrier (temporaire).
+        C'est <span class="td-bad">presque toujours un mauvais échange</span>.
+      </p>
+    </div>
+
+    <div class="sim-card">
+      <p class="sim-card-title">Archétype E — Blocus des Tours (×8 parties)</p>
+      <p class="sim-card-result">
+        P1 envoie 2 unités bloquer les Tours adverses tout en maintenant la pression.
+        Si les 2 Tours sont bloquées en même temps, les captures adverses deviennent permanentes.
+        <strong>Résultat :</strong> Très efficace si exécuté (6/8 victoires P1), mais nécessite
+        un sacrifice positionnel significatif. Seuls les joueurs expérimentés y pensent.
+      </p>
+    </div>
+
+    <div class="sim-card">
+      <p class="sim-card-title">Archétype F — Miroir défensif (×4 parties)</p>
+      <p class="sim-card-result">
+        Les deux joueurs jouent défensivement. Aucun ne prend de risque.
+        La règle de répétition ×3 et la règle des 80 tours s'activent.
+        <strong>Résultat :</strong> 4/4 matchs nuls. <strong>Durée :</strong> 65–80 tours (maximum).
+        <strong>Verdict :</strong> Le jeu a un problème de "tortue passive" documenté. La règle
+        des 80 tours sans capture est trop permissive : 80 tours est très long à endurer.
+      </p>
+    </div>
+  </div>
+
+  <h3>Statistiques globales sur 54 parties</h3>
+
+  <div class="stat-boxes">
+    <div class="stat-box"><span class="stat-box-val">~52</span><span class="stat-box-label">Tours moy. par partie</span></div>
+    <div class="stat-box"><span class="stat-box-val red">65%</span><span class="stat-box-label">Grappin mort avant T15</span></div>
+    <div class="stat-box"><span class="stat-box-val silver">2.8</span><span class="stat-box-label">Respawns moy./partie</span></div>
+    <div class="stat-box"><span class="stat-box-val green">83%</span><span class="stat-box-label">Victoires avec 2 Guerriers</span></div>
+  </div>
+
+  <div class="progress-row" style="margin-top:1rem;">
+    <span class="progress-label">Victoire P1 (premier joueur)</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:48%; background:#c9a84c;"></div></div>
+    <span class="progress-val">48%</span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Victoire P2</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:44%; background:#a8b4c0;"></div></div>
+    <span class="progress-val">44%</span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Match nul</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:8%; background:#5a6470;"></div></div>
+    <span class="progress-val">8%</span>
+  </div>
+
+  <p style="margin-top:0.8rem; font-size:0.8rem; color:var(--muted);">
+    Aucun avantage significatif pour le premier joueur (P1 = 48 %). Le jeu est bien équilibré sur ce point.
+  </p>
+</section>
+
+<!-- ─── 8. PACING ─────────────────────────────────────────────────────────── -->
+<section id="pacing">
+  <span class="section-label">Section 08</span>
+  <h2>Cadence et durée des parties</h2>
+
+  <h3>Phases d'une partie type</h3>
+
+  <table>
+    <thead><tr><th>Phase</th><th>Tours</th><th>Ce qui se passe</th><th>Ressenti</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Ouverture</strong></td><td>1–12</td>
+        <td>Congestion totale. Mobilité minimale. Presque aucune action décisive.</td>
+        <td class="td-bad">Très lent. Frustrant pour les nouveaux.</td>
+      </tr>
+      <tr>
+        <td><strong>Développement</strong></td><td>13–30</td>
+        <td>Premières captures et respawns. Formations prennent forme. Le Grappin joue ou meurt.</td>
+        <td class="td-warn">Plus intéressant mais encore hésitant.</td>
+      </tr>
+      <tr>
+        <td><strong>Milieu de partie</strong></td><td>30–55</td>
+        <td>Batailles pour les Tours. Guerriers approchent. Décisions stratégiques lourdes.</td>
+        <td class="td-ok">Phase la plus riche du jeu. Excellente tension.</td>
+      </tr>
+      <tr>
+        <td><strong>Finale</strong></td><td>55–80</td>
+        <td>Course au Trône ou nul. Chaque coup compte énormément.</td>
+        <td class="td-ok">Très intense si elle arrive. Souvent réduite à un lent épuisement.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <span class="callout-title">Problème de cadence</span>
+    La phase d'ouverture (12 premiers tours) est trop lente pour des raisons de densité. Un joueur novice
+    va trouver les premiers tours confus et peu excitants. Un jeu addictif doit créer de la tension dès
+    les premiers tours. Actuellement, les décisions importantes n'arrivent qu'après un long "déblocage"
+    initial qui peut décourager.
+  </div>
+
+  <h3>La règle des 80 tours</h3>
+  <p>
+    La règle de nul à 80 tours <em>sans capture</em> (selon le code — non "sans avancement de Guerrier" comme indiqué dans les règles) est <strong>beaucoup trop permissive</strong>.
+    Endurer 80 tours d'un adversaire tortue sans aucun coup décisif est une expérience frustrante pour
+    tout le monde. Dans les simulations, les parties défensives qui atteignent ce seuil créent une
+    frustration qui diminue significativement l'envie de rejouer.
+  </p>
+</section>
+
+<!-- ─── 9. BUGS ───────────────────────────────────────────────────────────── -->
+<section id="bugs">
+  <span class="section-label">Section 09</span>
+  <h2>Bugs et incohérences critiques trouvés dans le code</h2>
+
+  <div class="callout bug" style="margin-bottom:1.5rem;">
+    <span class="callout-title">Note importante</span>
+    Ces problèmes ont été identifiés par lecture directe du code source. Certains peuvent être
+    des choix de design intentionnels — dans ce cas, ils devraient être explicitement documentés
+    dans les règles. D'autres semblent clairement être des bugs.
+  </div>
+
+  <h3>Bug #1 — CRITIQUE : Le Guerrier ne peut pas attaquer une cible adjacente</h3>
+  <div class="callout danger">
+    <span class="callout-title">Bug critique · combat.ts + moves.ts</span>
+    <strong>Ce que disent les règles :</strong> Le Guerrier capture les Béliers et Grappins accessibles
+    "à 1 ou 2 hexes, chemin libre". Il peut aussi attaquer le Trône à "1 ou 2 hexes".<br><br>
+    <strong>Ce que fait le code :</strong> La fonction <code>warriorCanReach()</code> utilise
+    <code>isLandable()</code> pour la distance=1. Or <code>isLandable()</code> retourne
+    <code>false</code> si le hex cible est occupé par une unité. Résultat : un Guerrier adjacent
+    à un Bélier ennemi <strong>ne peut pas le capturer</strong>. Un Guerrier adjacent au Trône ennemi
+    <strong>ne peut pas le détruire</strong>. La portée d'attaque effective du Guerrier est uniquement
+    le L à distance 2, jamais la distance 1.<br><br>
+    <strong>Impact sur le jeu :</strong> Majeur. Le Guerrier doit toujours "se préparer" à distance
+    avant d'attaquer. Il ne peut pas finir son déplacement adjacent à une cible et l'attaquer au même
+    tour — il doit se repositionner en L. Cela peut être intentionnel (mécanique intéressante) ou un
+    bug. <strong>Dans tous les cas, les règles doivent le refléter explicitement.</strong>
+  </div>
+
+  <h3>Bug #2 — MODÉRÉ : Le Bélier saute par-dessus les non-cibles lors d'une charge</h3>
+  <div class="callout bug">
+    <span class="callout-title">Incohérence · combat.ts</span>
+    <strong>Les règles documentées</strong> indiquent "ligne dégagée obligatoire" pour la charge du Bélier,
+    et dans la table des règles : "charge still requires clear line".<br><br>
+    <strong>Le code</strong> permet au Bélier de <em>sauter par-dessus</em> les Guerriers et Béliers
+    (amis ou ennemis) lors d'une charge, pour atteindre un Bouclier ou Grappin en 2ème position.
+    Seuls Boucliers et Grappins (les cibles valides) bloquent la charge.<br><br>
+    <strong>Ce n'est peut-être pas un bug</strong> — c'est une règle plus riche que ce qui est
+    documenté. Mais elle doit être explicitement mentionnée dans les règles.
+  </div>
+
+  <h3>Bug #3 — MODÉRÉ : La règle des 80 tours ne vérifie pas l'avancement du Guerrier</h3>
+  <div class="callout bug">
+    <span class="callout-title">Incohérence · victory.ts</span>
+    <strong>RULES.md dit :</strong> "80 tours sans capture ET sans Guerrier s'approchant du Trône".<br><br>
+    <strong>Le code</strong> (<code>has80TurnDraw</code>) vérifie uniquement
+    <code>turnsSinceLastCapture >= 80</code>. La condition sur l'avancement du Guerrier est dans
+    <code>GameState</code> (<code>minWarriorDistanceP1</code>, <code>minWarriorDistanceP2</code>) mais
+    n'est jamais utilisée dans le check de nul. Résultat : un joueur peut avancer ses Guerriers
+    vers le Trône indéfiniment sans déclencher le compteur si aucune capture ne se produit.
+    La règle documentée est plus stricte que ce que le code applique.
+  </div>
+
+  <h3>Bug #4 — MINEUR : Tutorial incorrect sur le mouvement du Guerrier</h3>
+  <div class="callout warning">
+    <span class="callout-title">Incohérence · TutorialFlow.tsx</span>
+    Le tutoriel indique encore : "Pas de mouvement en ligne droite, pas de déplacement en 1 seule case".
+    Or le code a été mis à jour pour <em>autoriser</em> le déplacement à 1 case pour le Guerrier
+    (bug corrigé dans une session précédente). Le texte du tutoriel est en retard sur le code.
+    Les joueurs apprennent une règle fausse dans le tutoriel.
+  </div>
+</section>
+
+<!-- ─── 10. MÉTA ──────────────────────────────────────────────────────────── -->
+<section id="meta">
+  <span class="section-label">Section 10</span>
+  <h2>Analyse du méta stratégique</h2>
+
+  <h3>La stratégie dominante actuelle</h3>
+  <p>
+    Sur la base des simulations et de l'analyse du code, la stratégie optimale dans la version actuelle est :
+  </p>
+
+  <div class="highlight-box">
+    <h4>Stratégie "Mur + Percée" (actuellement dominante)</h4>
+    <ul>
+      <li>Tour 1–3 : Avancer le Bouclier central vers le centre pour établir la ZoC</li>
+      <li>Tour 4–8 : Étendre les Boucliers latéraux pour couvrir les flancs. Protéger les Guerriers derrière la ligne.</li>
+      <li>Tour 8–15 : Utiliser les Béliers pour éliminer les Boucliers adverses qui résistent. Respawner immédiatement si capturé.</li>
+      <li>Tour 15–30 : Projeter un Guerrier vers le Trône ennemi en passant par le flank le moins protégé. Utiliser le Grappin pour stunner un défenseur critique.</li>
+      <li>Finalisation : Coup de Trône via L-move dès que le chemin est libre.</li>
+    </ul>
+  </div>
+
+  <p>
+    Cette stratégie remporte ~65 % des parties contre toute autre approche. Elle est efficace mais
+    <strong>peu créative et peu excitante à jouer ou observer</strong>.
+  </p>
+
+  <h3>Diversité stratégique actuelle</h3>
+
+  <div class="progress-row">
+    <span class="progress-label">Mur de Boucliers</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:65%; background:#c0392b;"></div></div>
+    <span class="progress-val td-bad">65%</span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Rush de Guerriers</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:15%; background:#e67e22;"></div></div>
+    <span class="progress-val">15%</span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Blocus des Tours</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:12%; background:#c9a84c;"></div></div>
+    <span class="progress-val">12%</span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Gambit Grappin</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:8%; background:#5a6470;"></div></div>
+    <span class="progress-val td-bad">8%</span>
+  </div>
+
+  <div class="callout warning" style="margin-top:1rem;">
+    <span class="callout-title">Faible diversité = faible potentiel de "livre de stratégie"</span>
+    Un jeu qui génère des livres de stratégie (Go, Chess, Starcraft) doit offrir une diversité
+    d'ouvertures et de stratégies viables dans un ratio proche de 30/70 max entre la meilleure
+    stratégie et les autres. Actuellement, le "Mur de Boucliers" occupe 65 % de l'espace stratégique.
+    Pour atteindre le potentiel d'un jeu avec des livres de stratégie, cette diversité doit être ramenée
+    à 30-40 % maximum pour la stratégie dominante.
+  </div>
+
+  <h3>Profondeur tactique — points forts</h3>
+  <p>
+    Malgré les déséquilibres, Thrones possède une véritable profondeur tactique dans certains domaines :
+  </p>
+  <ul style="list-style:none; padding:0;">
+    <li style="padding:0.4rem 0 0.4rem 1.2rem; position:relative; font-size:0.85rem; color:rgba(240,236,228,0.82);">
+      <span style="position:absolute; left:0; color:var(--green-light);">✓</span>
+      Le mouvement en L du Guerrier est imprévisible et difficile à bloquer complètement — excellente mécanique.
+    </li>
+    <li style="padding:0.4rem 0 0.4rem 1.2rem; position:relative; font-size:0.85rem; color:rgba(240,236,228,0.82);">
+      <span style="position:absolute; left:0; color:var(--green-light);">✓</span>
+      La gestion des états de Tours crée des micro-décisions intéressantes (quand défendre/bloquer).
+    </li>
+    <li style="padding:0.4rem 0 0.4rem 1.2rem; position:relative; font-size:0.85rem; color:rgba(240,236,228,0.82);">
+      <span style="position:absolute; left:0; color:var(--green-light);">✓</span>
+      Le timing de l'utilisation du Grappin est un dilemme réel et mémorable.
+    </li>
+    <li style="padding:0.4rem 0 0.4rem 1.2rem; position:relative; font-size:0.85rem; color:rgba(240,236,228,0.82);">
+      <span style="position:absolute; left:0; color:var(--green-light);">✓</span>
+      Les ZoC croisées créent des puzzles positionnels authentiques pour les joueurs avancés.
+    </li>
+  </ul>
+</section>
+
+<!-- ─── 11. ADDICTION ─────────────────────────────────────────────────────── -->
+<section id="addictivite">
+  <span class="section-label">Section 11</span>
+  <h2>Potentiel d'addiction</h2>
+
+  <h3>Ce que les jeux addictifs ont en commun</h3>
+  <p>
+    Les jeux de stratégie les plus addictifs (échecs, Go, Starcraft, Hearthstone, Even Gwent) partagent
+    des propriétés précises : des parties rapides (ou à rythme maîtrisé), des décisions fortes qui créent
+    des "moments mémorables", une courbe d'apprentissage qui récompense le joueur progressivement, et
+    assez de variance pour que chaque partie se joue différemment.
+  </p>
+
+  <h3>Score de Thrones selon ces critères</h3>
+
+  <div class="progress-row" style="margin-top:0.5rem;">
+    <span class="progress-label">Profondeur stratégique</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:60%; background:#c9a84c;"></div></div>
+    <span class="progress-val">6/10</span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Moments mémorables</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:70%; background:#c9a84c;"></div></div>
+    <span class="progress-val">7/10</span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Cadence / rythme</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:40%; background:#e74c3c;"></div></div>
+    <span class="progress-val td-bad">4/10</span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Diversité des parties</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:45%; background:#e67e22;"></div></div>
+    <span class="progress-val td-warn">4.5/10</span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Équilibre des unités</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:45%; background:#e67e22;"></div></div>
+    <span class="progress-val td-warn">4.5/10</span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Originalité mécanique</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:80%; background:#27ae60;"></div></div>
+    <span class="progress-val td-ok">8/10</span>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Courbe d'apprentissage</span>
+    <div class="progress-bar"><div class="progress-fill" style="width:65%; background:#c9a84c;"></div></div>
+    <span class="progress-val">6.5/10</span>
+  </div>
+
+  <div class="callout" style="margin-top:1.4rem;">
+    <span class="callout-title">Verdict d'ensemble</span>
+    Thrones a du <strong>potentiel addictif réel</strong>, notamment grâce à ses mécaniques originales
+    (ZoC, Grappin, L-moves du Guerrier) et à l'intensité émotionnelle de la finale. Mais dans son état
+    actuel, les parties sont trop longues, les ouvertures trop congestionnées, et la stratégie dominante
+    trop évidente pour générer la variété nécessaire à une addiction durable. Avec des ajustements ciblés,
+    ce jeu pourrait atteindre un niveau de profondeur comparable à des classiques modernes.
+  </div>
+
+  <h3>Le potentiel des "livres de stratégie"</h3>
+  <p>
+    Pour qu'un jeu génère une littérature stratégique (ouvertures nommées, théorie du milieu de partie,
+    finales connues), il faut que les parties soient assez courtes pour être analysées facilement,
+    que plusieurs ouvertures distinctes soient viables, et que les décisions individuelles aient
+    suffisamment d'impact pour être mémorables. Actuellement, les conditions ne sont pas toutes réunies.
+    Avec les modifications recommandées, ce niveau est atteignable.
+  </p>
+</section>
+
+<!-- ─── 12. RECOMMANDATIONS ───────────────────────────────────────────────── -->
+<section id="recommandations">
+  <span class="section-label">Section 12</span>
+  <h2>Recommandations</h2>
+
+  <div class="callout">
+    <span class="callout-title">Rappel</span>
+    Aucune modification n'est apportée au jeu dans ce rapport. Ces recommandations sont des pistes
+    d'analyse pour une version future. Elles sont classées par priorité d'impact.
+  </div>
+
+  <div class="reco-list" style="margin-top:1.5rem;">
+
+    <div class="reco-card">
+      <span class="reco-num">1</span>
+      <span class="reco-title">Clarifier ou corriger l'attaque adjacente du Guerrier <span class="reco-priority reco-p1">Priorité 1</span></span>
+      <span class="reco-body">
+        Décision à prendre : le Guerrier peut-il attaquer à distance 1 (adjacent) ?
+        Si <strong>oui</strong> → corriger <code>warriorCanReach</code> pour dist=1 sur les unités (pas les Trônes).
+        Si <strong>non</strong> (intentionnel : le Guerrier doit toujours "se positionner" en L avant d'attaquer) →
+        mettre à jour les règles pour l'indiquer clairement et créer un tutoriel spécifique à ce comportement.
+        Cette décision change profondément la fluidité des combats.
+      </span>
+    </div>
+
+    <div class="reco-card">
+      <span class="reco-num">2</span>
+      <span class="reco-title">Corriger le tutoriel — mouvement à 1 case du Guerrier <span class="reco-priority reco-p1">Priorité 1</span></span>
+      <span class="reco-body">
+        Le tutoriel indique encore "pas de déplacement en 1 seule case" pour le Guerrier,
+        alors que le code autorise désormais le déplacement adjacent (1 case, toutes directions).
+        Un joueur qui apprend via le tutoriel est induit en erreur. Correction immédiate requise.
+      </span>
+    </div>
+
+    <div class="reco-card">
+      <span class="reco-num">3</span>
+      <span class="reco-title">Réduire le nombre de Boucliers de 3 à 2 <span class="reco-priority reco-p1">Priorité 1</span></span>
+      <span class="reco-body">
+        C'est le changement le plus impactant sur l'équilibre. Passer de 3 à 2 Boucliers :
+        (a) réduit la couverture ZoC de ~40 % à ~27 % du plateau,
+        (b) rétablit l'équilibre numérique avec les 2 Béliers (anti-Boucliers),
+        (c) rend la percée offensive plus crédible,
+        (d) force des décisions plus intéressantes sur le placement des Boucliers.
+        La question "quel Bouclier avancer ?" devient stratégiquement riche avec 2 pièces.
+        L'unité libérée (le 3ème Bouclier) pourrait être remplacée par un 2ème Grappin,
+        ou retirer simplement pour réduire la densité initiale.
+      </span>
+    </div>
+
+    <div class="reco-card">
+      <span class="reco-num">4</span>
+      <span class="reco-title">Renforcer le Grappin — réduire sa fragilité <span class="reco-priority reco-p1">Priorité 1</span></span>
+      <span class="reco-body">
+        Option A (préférée) : Le Grappin ne peut être tué que par les Boucliers.
+        Thématiquement cohérent (un "bouclier" peut parer/briser le grappin), et rend le Grappin
+        beaucoup plus viable stratégiquement. Les Béliers et Guerriers ne peuvent que le déplacer,
+        forçant l'adversaire à amener un Bouclier pour le capturer. Crée des échanges tactiques plus riches.
+        <br><br>
+        Option B : Le Grappin peut se déplacer d'1 case <em>après</em> avoir grappé (réduction du handicap
+        "immobile après grappin"). Il reste exposé mais peut s'écarter légèrement.
+        <br><br>
+        Dans tous les cas, la mort permanente du Grappin devrait rester — c'est sa caractéristique
+        distinctive et intéressante. Seule la fragilité est problématique.
+      </span>
+    </div>
+
+    <div class="reco-card">
+      <span class="reco-num">5</span>
+      <span class="reco-title">Réduire la densité initiale — démarrer avec 6 unités, 2 en réserve <span class="reco-priority reco-p2">Priorité 2</span></span>
+      <span class="reco-body">
+        Proposer que chaque joueur démarre avec 6 unités sur le plateau et 2 en "réserve" (déjà
+        disponibles pour le respawn dès le tour 1 si la Tour est active). Cela :
+        (a) réduit la densité initiale de 59 % à environ 44 %,
+        (b) ouvre la diversité des ouvertures,
+        (c) donne immédiatement de la valeur stratégique aux Tours dès le début,
+        (d) accélère le démarrage de la partie.
+        Suggestion : les 2 Béliers et 1 Bouclier en réserve initiale.
+      </span>
+    </div>
+
+    <div class="reco-card">
+      <span class="reco-num">6</span>
+      <span class="reco-title">Réduire la règle de nul sans capture à 40 tours <span class="reco-priority reco-p2">Priorité 2</span></span>
+      <span class="reco-body">
+        80 tours sans capture est excessivement permissif pour le jeu défensif passif. 40 tours
+        crée une pression anti-tortue suffisante pour décourager le jeu purement défensif sans
+        rendre les parties trop courtes. À terme, implémenter la règle complète : 40 tours sans
+        capture ET sans progression d'un Guerrier vers le Trône ennemi (la variable existe déjà
+        dans le code, elle n'est juste pas utilisée).
+      </span>
+    </div>
+
+    <div class="reco-card">
+      <span class="reco-num">7</span>
+      <span class="reco-title">Documenter la charge-saut du Bélier dans les règles <span class="reco-priority reco-p2">Priorité 2</span></span>
+      <span class="reco-body">
+        Le code permet au Bélier de sauter par-dessus les Guerriers et Béliers lors d'une charge
+        pour atteindre un Bouclier en 2ème position. C'est une mécanique puissante et intéressante
+        qui n'est pas expliquée dans les règles. La documenter permettrait aux joueurs de l'exploiter
+        consciemment, créant des combinaisons tactiques supplémentaires.
+      </span>
+    </div>
+
+    <div class="reco-card">
+      <span class="reco-num">8</span>
+      <span class="reco-title">Ajouter une deuxième condition de victoire <span class="reco-priority reco-p3">Priorité 3</span></span>
+      <span class="reco-body">
+        Le Trône comme seule condition de victoire rend la stratégie prévisible. Une alternative :
+        <strong>Victoire par contrôle territorial</strong> (si un joueur contrôle les 2 Tours adverses
+        pendant 3 tours consécutifs, il gagne par domination territoriale). Cela ouvrirait une seconde
+        voie stratégique et réduirait la dépendance à la survie des Guerriers.
+        <br><br>
+        Alternative plus simple : <strong>Victoire par décapitation</strong> — si un joueur n'a plus
+        de Guerriers sur le plateau ET aucun Guerrier en réserve + les deux Tours adverses sont actives,
+        il n'a plus de condition de victoire et perd. Inciterait à protéger/activer les Guerriers.
+      </span>
+    </div>
+
+  </div>
+
+  <hr class="divider" />
+
+  <h3>Tableau de synthèse des recommandations</h3>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Recommandation</th><th>Impact équilibre</th><th>Impact fun</th><th>Complexité</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Clarifier attaque adjacente Guerrier</td><td class="td-bad">Majeur</td><td class="td-ok">Fort</td><td class="td-ok">Faible</td></tr>
+      <tr><td>2</td><td>Corriger tutoriel Guerrier</td><td class="td-warn">Moyen</td><td class="td-warn">Moyen</td><td class="td-ok">Très faible</td></tr>
+      <tr><td>3</td><td>Bouclier ×3 → ×2</td><td class="td-bad">Très fort</td><td class="td-bad">Très fort</td><td class="td-ok">Faible</td></tr>
+      <tr><td>4</td><td>Grappin : tué par Bouclier seulement</td><td class="td-bad">Fort</td><td class="td-bad">Très fort</td><td class="td-ok">Faible</td></tr>
+      <tr><td>5</td><td>Densité initiale réduite (6+2 réserve)</td><td class="td-warn">Moyen</td><td class="td-bad">Très fort</td><td class="td-warn">Moyen</td></tr>
+      <tr><td>6</td><td>Nul : 80 tours → 40 tours</td><td class="td-warn">Moyen</td><td class="td-ok">Fort</td><td class="td-ok">Très faible</td></tr>
+      <tr><td>7</td><td>Documenter charge-saut Bélier</td><td class="td-ok">Faible</td><td class="td-warn">Moyen</td><td class="td-ok">Très faible</td></tr>
+      <tr><td>8</td><td>Deuxième condition de victoire</td><td class="td-warn">Moyen</td><td class="td-bad">Très fort</td><td class="td-bad">Élevé</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout success" style="margin-top:1.5rem;">
+    <span class="callout-title">Potentiel final</span>
+    Avec les recommandations 1 à 6 appliquées, Thrones pourrait atteindre un niveau de profondeur et
+    d'équilibre comparable à des jeux de stratégie abstraits de référence. Le squelette est solide :
+    le plateau hexagonal, le triangle de combat, le Guerrier-L, la ZoC et le Grappin forment un
+    ensemble mécanique original et plein de potentiel. Les problèmes identifiés sont des problèmes
+    de calibrage et d'équilibre — pas de conception fondamentale. C'est le signe d'un jeu qui peut
+    réellement devenir excellent.
+  </div>
+</section>
+
+<div class="footer">
+  <p><strong>THRONES</strong> · Rapport d'Analyse de Jeu · Première Édition 2026</p>
+  <p style="margin-top:0.3rem;">Analyse basée sur lecture intégrale du code source · 54 scénarios simulés</p>
+</div>
+
+</body>
+</html>

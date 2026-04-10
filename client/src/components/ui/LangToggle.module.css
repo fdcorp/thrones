@@ -1,0 +1,38 @@
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+.btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: color 120ms, background 120ms;
+}
+
+.btn:hover {
+  color: var(--white);
+}
+
+.btn.active {
+  color: var(--gold);
+  background: rgba(201, 168, 76, 0.1);
+}
+
+.sep {
+  color: var(--border-hex);
+  font-size: 0.65rem;
+  user-select: none;
+}
