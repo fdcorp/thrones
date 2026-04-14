@@ -21,7 +21,7 @@ export function OnlineLobby({ onGameReady, onBack }: OnlineLobbyProps) {
   const [copied, setCopied]         = useState(false);
   const [isLoading, setIsLoading]   = useState(false);
 
-  const { createRoom, joinRoom, sendAction } = useSocket({
+  const { createRoom, joinRoom, joinQueue, leaveQueue, sendAction } = useSocket({
     onRoomJoined: (code, slot, opponentUsername) => {
       online.setRoom(code, slot);
       if (opponentUsername) {
@@ -67,6 +67,25 @@ export function OnlineLobby({ onGameReady, onBack }: OnlineLobbyProps) {
     }
   }
 
+  async function handleMatchmaking() {
+    if (!user) return;
+    setIsLoading(true);
+    online.reset();
+    try {
+      await joinQueue();
+      online.setStatus('searching');
+    } catch {
+      online.setError(t.online.mustBeLoggedIn);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  function handleCancelMatchmaking() {
+    leaveQueue();
+    online.reset();
+  }
+
   async function handleJoin() {
     if (!user || !joinCode.trim()) return;
     setIsLoading(true);
@@ -101,6 +120,23 @@ export function OnlineLobby({ onGameReady, onBack }: OnlineLobbyProps) {
     );
   }
 
+  // Matchmaking — searching for opponent
+  if (online.status === 'searching') {
+    return (
+      <div className={styles.card}>
+        <div className={styles.title}>MATCHMAKING</div>
+        <div className={styles.waiting}>
+          <span className={styles.waitingDots} />
+        </div>
+        <p className={styles.subtitle}>Recherche d'un adversaire en cours...</p>
+        <button className={styles.btnGhost} onClick={handleCancelMatchmaking}>
+          <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          Annuler
+        </button>
+      </div>
+    );
+  }
+
   // Waiting for opponent after creating room
   if (online.status === 'waiting' && online.roomCode) {
     return (
@@ -130,7 +166,13 @@ export function OnlineLobby({ onGameReady, onBack }: OnlineLobbyProps) {
 
       {online.error && <div className={styles.error}>{online.error}</div>}
 
-      <button className={styles.btnPrimary} onClick={handleCreate} disabled={isLoading}>
+      <button className={styles.btnPrimary} onClick={handleMatchmaking} disabled={isLoading}>
+        MATCHMAKING
+      </button>
+
+      <div className={styles.orDivider}><span>ou</span></div>
+
+      <button className={styles.btnSecondary} onClick={handleCreate} disabled={isLoading}>
         {t.online.createRoom}
       </button>
 

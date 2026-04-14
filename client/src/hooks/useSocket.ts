@@ -88,6 +88,15 @@ export function useSocket(handlers: Partial<SocketEventMap>) {
     send({ type: 'JOIN_ROOM', roomCode });
   }, [connect, send]);
 
+  const joinQueue = useCallback(async () => {
+    await connect();
+    send({ type: 'MATCHMAKING_JOIN' });
+  }, [connect, send]);
+
+  const leaveQueue = useCallback(() => {
+    send({ type: 'MATCHMAKING_LEAVE' });
+  }, [send]);
+
   const sendAction = useCallback((action: unknown) => {
     send({ type: 'ACTION', action });
   }, [send]);
@@ -97,7 +106,7 @@ export function useSocket(handlers: Partial<SocketEventMap>) {
     return () => { wsRef.current?.close(); };
   }, []);
 
-  return { createRoom, joinRoom, sendAction, disconnect };
+  return { createRoom, joinRoom, joinQueue, leaveQueue, sendAction, disconnect };
 }
 
 // Singleton store for online state (separate from game store to keep concerns clean)
@@ -107,7 +116,7 @@ interface OnlineState {
   roomCode:         string | null;
   mySlot:           Player | null;
   opponentUsername: string | null;
-  status:           'idle' | 'creating' | 'waiting' | 'playing' | 'disconnected';
+  status:           'idle' | 'creating' | 'waiting' | 'searching' | 'playing' | 'disconnected';
   eloChange:        number | null;
   newElo:           number | null;
   error:            string | null;

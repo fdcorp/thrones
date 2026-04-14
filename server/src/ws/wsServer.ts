@@ -14,6 +14,14 @@ import type { ClientMessage } from '../../../shared/types';
 // The engine is pure TS with zero browser deps — safe to import server-side
 import { applyAction, initGame } from '../../../client/src/engine/gameState';
 
+// Matchmaking queue — players waiting for an opponent
+const matchmakingQueue: RoomPlayer[] = [];
+
+function removeFromQueue(userId: number) {
+  const idx = matchmakingQueue.findIndex(p => p.userId === userId);
+  if (idx !== -1) matchmakingQueue.splice(idx, 1);
+}
+
 export function setupWsServer(httpServer: Server) {
   const wss = new WebSocketServer({ server: httpServer });
 
@@ -111,6 +119,41 @@ export function setupWsServer(httpServer: Server) {
           break;
         }
 
+        case 'MATCHMAKING_JOIN': {
+          // Ignore if already in queue or in a room
+          if (matchmakingQueue.some(p => p.userId === userId)) break;
+          if (getRoomByUserId(userId)) break;
+
+          const seeker: RoomPlayer = { ws, userId, username, slot: Player.P1 };
+
+          if (matchmakingQueue.length === 0) {
+            // First in queue — wait
+            matchmakingQueue.push(seeker);
+          } else {
+            // Match found — pair with the first waiter
+            const host = matchmakingQueue.shift()!;
+            const guest: RoomPlayer = { ...seeker, slot: Player.P2 };
+
+            const room = createRoom(host);
+            const joined = joinRoom(room.code, guest);
+            if (!joined) break;
+
+            const gameState = initGame('online');
+            joined.gameState = gameState;
+
+            // Notify both: host gets OPPONENT_JOINED, guest gets ROOM_JOINED
+            sendTo(host,  { type: 'OPPONENT_JOINED', opponentUsername: guest.username });
+            sendTo(guest, { type: 'ROOM_JOINED', roomCode: joined.code, playerSlot: Player.P2, opponentUsername: host.username });
+            broadcast(joined, { type: 'GAME_STATE', state: gameState });
+          }
+          break;
+        }
+
+        case 'MATCHMAKING_LEAVE': {
+          removeFromQueue(userId);
+          break;
+        }
+
         case 'PING':
           ws.send(JSON.stringify({ type: 'PONG' }));
           break;
@@ -118,6 +161,7 @@ export function setupWsServer(httpServer: Server) {
     });
 
     ws.on('close', () => {
+      removeFromQueue(userId);
       const room = removePlayerFromRoom(userId);
       if (room && room.players.length > 0) {
         broadcast(room, { type: 'PLAYER_DISCONNECTED' });

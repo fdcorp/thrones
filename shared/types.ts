@@ -66,6 +66,8 @@ export type ClientMessage =
   | { type: 'CREATE_ROOM' }
   | { type: 'JOIN_ROOM'; roomCode: string }
   | { type: 'ACTION'; action: unknown }   // TurnAction — typed on each side
+  | { type: 'MATCHMAKING_JOIN' }
+  | { type: 'MATCHMAKING_LEAVE' }
   | { type: 'PING' };
 
 // ── WebSocket messages (server → client) ─────────────────────────
