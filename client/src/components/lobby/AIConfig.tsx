@@ -16,6 +16,7 @@ export function AIConfig({ selected, onSelect, onConfirm, onBack }: AIConfigProp
     { level: 'easy',   label: t.aiConfig.easy,   desc: t.aiConfig.easyDesc },
     { level: 'medium', label: t.aiConfig.medium,  desc: t.aiConfig.mediumDesc },
     { level: 'hard',   label: t.aiConfig.hard,    desc: t.aiConfig.hardDesc },
+    { level: 'expert', label: t.aiConfig.expert,  desc: t.aiConfig.expertDesc },
   ];
 
   return (
@@ -29,7 +30,6 @@ export function AIConfig({ selected, onSelect, onConfirm, onBack }: AIConfigProp
             onClick={() => onSelect(level)}
           >
             <span className={styles.levelLabel}>{label}</span>
-            <span className={styles.levelDesc}>{desc}</span>
           </button>
         ))}
       </div>

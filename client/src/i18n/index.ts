@@ -12,6 +12,12 @@ export interface Translation {
     tutorial: string;
     playOnline: string;
     copyright: string;
+    play: string;
+    community: string;
+    friends: string;
+    players: string;
+    ranking: string;
+    comingSoon: string;
   };
 
   aiConfig: {
@@ -22,6 +28,8 @@ export interface Translation {
     mediumDesc: string;
     hard: string;
     hardDesc: string;
+    expert: string;
+    expertDesc: string;
     back: string;
     play: string;
   };
@@ -141,6 +149,18 @@ export interface Translation {
     drawStagnationBody: string;
     drawMutualLabel: string;
     drawMutualBody: string;
+    rankedTitle: string;
+    rankedCounts: string;
+    rankedCountsDesc: string;
+    rankedNoCounts: string;
+    rankedNoCountsDesc: string;
+    tierUnranked: string;
+    rankedPlacement: string;
+    rankedPlacementDesc: string;
+    rankedLp: string;
+    rankedLpDesc: string;
+    rankedPromo: string;
+    rankedPromoDesc: string;
     playNow: string;
     backToMenu: string;
     chooseMode: string;
@@ -153,6 +173,77 @@ export interface Translation {
   tutorial_header: {
     back: string;
     title: string;
+  };
+
+  auth: {
+    loginTitle: string;
+    registerTitle: string;
+    username: string;
+    usernamePlaceholder: string;
+    password: string;
+    loginBtn: string;
+    registerBtn: string;
+    or: string;
+    switchToRegister: string;
+    switchToLogin: string;
+    loggedInAs: string;
+    logout: string;
+    eloRating: string;
+  };
+
+  online: {
+    createRoom: string;
+    joinRoom: string;
+    roomCode: string;
+    copyCode: string;
+    codeCopied: string;
+    waitingForOpponent: string;
+    opponentDisconnected: string;
+    eloChange: (delta: number) => string;
+    mustBeLoggedIn: string;
+    roomNotFound: string;
+    roomFull: string;
+  };
+
+  leaderboard: {
+    title: string;
+    rank: string;
+    player: string;
+    elo: string;
+    wins: string;
+    losses: string;
+    played: string;
+    winRate: string;
+    you: string;
+    noGames: string;
+  };
+
+  profile: {
+    editCountry: string;
+    countryLabel: string;
+    saveCountry: string;
+    saved: string;
+    memberSince: string;
+    lastSeen: string;
+    never: string;
+    matchHistory: string;
+    noHistory: string;
+    win: string;
+    loss: string;
+    draw: string;
+    modeOnline: string;
+    modeAI: string;
+    modeLocal: string;
+    turns: (n: number) => string;
+    eloChange: (d: number) => string;
+    friends: string;
+    noFriends: string;
+    addFriend: string;
+    removeFriend: string;
+    friendAdded: string;
+    friendRemoved: string;
+    viewProfile: string;
+    myProfile: string;
   };
 }
 

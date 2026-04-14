@@ -1,0 +1,432 @@
+.page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Lexend', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 4rem;
+}
+
+/* ── Back button ─────────────────────────────────────────── */
+.back {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  margin-bottom: 2rem;
+  transition: color 150ms;
+}
+.back:hover { color: var(--white); }
+.back svg { width: 1rem; height: 1rem; }
+
+/* ── Header ──────────────────────────────────────────────── */
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--bg3);
+  border: 1px solid var(--border-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase;
+  flex-shrink: 0;
+  line-height: 1;
+  overflow: hidden;
+}
+
+.avatarFlag {
+  width: 54px !important;
+  height: auto !important;
+  border-radius: 2px;
+  display: block;
+}
+
+.username {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.flag {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.eloTag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.25);
+  padding: 0.2rem 0.75rem;
+  border-radius: 2px;
+}
+
+.eloLp {
+  font-weight: 300;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+
+.provisionalBadge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 0.1rem 0.5rem;
+  border-radius: 2px;
+}
+
+.dates {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.72rem;
+  font-weight: 300;
+  color: var(--muted);
+}
+
+.dates span strong {
+  font-weight: 500;
+  color: var(--white);
+}
+
+/* ── Main grid ───────────────────────────────────────────── */
+.grid {
+  width: 100%;
+  max-width: 860px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 680px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Section card ────────────────────────────────────────── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.25rem 1.5rem;
+}
+
+.cardFull {
+  grid-column: 1 / -1;
+}
+
+.sectionTitle {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sectionTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.sectionDivider {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.75rem;
+}
+
+.addFriendInline {
+  background: none;
+  border: 1px solid var(--border-bright);
+  color: var(--white);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms;
+}
+.addFriendInline:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: var(--gold-dim);
+  color: var(--gold);
+}
+
+.addFriendRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+  padding: 0.6rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+.addFriendInput {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--white);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 300;
+  padding: 0.4rem 0.7rem;
+  outline: none;
+  transition: border-color 150ms;
+}
+.addFriendInput:focus { border-color: var(--gold-dim); }
+.addFriendInput::placeholder { color: var(--muted); }
+
+/* ── Country selector ────────────────────────────────────── */
+.countryRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.countryFlag {
+  font-size: 1.6rem;
+  min-width: 2rem;
+  text-align: center;
+}
+
+.countrySelect {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--white);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 300;
+  padding: 0.45rem 0.75rem;
+  outline: none;
+  transition: border-color 150ms;
+  cursor: pointer;
+}
+.countrySelect:focus { border-color: var(--gold-dim); }
+.countrySelect option { background: var(--bg3); }
+
+.saveBtn {
+  background: none;
+  border: 1px solid var(--gold-dim);
+  color: var(--gold);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 0.45rem 1rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms;
+  white-space: nowrap;
+}
+.saveBtn:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); }
+.savedMsg {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--gold);
+  min-width: 3rem;
+}
+
+/* ── Match history ───────────────────────────────────────── */
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.historyRow {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg3);
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  font-size: 0.78rem;
+}
+
+.resultBadge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.4rem;
+  border-radius: 2px;
+  text-align: center;
+}
+.resultWin  { background: rgba(100,180,100,0.15); color: #6db86d; border: 1px solid rgba(100,180,100,0.3); }
+.resultLoss { background: rgba(180,60,60,0.15);   color: #c46060; border: 1px solid rgba(180,60,60,0.3); }
+.resultDraw { background: rgba(160,160,160,0.1);  color: var(--muted); border: 1px solid var(--border); }
+
+.historyOpponent {
+  font-weight: 400;
+  color: var(--white);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.historyMeta {
+  font-weight: 300;
+  color: var(--muted);
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+.historyElo {
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.historyEloPos { color: #6db86d; }
+.historyEloNeg { color: #c46060; }
+.historyEloNeutral { color: var(--muted); }
+
+.modeBadge {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 0.1rem 0.35rem;
+  border-radius: 2px;
+}
+
+.empty {
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--muted);
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+/* ── Friends ─────────────────────────────────────────────── */
+.friendsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.friendRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0.6rem;
+  background: var(--bg3);
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color 150ms;
+  text-decoration: none;
+}
+.friendRow:hover { border-color: var(--border-bright); }
+
+.friendAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--silver);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.friendName {
+  flex: 1;
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.friendElo {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--gold);
+}
+
+.removeFriendBtn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 2px;
+  transition: color 150ms, background 150ms;
+}
+.removeFriendBtn:hover { color: #c46060; background: rgba(180,60,60,0.1); }
+
+/* ── Add friend (own profile, viewing others) ────────────── */
+.addFriendBtn {
+  margin-top: 1rem;
+  width: 100%;
+  background: none;
+  border: 1px solid var(--border-bright);
+  color: var(--white);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 0.55rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms;
+}
+.addFriendBtn:hover { background: rgba(255,255,255,0.05); }
+.addFriendBtnActive {
+  border-color: var(--gold-dim);
+  color: var(--gold);
+}
+.addFriendBtnActive:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); }

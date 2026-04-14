@@ -25,12 +25,14 @@
   --hex-stroke-attack:    rgba(255,60,60,0.7);
 
   /* Tours */
-  --tower-halo-active:    rgba(255,255,255,0.05);
-  --tower-halo-blocked:   rgba(220,60,60,0.2);
-  --tower-halo-inactive:  rgba(255,255,255,0.04);
-  --tower-stroke-active:  rgba(255,255,255,0.2);
-  --tower-stroke-blocked: rgba(255,80,80,0.5);
-  --tower-stroke-inactive:rgba(255,255,255,0.12);
+  --tower-halo-active-p1:  rgba(201,168,76,0.20);
+  --tower-halo-active-p2:  rgba(168,180,192,0.20);
+  --tower-halo-blocked:    rgba(200,40,40,0.25);
+  --tower-halo-inactive:   rgba(30,30,35,0.60);
+  --tower-stroke-active-p1:rgba(201,168,76,0.70);
+  --tower-stroke-active-p2:rgba(168,180,192,0.70);
+  --tower-stroke-blocked:  rgba(255,70,70,0.75);
+  --tower-stroke-inactive: rgba(255,255,255,0.08);
 
   /* Trônes */
   --throne-halo-p1:       rgba(201,168,76,0.2);

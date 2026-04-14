@@ -59,8 +59,8 @@ export enum GamePhase {
   ENDED   = 'ENDED',
 }
 
-export type GameMode = 'local' | 'ai';
-export type AILevel  = 'easy' | 'medium' | 'hard';
+export type GameMode = 'local' | 'ai' | 'online';
+export type AILevel  = 'easy' | 'medium' | 'hard' | 'expert';
 
 // Turn actions
 export interface MoveAction {

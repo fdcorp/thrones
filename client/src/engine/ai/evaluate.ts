@@ -189,5 +189,43 @@ export function evaluateBoard(gameState: GameState, player: Player): number {
     if (u.stunned) score -= 2;
   }
 
+  // ── 9. Shield coverage of own Throne ─────────────────────────────────
+  // A Shield adjacent to the Throne is a bodyguard — very hard to break through.
+  // Enemy Shields near our Throne are equally dangerous.
+  if (myThrone) {
+    for (const s of myShields) {
+      const d = hexDistance(s.hex, myThrone.hex);
+      if (d === 1) score += 2.5;
+      else if (d === 2) score += 1.0;
+    }
+    for (const s of enemyShields) {
+      if (hexDistance(s.hex, myThrone.hex) === 1) score -= 2.0;
+    }
+  }
+
+  // ── 10. Warrior exposure — penalize Warriors adjacent to enemy Shields ─
+  // An unprotected Warrior next to an enemy Shield is one move from capture.
+  for (const w of myWarriors) {
+    if (w.stunned) continue;
+    const exposed = enemyShields.some(s => hexDistance(s.hex, w.hex) === 1);
+    if (exposed) score -= 4;
+  }
+  // Symmetric: enemy Warriors adjacent to our Shields are in danger
+  const enemyWarriors3 = enemyUnits.filter(u => u.type === UnitType.WARRIOR && !u.stunned);
+  for (const w of enemyWarriors3) {
+    if (myShields.some(s => hexDistance(s.hex, w.hex) === 1)) score += 3;
+  }
+
+  // ── 11. Enemy Hook threat to our units ───────────────────────────────
+  // Mirror of section 7: penalize positions where enemy Hook can grapple ours.
+  const enemyHook = enemyUnits.find(u => u.type === UnitType.HOOK);
+  if (enemyHook && !enemyHook.stunned) {
+    const enemyTargets = getLegalGrappleTargets(board, enemyHook);
+    for (const targetHex of enemyTargets) {
+      const t = getUnitAt(board, targetHex);
+      if (t) score -= UNIT_VALUES[t.type] * 0.25;
+    }
+  }
+
   return score;
 }

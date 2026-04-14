@@ -10,13 +10,17 @@ interface GameStore {
   previousState: GameState | null; // kept for compatibility (= history[last])
   aiThinking: boolean;
   isUndoing: boolean;
+  // Online-specific: when set, dispatch is intercepted by the socket hook
+  onlineDispatch: ((action: TurnAction) => void) | null;
 
   startGame: (mode: GameMode, aiLevel?: AILevel, humanPlayer?: Player) => void;
   dispatch: (action: TurnAction) => void;
+  setOnlineState: (state: GameState) => void;
   surrender: () => void;
   undoLastMove: () => void;
   resetGame: () => void;
   setAiThinking: (thinking: boolean) => void;
+  setOnlineDispatch: (fn: ((action: TurnAction) => void) | null) => void;
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -25,6 +29,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   previousState: null,
   aiThinking: false,
   isUndoing: false,
+  onlineDispatch: null,
 
   startGame: (mode, aiLevel, humanPlayer) => {
     const gameState = initGame(mode, aiLevel, humanPlayer);
@@ -32,11 +37,17 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   dispatch: (action) => {
-    const { gameState, history } = get();
+    const { gameState, history, onlineDispatch } = get();
     if (!gameState) return;
+    // In online mode, forward to socket — server will broadcast the new state
+    if (onlineDispatch) { onlineDispatch(action); return; }
     const newState = applyAction(gameState, action);
     const newHistory = [...history, gameState];
     set({ previousState: gameState, history: newHistory, gameState: newState });
+  },
+
+  setOnlineState: (state) => {
+    set({ gameState: state });
   },
 
   surrender: () => {
@@ -77,8 +88,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   resetGame: () => {
-    set({ gameState: null, history: [], previousState: null, aiThinking: false });
+    set({ gameState: null, history: [], previousState: null, aiThinking: false, onlineDispatch: null });
   },
 
   setAiThinking: (thinking) => set({ aiThinking: thinking }),
+  setOnlineDispatch: (fn) => set({ onlineDispatch: fn }),
 }));

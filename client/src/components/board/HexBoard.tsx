@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import type { HexCoord, GameState } from '@/engine/types';
-import { UnitType } from '@/engine/types';
+import { UnitType, Player } from '@/engine/types';
 import { generateBoard, hexEquals, hexKey, getBoardBounds, getNeighbors } from '@/engine/hex';
 import { HexCell } from './HexCell';
 import { UnitPiece } from './UnitPiece';
@@ -84,20 +84,29 @@ function BoardDefs() {
         <feMerge><feMergeNode in="colored" /><feMergeNode in="SourceGraphic" /></feMerge>
       </filter>
 
-      {/* Tower active — blue glow */}
-      <filter id="glow-tower-active" x="-25%" y="-25%" width="150%" height="150%">
-        <feGaussianBlur stdDeviation="2" result="blur" />
+      {/* Tower active P1 — subtle gold glow */}
+      <filter id="glow-tower-active-p1" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="2.5" result="blur" />
         <feColorMatrix in="blur" type="matrix"
-          values="0 0.2 0.9 0 0  0 0.3 0.7 0 0  0 0.2 1.2 0 0  0 0 0 0.6 0"
+          values="1.4 0.6 0 0 0  0.8 0.4 0 0 0  0 0 0 0 0  0 0 0 0.55 0"
+          result="colored" />
+        <feMerge><feMergeNode in="colored" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+
+      {/* Tower active P2 — subtle silver glow */}
+      <filter id="glow-tower-active-p2" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="2.5" result="blur" />
+        <feColorMatrix in="blur" type="matrix"
+          values="0.5 0.6 0.8 0 0  0.5 0.6 0.8 0 0  0.5 0.6 0.8 0 0  0 0 0 0.55 0"
           result="colored" />
         <feMerge><feMergeNode in="colored" /><feMergeNode in="SourceGraphic" /></feMerge>
       </filter>
 
       {/* Tower blocked — red glow */}
-      <filter id="glow-tower-blocked" x="-25%" y="-25%" width="150%" height="150%">
-        <feGaussianBlur stdDeviation="2" result="blur" />
+      <filter id="glow-tower-blocked" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="2.5" result="blur" />
         <feColorMatrix in="blur" type="matrix"
-          values="1.4 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0"
+          values="1.5 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.65 0"
           result="colored" />
         <feMerge><feMergeNode in="colored" /><feMergeNode in="SourceGraphic" /></feMerge>
       </filter>
@@ -258,7 +267,8 @@ export function HexBoard() {
     return [];
   }, [gameState.lastAction]);
 
-  const flipTransform = boardFlipped ? 'rotate(180, 0, 0)' : undefined;
+  const autoRotate = useUIStore(s => s.autoRotate);
+  const autoFlipped = autoRotate && currentPlayer === Player.P2;
 
   return (
     <svg
@@ -266,7 +276,7 @@ export function HexBoard() {
       style={{ width: '100%', height: '100%', display: 'block' }}
     >
       <BoardDefs />
-      <g transform={flipTransform}>
+      <g transform={boardFlipped ? 'rotate(180, 0, 0)' : undefined}>
 
       {/* Hex cells */}
       {allHexes.map(hex => {
@@ -323,6 +333,7 @@ export function HexBoard() {
           size={HEX_SIZE}
           isSelected={ui.selectedUnitId === unit.id}
           flipped={boardFlipped}
+          autoFlipped={autoFlipped}
         />
       ))}
 

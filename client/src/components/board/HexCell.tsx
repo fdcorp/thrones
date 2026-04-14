@@ -76,21 +76,32 @@ export function HexCell({
   if (isTowerHex && towerState && !isSelected && !isLegalMove && !isLegalAttack && !isRespawnHex && !isLastMove) {
     switch (towerState) {
       case TowerState.ACTIVE: {
-        fill = 'var(--tower-halo-active)';
-        stroke = 'rgba(255,255,255,0.2)';
+        // Glow in owner's color — active = available for respawn
+        if (towerOwner === Player.P1) {
+          fill = 'rgba(201,168,76,0.12)';
+          stroke = 'rgba(201,168,76,0.45)';
+          filterId = 'glow-tower-active-p1';
+        } else {
+          fill = 'rgba(168,180,192,0.12)';
+          stroke = 'rgba(168,180,192,0.45)';
+          filterId = 'glow-tower-active-p2';
+        }
         strokeWidth = 1.5;
-        filterId = null;
         break;
       }
       case TowerState.BLOCKED:
-        fill = 'var(--tower-halo-blocked)';
-        stroke = 'var(--tower-stroke-blocked)';
+        // Red glow — enemy is blocking
+        fill = 'rgba(200,40,40,0.16)';
+        stroke = 'rgba(255,70,70,0.50)';
         strokeWidth = 1.5;
         filterId = 'glow-tower-blocked';
         break;
       case TowerState.INACTIVE:
-        fill = 'var(--tower-halo-inactive)';
-        stroke = 'var(--tower-stroke-inactive)';
+        // Dim / off — no friendly unit adjacent
+        fill = 'rgba(30,30,35,0.60)';
+        stroke = 'rgba(255,255,255,0.08)';
+        strokeWidth = 1;
+        filterId = null;
         break;
     }
   }

@@ -1,0 +1,238 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2.5rem 2.75rem;
+  background: linear-gradient(145deg, rgba(28,22,14,0.88) 0%, rgba(12,10,6,0.94) 100%);
+  backdrop-filter: blur(28px) saturate(1.6);
+  -webkit-backdrop-filter: blur(28px) saturate(1.6);
+  border: 1px solid rgba(201,168,76,0.12);
+  border-top-color: rgba(201,168,76,0.35);
+  border-left-color: rgba(201,168,76,0.22);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.65), 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.1);
+  min-width: 340px;
+  max-width: 420px;
+  width: 100%;
+}
+
+.title {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 300;
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+.orDivider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  color: var(--muted);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 300;
+}
+.orDivider::before,
+.orDivider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+}
+
+.btnPrimary {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 0.76rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.85rem 1.5rem;
+  width: 100%;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #c9a84c 0%, #e8c96a 45%, #c9a84c 100%);
+  color: #0a0a0f;
+  box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  transition: filter 200ms ease, transform 120ms ease;
+}
+.btnPrimary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btnPrimary:disabled { opacity: 0.45; cursor: default; transform: none; }
+
+.btnSecondary {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: 0.76rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.8rem 1.5rem;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  background: rgba(201,168,76,0.05);
+  border: 1px solid rgba(201,168,76,0.22);
+  color: rgba(201,168,76,0.75);
+  transition: all 200ms ease;
+}
+.btnSecondary:hover {
+  background: rgba(201,168,76,0.1);
+  border-color: rgba(201,168,76,0.45);
+  color: rgba(201,168,76,0.95);
+  transform: translateY(-1px);
+}
+.btnSecondary:disabled { opacity: 0.45; cursor: default; transform: none; }
+
+.codeInputRow {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.codeInput {
+  flex: 1;
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--white);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 0.65rem 0.75rem;
+  outline: none;
+  transition: border-color 180ms ease;
+}
+.codeInput::placeholder { color: rgba(255,255,255,0.2); letter-spacing: 0.2em; }
+.codeInput:focus { border-color: rgba(201,168,76,0.45); background: rgba(201,168,76,0.04); }
+
+/* Room code display */
+.codeDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 1.25rem;
+  background: rgba(201,168,76,0.04);
+  border: 1px solid rgba(201,168,76,0.18);
+}
+.codeLabel {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 300;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.codeValue {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 1.8rem;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(201,168,76,0.5);
+}
+.copyBtn {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 400;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(201,168,76,0.6);
+  background: none;
+  border: 1px solid rgba(201,168,76,0.2);
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+.copyBtn:hover { color: rgba(201,168,76,0.95); border-color: rgba(201,168,76,0.45); }
+
+/* Waiting animation */
+.waiting {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Lexend', sans-serif;
+  font-weight: 300;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.waitingDots::after {
+  content: '...';
+  animation: dots 1.4s steps(4, end) infinite;
+}
+@keyframes dots {
+  0%   { content: ''; }
+  25%  { content: '.'; }
+  50%  { content: '..'; }
+  75%  { content: '...'; }
+  100% { content: ''; }
+}
+
+.error {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 400;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  color: rgba(220, 80, 80, 0.9);
+  background: rgba(220, 80, 80, 0.08);
+  border: 1px solid rgba(220, 80, 80, 0.2);
+  padding: 0.55rem 0.85rem;
+  text-align: center;
+  width: 100%;
+}
+
+.notLoggedIn {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 300;
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.btnGhost {
+  margin-top: 0.25rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.5rem;
+  font-family: 'Lexend', sans-serif;
+  font-weight: 500;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.07);
+  cursor: pointer;
+  transition: color 180ms ease, border-color 180ms ease;
+}
+.btnGhost svg { width: 12px; height: 12px; opacity: 0.6; transition: transform 180ms ease; }
+.btnGhost:hover { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.16); }
+.btnGhost:hover svg { transform: translateX(-2px); }
+
+@media (max-width: 639px) {
+  .card {
+    min-width: 0;
+    width: calc(100vw - 2rem);
+    padding: 1.75rem 1.5rem;
+  }
+}

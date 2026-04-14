@@ -15,6 +15,7 @@ export interface UIStore {
   interactionMode: InteractionMode;
   pendingRespawnUnitId: string | null;
   boardFlipped: boolean;
+  autoRotate: boolean;
 
   selectHex: (hex: HexCoord | null) => void;
   selectUnit: (unitId: string | null, moveHexes: HexCoord[], attackHexes: HexCoord[]) => void;
@@ -24,6 +25,7 @@ export interface UIStore {
   setGrappleTargetMode: (hookUnitId: string, targetHexes: HexCoord[]) => void;
   setGrappleDestMode: (targetHex: HexCoord, destHexes: HexCoord[]) => void;
   setBoardFlipped: (flipped: boolean) => void;
+  setAutoRotate: (on: boolean) => void;
 }
 
 export const useUIStore = create<UIStore>((set) => ({
@@ -38,6 +40,7 @@ export const useUIStore = create<UIStore>((set) => ({
   interactionMode: 'idle',
   pendingRespawnUnitId: null,
   boardFlipped: false,
+  autoRotate: false,
 
   selectHex: (hex) => set({ selectedHex: hex }),
 
@@ -65,6 +68,7 @@ export const useUIStore = create<UIStore>((set) => ({
 
   toggleLog: () => set(s => ({ showLog: !s.showLog })),
   setBoardFlipped: (flipped) => set({ boardFlipped: flipped }),
+  setAutoRotate: (on) => set({ autoRotate: on }),
 
   setRespawnMode: (unitId, hexes) => set({
     pendingRespawnUnitId: unitId,

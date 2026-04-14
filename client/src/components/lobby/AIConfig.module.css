@@ -38,10 +38,10 @@
   color: var(--white);
   padding: 1rem 1.5rem;
   cursor: pointer;
-  text-align: left;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  align-items: center;
   transition: all 250ms cubic-bezier(0.23, 1, 0.32, 1);
   overflow: hidden;
 }
@@ -78,8 +78,8 @@
 .levelLabel {
   font-family: 'Lexend', sans-serif;
   font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 0.12em;
+  font-size: 1.05rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(201,168,76,0.7);
   transition: color 200ms ease;

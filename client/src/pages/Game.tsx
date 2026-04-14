@@ -12,8 +12,9 @@ import { EndScreen } from '@/components/ui/EndScreen';
 import { LangToggle } from '@/components/ui/LangToggle';
 import { CustomPanel } from '@/components/ui/CustomPanel';
 import { AIConfig } from '@/components/lobby/AIConfig';
+import { OnlineLobby } from './OnlineLobby';
 import { Player, GamePhase } from '@/engine/types';
-import type { AILevel } from '@/engine/types';
+import type { AILevel, GameMode } from '@/engine/types';
 import { isMuted, setMuted } from '@/utils/sounds';
 import { useLang } from '@/i18n';
 import colorStyles from './ColorSelect.module.css';
@@ -21,13 +22,14 @@ import styles from './Game.module.css';
 
 export function Game() {
   const [params] = useSearchParams();
-  const mode = (params.get('mode') ?? 'local') as 'local' | 'ai';
+  const mode = (params.get('mode') ?? 'local') as GameMode;
 
   const [soundOn, setSoundOn] = useState(!isMuted());
   const [aiLevel, setAiLevel] = useState<AILevel | null>(null);
   const [humanPlayer, setHumanPlayer] = useState<Player | null>(null);
-  const [showColorSelect, setShowColorSelect] = useState(true);
+  const [showColorSelect, setShowColorSelect] = useState(mode !== 'online');
   const [showAIConfig, setShowAIConfig] = useState(false);
+  const [showOnlineLobby, setShowOnlineLobby] = useState(mode === 'online');
   const [showMobileLog, setShowMobileLog] = useState(false);
   const [showCustom, setShowCustom] = useState(false);
 
@@ -41,6 +43,8 @@ export function Game() {
   const clearSel        = useUIStore(s => s.clearSelection);
   const setBoardFlipped = useUIStore(s => s.setBoardFlipped);
   const boardFlipped    = useUIStore(s => s.boardFlipped);
+  const autoRotate      = useUIStore(s => s.autoRotate);
+  const setAutoRotate   = useUIStore(s => s.setAutoRotate);
   const navigate   = useNavigate();
   const t = useLang();
 
@@ -54,6 +58,8 @@ export function Game() {
       clearSel();
     };
   }, []);
+
+  // autoRotate is handled purely in HexBoard/UnitPiece — no board flip needed here
 
   const handleColorSelect = (choice: Player | 'random') => {
     const picked = choice === 'random'
@@ -78,12 +84,42 @@ export function Game() {
   const handleReplay = () => {
     clearSel();
     setBoardFlipped(false);
+    setAutoRotate(false);
     setShowColorSelect(true);
     setShowAIConfig(false);
     setAiLevel(null);
     setHumanPlayer(null);
     resetGame();
   };
+
+  // Online lobby screen
+  if (showOnlineLobby) {
+    return (
+      <div className={styles.page}>
+        <header className={styles.header}>
+          <svg viewBox="0 0 1191 216" aria-label="THRONES" className={styles.headerTitle} fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M115.59,65.086l0,128.078l-50.717,0l0,-128.078l-46.861,0l0,-39.499l145.023,0l0,39.499l-47.445,0Z"/>
+            <path d="M291.581,193.165l0,-62.52l-57.963,0l0,62.52l-50.483,0l0,-167.577l50.483,0l0,62.053l57.963,0l0,-62.053l50.483,0l0,167.577l-50.483,0Z"/>
+            <path d="M462.079,193.165l-12.504,-36.11c-2.415,-7.09 -5.551,-12.66 -9.407,-16.711c-3.856,-4.051 -8.044,-6.077 -12.562,-6.077l-1.987,0l0,58.897l-50.483,0l0,-167.577l67.078,0c23.45,0 40.765,3.837 51.944,11.511c11.18,7.674 16.769,19.185 16.769,34.532c0,11.53 -3.253,21.191 -9.758,28.981c-6.505,7.791 -16.185,13.439 -29.04,16.945l0,0.467c7.09,2.181 12.991,5.726 17.704,10.634c4.713,4.908 8.94,12.192 12.679,21.853l16.477,42.654l-56.911,0Zm-4.791,-114.406c0,-5.609 -1.714,-10.05 -5.142,-13.322c-3.428,-3.272 -8.803,-4.908 -16.127,-4.908l-10.401,0l0,38.33l9.115,0c6.778,0 12.231,-1.909 16.36,-5.726c4.129,-3.817 6.194,-8.609 6.194,-14.374Z"/>
+            <path d="M697.786,108.909c0,16.828 -3.623,31.883 -10.868,45.166c-7.245,13.283 -17.373,23.606 -30.384,30.968c-13.01,7.362 -27.579,11.043 -43.706,11.043c-15.737,0 -30.052,-3.564 -42.946,-10.693c-12.894,-7.128 -22.924,-17.139 -30.091,-30.033c-7.167,-12.894 -10.751,-27.482 -10.751,-43.764c0,-17.062 3.623,-32.409 10.868,-46.043c7.245,-13.634 17.412,-24.171 30.5,-31.611c13.088,-7.44 27.968,-11.16 44.64,-11.16c16.049,0 30.403,3.564 43.063,10.693c12.66,7.128 22.437,17.295 29.332,30.5c6.895,13.205 10.342,28.183 10.342,44.933Zm-48.166,41.864l11.854,-78.091l-31.116,33.698l-16.945,-42.256l-16.945,42.256l-31.116,-33.698l11.854,78.091l72.414,0Z"/>
+            <path d="M838.602,193.165l-59.131,-80.867c-4.674,-6.388 -8.492,-12.153 -11.452,-17.295l-0.467,0c0.467,8.258 0.701,17.529 0.701,27.813l0,70.35l-46.744,0l0,-167.577l47.679,0l56.677,76.894c0.701,1.013 1.558,2.22 2.571,3.623c1.013,1.402 2.026,2.844 3.038,4.324c1.013,1.48 1.967,2.921 2.863,4.324c0.896,1.402 1.578,2.649 2.045,3.74l0.467,0c-0.467,-3.428 -0.701,-9.349 -0.701,-17.763l0,-75.141l46.744,0l0,167.577l-44.29,0Z"/>
+            <path d="M915.846,193.165l0,-167.577l104.356,0l0,39.499l-53.872,0l0,24.424l50.6,0l0,39.499l-50.6,0l0,24.657l57.729,0l0,39.499l-108.212,0Z"/>
+            <path d="M1164.291,142.447c0,11.141 -2.98,20.84 -8.94,29.098c-5.96,8.258 -14.315,14.413 -25.066,18.464c-10.751,4.051 -23.684,6.077 -38.797,6.077c-17.529,0 -33.578,-2.96 -48.146,-8.881l0,-45.926c7.012,5.142 14.763,9.29 23.255,12.446c8.492,3.155 16.399,4.733 23.723,4.733c5.531,0 9.816,-0.993 12.855,-2.98c3.038,-1.987 4.558,-4.889 4.558,-8.706c0,-2.727 -0.76,-5.122 -2.279,-7.187c-1.519,-2.065 -3.817,-3.993 -6.895,-5.785c-3.077,-1.792 -8.784,-4.246 -17.12,-7.362c-26.956,-10.362 -40.434,-27.112 -40.434,-50.25c0,-16.205 6.155,-29.157 18.464,-38.856c12.309,-9.699 28.825,-14.549 49.549,-14.549c5.843,0 11.219,0.234 16.127,0.701c4.908,0.467 9.368,1.052 13.38,1.753c4.012,0.701 9.641,2.026 16.886,3.973l0,42.654c-14.101,-7.713 -27.968,-11.569 -41.602,-11.569c-5.609,0 -10.128,1.052 -13.556,3.155c-3.428,2.103 -5.142,4.986 -5.142,8.648c0,3.506 1.383,6.408 4.149,8.706c2.766,2.298 8.55,5.278 17.354,8.94c17.373,7.012 29.663,14.685 36.869,23.021c7.206,8.336 10.81,18.23 10.81,29.682Z"/>
+          </svg>
+          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <LangToggle />
+            <button className={styles.quitBtn} onClick={() => navigate('/')}>{t.game.quit}</button>
+          </div>
+        </header>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <OnlineLobby
+            onGameReady={() => setShowOnlineLobby(false)}
+            onBack={() => navigate('/')}
+          />
+        </div>
+      </div>
+    );
+  }
 
   // Color select screen
   if (showColorSelect) {
@@ -125,6 +161,27 @@ export function Game() {
                 <span className={colorStyles.optionDesc}>{t.game.randomDesc}</span>
               </button>
             </div>
+            {mode === 'local' && (
+              <button
+                className={`${colorStyles.rotateToggle} ${autoRotate ? colorStyles.rotateToggleOn : ''}`}
+                onClick={() => setAutoRotate(!autoRotate)}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21.5 2v6h-6"/>
+                  <path d="M2.5 12a10 10 0 0 1 17-7.1L21.5 8"/>
+                  <path d="M2.5 22v-6h6"/>
+                  <path d="M21.5 12a10 10 0 0 1-17 7.1L2.5 16"/>
+                </svg>
+                <span>Rotation auto</span>
+                <span className={colorStyles.rotateToggleBadge}>{autoRotate ? 'ON' : 'OFF'}</span>
+              </button>
+            )}
+            <button className={colorStyles.backBtn} onClick={() => navigate('/')}>
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              {t.aiConfig.back}
+            </button>
           </div>
         </div>
       </div>
@@ -198,6 +255,21 @@ export function Game() {
             </svg>
             LOG
           </button>
+          {mode === 'local' && (
+            <button
+              className={`${styles.muteBtn} ${autoRotate ? styles.muteBtnActive : ''}`}
+              onClick={() => setAutoRotate(!autoRotate)}
+              title={autoRotate ? 'Désactiver la rotation auto' : 'Activer la rotation auto'}
+              aria-label="Rotation auto"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21.5 2v6h-6"/>
+                <path d="M2.5 12a10 10 0 0 1 17-7.1L21.5 8"/>
+                <path d="M2.5 22v-6h6"/>
+                <path d="M21.5 12a10 10 0 0 1-17 7.1L2.5 16"/>
+              </svg>
+            </button>
+          )}
           <button
             className={styles.muteBtn}
             onClick={() => setShowCustom(v => !v)}

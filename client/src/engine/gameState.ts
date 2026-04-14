@@ -2,7 +2,7 @@
 import type {
   GameState, TurnAction, BoardState, Unit, HexCoord,
   MoveAction, AttackAction, RespawnAction, GrappleAction,
-  LogEntry,
+  LogEntry, GameMode, AILevel,
 } from './types';
 import { GamePhase, Player, UnitType } from './types';
 import { createInitialBoard, getUnitAt, getPlayerUnits, getEnemyPlayer } from './board';
@@ -14,7 +14,7 @@ import { getLegalGrappleTargets, getLegalGrappleDestinations, resolveGrapple } f
 import { checkVictory, serializePosition, recordPosition } from './victory';
 import { hexDistance, hexEquals } from './hex';
 
-export function initGame(mode: 'local' | 'ai', aiLevel?: 'easy' | 'medium' | 'hard', humanPlayer?: Player): GameState {
+export function initGame(mode: GameMode, aiLevel?: AILevel, humanPlayer?: Player): GameState {
   const board = createInitialBoard();
   const boardWithTowers = { ...board, towers: updateTowerStates(board) };
 

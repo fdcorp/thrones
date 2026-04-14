@@ -1,14 +1,59 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLang } from '@/i18n';
 import { LangToggle } from '@/components/ui/LangToggle';
 import { CustomPanel } from '@/components/ui/CustomPanel';
+import { useAuthStore } from '@/store/authStore';
 import styles from './MainMenu.module.css';
 
 export function MainMenu() {
   const navigate = useNavigate();
   const t = useLang();
   const [showCustom, setShowCustom] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [authUsername, setAuthUsername] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [openMenu, setOpenMenu] = useState<'play' | 'community' | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const { user, loading: authLoading, error: authError, login, register, logout, clearError } = useAuthStore();
+
+  useEffect(() => {
+    if (!openMenu) return;
+    function handleClick(e: MouseEvent) {
+      if (cardRef.current && !cardRef.current.contains(e.target as Node)) {
+        setOpenMenu(null);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [openMenu]);
+
+  function toggleMenu(name: 'play' | 'community') {
+    setOpenMenu(prev => prev === name ? null : name);
+  }
+
+  function openAuthModal(mode: 'login' | 'register') {
+    setAuthMode(mode);
+    setAuthUsername('');
+    setAuthPassword('');
+    clearError();
+    setShowAuth(true);
+  }
+
+  async function handleAuthSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (authMode === 'login') {
+      await login(authUsername, authPassword);
+    } else {
+      await register(authUsername, authPassword);
+    }
+    // Close on success (no error in store)
+    if (!useAuthStore.getState().error) {
+      setShowAuth(false);
+    }
+  }
 
   return (
     <div className={styles.container}>
@@ -16,6 +61,53 @@ export function MainMenu() {
       {/* Top-right controls */}
       <div className={styles.langWrap}>
         <LangToggle />
+        {user ? (
+          <div className={styles.userBadge}>
+            <button
+              className={styles.userBadgeBtn}
+              onClick={() => navigate(`/profile/${user.username}`)}
+              title={t.profile.viewProfile}
+            >
+              {user.country && (
+                <img
+                  src={`https://flagcdn.com/20x15/${user.country.toLowerCase()}.png`}
+                  srcSet={`https://flagcdn.com/40x30/${user.country.toLowerCase()}.png 2x`}
+                  width={20}
+                  height={15}
+                  alt={user.country}
+                  className={styles.userBadgeFlag}
+                  style={{ borderRadius: '1px', verticalAlign: 'middle' }}
+                />
+              )}
+              <span className={styles.userBadgeName}>{user.username}</span>
+              <span className={styles.userBadgeElo}>
+                {user.rank?.isInPlacement
+                  ? `Placement ${10 - (user.rank.provisionalGamesLeft ?? 10)}/10`
+                  : user.rank?.tier === 'PEASANT'
+                    ? 'Non classé'
+                    : (user.rank?.display ?? user.elo)
+                }
+              </span>
+            </button>
+            <button className={styles.gearBtn} onClick={logout} title="Déconnexion" aria-label="Déconnexion">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+            </button>
+          </div>
+        ) : (
+          <button
+            className={styles.gearBtn}
+            onClick={() => openAuthModal('login')}
+            aria-label="Connexion"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+            </svg>
+          </button>
+        )}
         <button
           className={styles.gearBtn}
           onClick={() => setShowCustom(v => !v)}
@@ -28,8 +120,6 @@ export function MainMenu() {
           </svg>
         </button>
       </div>
-
-      <CustomPanel open={showCustom} onClose={() => setShowCustom(false)} />
 
       {/* Title */}
       <svg
@@ -58,24 +148,134 @@ export function MainMenu() {
       </div>
 
       {/* Glass nav card */}
-      <div className={styles.card}>
+      <div className={styles.card} ref={cardRef}>
         <div className={styles.cardShimmer} aria-hidden />
 
-        <button className={styles.btnPrimary} onClick={() => navigate('/game?mode=local')}>
-          {t.menu.playLocal}
-        </button>
-        <button className={styles.btnSecondary} onClick={() => navigate('/game?mode=ai')}>
-          {t.menu.playAI}
-        </button>
+        {/* PLAY dropdown */}
+        <div className={styles.dropGroup}>
+          <button
+            className={`${styles.btnPrimary} ${styles.btnDrop}`}
+            onClick={() => toggleMenu('play')}
+            aria-expanded={openMenu === 'play'}
+          >
+            <span>{t.menu.play}</span>
+            <svg
+              className={`${styles.chevron} ${openMenu === 'play' ? styles.chevronOpen : ''}`}
+              viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M1 1l5 5 5-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          <div className={`${styles.dropdown} ${openMenu === 'play' ? styles.dropdownOpen : ''}`}>
+            <button className={styles.dropItem} onClick={() => navigate('/game?mode=local')}>
+              {t.menu.playLocal}
+            </button>
+            <button className={styles.dropItem} onClick={() => navigate('/game?mode=ai')}>
+              {t.menu.playAI}
+            </button>
+            <button className={styles.dropItem} onClick={() => navigate('/game?mode=online')}>
+              {t.menu.playOnline}
+            </button>
+          </div>
+        </div>
+
+        {/* COMMUNITY dropdown */}
+        <div className={styles.dropGroup}>
+          <button
+            className={`${styles.btnSecondary} ${styles.btnDrop}`}
+            onClick={() => toggleMenu('community')}
+            aria-expanded={openMenu === 'community'}
+          >
+            <span>{t.menu.community}</span>
+            <svg
+              className={`${styles.chevron} ${openMenu === 'community' ? styles.chevronOpen : ''}`}
+              viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M1 1l5 5 5-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          <div className={`${styles.dropdown} ${openMenu === 'community' ? styles.dropdownOpen : ''}`}>
+            <button key="friends" className={`${styles.dropItem} ${styles.dropItemDisabled}`} disabled>
+              <span>{t.menu.friends}</span>
+              <span className={styles.soonTag}>{t.menu.comingSoon}</span>
+            </button>
+            <button key="players" className={styles.dropItem} onClick={() => navigate('/leaderboard')}>
+              {t.menu.players}
+            </button>
+            <button key="ranking" className={styles.dropItem} onClick={() => navigate('/leaderboard')}>
+              {t.menu.ranking}
+            </button>
+          </div>
+        </div>
+
+        {/* Tutorial */}
         <button className={styles.btnSecondary} onClick={() => navigate('/tutorial')}>
           {t.menu.tutorial}
-        </button>
-        <button className={styles.btnDisabled} disabled>
-          {t.menu.playOnline}
         </button>
       </div>
 
       <p className={styles.version}>{t.menu.copyright}</p>
+
+      {/* Auth modal */}
+      {showAuth && (
+        <div className={styles.authOverlay} onClick={() => setShowAuth(false)}>
+          <div className={styles.authBox} onClick={e => e.stopPropagation()}>
+            <div className={styles.authHeader}>
+              <span className={styles.authTitle}>
+                {authMode === 'login' ? t.auth.loginTitle : t.auth.registerTitle}
+              </span>
+              <button className={styles.authClose} onClick={() => setShowAuth(false)} aria-label="Fermer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+            <form className={styles.authBody} onSubmit={handleAuthSubmit}>
+              {authError && <div className={styles.authError}>{authError}</div>}
+              <div className={styles.authField}>
+                <label className={styles.authLabel}>{t.auth.username}</label>
+                <input
+                  className={styles.authInput}
+                  type="text"
+                  value={authUsername}
+                  onChange={e => setAuthUsername(e.target.value)}
+                  placeholder={t.auth.usernamePlaceholder}
+                  autoComplete="username"
+                  required
+                  minLength={2}
+                  maxLength={20}
+                />
+              </div>
+              <div className={styles.authField}>
+                <label className={styles.authLabel}>{t.auth.password}</label>
+                <input
+                  className={styles.authInput}
+                  type="password"
+                  value={authPassword}
+                  onChange={e => setAuthPassword(e.target.value)}
+                  placeholder="••••••••"
+                  autoComplete={authMode === 'login' ? 'current-password' : 'new-password'}
+                  required
+                  minLength={6}
+                />
+              </div>
+              <button className={styles.authLoginBtn} type="submit" disabled={authLoading}>
+                {authLoading ? '...' : authMode === 'login' ? t.auth.loginBtn : t.auth.registerBtn}
+              </button>
+              <div className={styles.authDivider}><span>{t.auth.or}</span></div>
+              <button
+                type="button"
+                className={styles.authRegisterBtn}
+                onClick={() => { setAuthMode(m => m === 'login' ? 'register' : 'login'); clearError(); }}
+              >
+                {authMode === 'login' ? t.auth.switchToRegister : t.auth.switchToLogin}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <CustomPanel open={showCustom} onClose={() => setShowCustom(false)} />
     </div>
   );
 }

@@ -39,9 +39,10 @@ interface UnitPieceProps {
   size: number;
   isSelected: boolean;
   flipped?: boolean;
+  autoFlipped?: boolean;
 }
 
-export function UnitPiece({ unit, size, isSelected, flipped }: UnitPieceProps) {
+export function UnitPiece({ unit, size, isSelected, flipped, autoFlipped }: UnitPieceProps) {
   const { x, y } = hexToPixel(unit.hex, size);
   const iconSize  = size * 1.1;
   const scale     = (iconSize / 240) * (isSelected ? 1.08 : 1);
@@ -98,22 +99,30 @@ export function UnitPiece({ unit, size, isSelected, flipped }: UnitPieceProps) {
         )}
       </defs>
 
-      {/* Icon paths — centered on (0,0), scaled to iconSize; counter-rotate when board is flipped */}
-      <g
-        transform={`${flipped ? 'rotate(180)' : ''} scale(${scale}) translate(-120, -120)`}
-        style={{
-          fill: `url(#${gradId})`,
-          fillRule: 'evenodd',
-          stroke: (unit.type === UnitType.SHIELD || unit.type === UnitType.WARRIOR)
-            ? (isP1 ? 'rgba(255,235,140,0.45)' : 'rgba(210,228,242,0.45)')
-            : 'none',
-          strokeWidth: 4,
-          vectorEffect: 'non-scaling-stroke',
-          filter: dropShadow,
-          transition: 'transform 180ms ease, filter 180ms ease',
-        }}
-      >
-        {UNIT_PATHS[unit.type]}
+      {/* Auto-rotate wrapper — CSS transition, rotates around icon center */}
+      <g style={{
+        transformBox: 'fill-box',
+        transformOrigin: 'center',
+        transform: autoFlipped ? 'rotate(180deg)' : 'rotate(0deg)',
+        transition: 'transform 480ms cubic-bezier(0.23, 1, 0.32, 1)',
+      }}>
+        {/* Icon paths — centered on (0,0), scaled to iconSize; counter-rotate when board is flipped */}
+        <g
+          transform={`${flipped ? 'rotate(180)' : ''} scale(${scale}) translate(-120, -120)`}
+          style={{
+            fill: `url(#${gradId})`,
+            fillRule: 'evenodd',
+            stroke: (unit.type === UnitType.SHIELD || unit.type === UnitType.WARRIOR)
+              ? (isP1 ? 'rgba(255,235,140,0.45)' : 'rgba(210,228,242,0.45)')
+              : 'none',
+            strokeWidth: 4,
+            vectorEffect: 'non-scaling-stroke',
+            filter: dropShadow,
+            transition: 'filter 180ms ease',
+          }}
+        >
+          {UNIT_PATHS[unit.type]}
+        </g>
       </g>
 
       {/* Stun hatch overlay — stays at board scale */}

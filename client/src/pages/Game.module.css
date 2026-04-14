@@ -61,6 +61,15 @@
   border-color: rgba(255,255,255,0.25);
   background: rgba(255,255,255,0.08);
 }
+.muteBtnActive {
+  color: var(--gold) !important;
+  border-color: rgba(201,168,76,0.45) !important;
+  background: rgba(201,168,76,0.08) !important;
+}
+.muteBtnActive:hover {
+  border-color: rgba(201,168,76,0.65) !important;
+  background: rgba(201,168,76,0.14) !important;
+}
 
 .quitBtn {
   background: rgba(255,255,255,0.04);
