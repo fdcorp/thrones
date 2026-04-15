@@ -62,6 +62,9 @@ export function Game() {
       online.setIsRanked(ranked ?? false);
       if (opponentUsername) {
         online.setOpponent(opponentUsername, opponentElo, opponentInPlacement);
+        // Trigger intro immediately on ROOM_JOINED — both players have slot + opponent info here
+        useOnlineStore.getState().setShowIntro(true);
+        setTimeout(() => useOnlineStore.getState().setShowIntro(false), 5000);
       } else {
         online.setStatus('waiting');
       }
@@ -70,15 +73,9 @@ export function Game() {
       online.setOpponent(opponentUsername);
     },
     onGameState: (state) => {
-      const isFirstState = useGameStore.getState().gameState === null;
       setOnlineState(state as Parameters<typeof setOnlineState>[0]);
       if (online.status === 'waiting' || online.status === 'creating' || online.status === 'searching') {
         online.setStatus('playing');
-      }
-      const { opponentUsername } = useOnlineStore.getState();
-      if (isFirstState && opponentUsername) {
-        useOnlineStore.getState().setShowIntro(true);
-        setTimeout(() => useOnlineStore.getState().setShowIntro(false), 5000);
       }
       setShowOnlineLobby(false);
     },
@@ -313,19 +310,21 @@ export function Game() {
   const mySlot       = online.mySlot;
   const nameForPlayer = (p: Player): string | undefined => {
     if (mode !== 'online') return undefined;
-    return p === mySlot ? myName : opponentName;
+    // Fall back to effectiveHuman if mySlot hasn't been set yet
+    const resolvedSlot = mySlot ?? effectiveHuman;
+    return p === resolvedSlot ? myName : opponentName;
   };
 
   return (
     <div className={styles.page}>
 
       {/* Pre-match intro — overlay for 3s when online game starts */}
-      {mode === 'online' && online.showIntro && online.mySlot && user && online.opponentUsername && (
+      {mode === 'online' && online.showIntro && user && online.opponentUsername && (
         <MatchIntro
           myUsername={user.username}
           myElo={user.elo}
           myInPlacement={user.rank?.isInPlacement ?? false}
-          mySlot={online.mySlot}
+          mySlot={mySlot ?? Player.P1}
           opponentUsername={online.opponentUsername}
           opponentElo={online.opponentElo}
           opponentInPlacement={online.opponentInPlacement}

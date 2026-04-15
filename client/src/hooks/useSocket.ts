@@ -111,6 +111,16 @@ export function useSocket(handlers: Partial<SocketEventMap>) {
     send({ type: 'SURRENDER' });
   }, [send]);
 
+  // PING keepalive — prevents nginx proxy from closing idle connections
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({ type: 'PING' }));
+      }
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => { wsRef.current?.close(); };
