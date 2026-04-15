@@ -128,7 +128,11 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
         </button>
         <button className={styles.btnSecondary} onClick={() => handleMatchmaking(true)}>
           <span>⚔️ RANKED</span>
-          <span className={styles.eloTag}>{user.elo} ELO</span>
+          <span className={styles.eloTag}>
+            {user.rank?.isInPlacement
+              ? `Placement ${10 - (user.rank.provisionalGamesLeft ?? 10)}/10`
+              : `${user.elo} ELO`}
+          </span>
         </button>
         <button className={styles.btnGhost} onClick={() => setShowMatchPick(false)}>
           <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>

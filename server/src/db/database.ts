@@ -13,7 +13,7 @@ export function getDb(): DatabaseSync {
     db.exec('PRAGMA foreign_keys = ON');
 
     // Create tables
-    const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf-8');
+    const schema = fs.readFileSync(path.join(process.cwd(), 'src', 'db', 'schema.sql'), 'utf-8');
     db.exec(schema);
 
     // Migrations — add new columns to existing DBs without breaking them

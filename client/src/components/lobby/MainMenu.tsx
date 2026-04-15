@@ -80,7 +80,11 @@ export function MainMenu() {
                 />
               )}
               <span className={styles.userBadgeName}>{user.username}</span>
-              <span className={styles.userBadgeElo}>{user.elo} ELO</span>
+              <span className={styles.userBadgeElo}>
+                {user.rank?.isInPlacement
+                  ? `Placement ${10 - (user.rank.provisionalGamesLeft ?? 10)}/10`
+                  : `${user.elo} ELO`}
+              </span>
             </button>
             <button className={styles.gearBtn} onClick={logout} title="Déconnexion" aria-label="Déconnexion">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

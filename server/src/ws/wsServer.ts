@@ -94,8 +94,8 @@ export function setupWsServer(httpServer: Server) {
           const hostUser  = getUserById(host.userId);
           const guestUser = getUserById(guest.userId);
 
-          // Notify both
-          sendTo(host,  { type: 'OPPONENT_JOINED', opponentUsername: guest.username });
+          // Notify both with full ROOM_JOINED so each client has slot + opponent info before GAME_STATE
+          sendTo(host,  { type: 'ROOM_JOINED', roomCode: joined.code, playerSlot: host.slot, opponentUsername: guest.username, opponentElo: guestUser?.elo, opponentInPlacement: (guestUser?.provisional_games_left ?? 0) > 0 });
           sendTo(guest, { type: 'ROOM_JOINED', roomCode: joined.code, playerSlot: Player.P2, opponentUsername: host.username, opponentElo: hostUser?.elo, opponentInPlacement: (hostUser?.provisional_games_left ?? 0) > 0 });
 
           // Start game — host is always P1
