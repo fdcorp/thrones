@@ -169,7 +169,12 @@ export function setupWsServer(httpServer: Server) {
         }
 
         case 'MATCHMAKING_JOIN': {
-          // Ignore if already in queue
+          // Remove any stale queue entry from same userId (old ws after page reload)
+          for (const queue of [rankedQueue, casualQueue]) {
+            const staleIdx = queue.findIndex(p => p.userId === userId && p.ws !== ws);
+            if (staleIdx !== -1) queue.splice(staleIdx, 1);
+          }
+          // Ignore if already in queue on this ws
           if (rankedQueue.some(p => p.ws === ws) || casualQueue.some(p => p.ws === ws)) break;
           // Ignore if still in an active (non-finished) room
           const activeRoom = getRoomByWs(ws);
