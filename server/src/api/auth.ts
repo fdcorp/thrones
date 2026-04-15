@@ -38,7 +38,8 @@ router.post('/register', async (req, res) => {
     const hash = await bcrypt.hash(password, SALT_ROUNDS);
     const id   = createUser(username, hash);
     const token = jwt.sign({ id, username }, JWT_SECRET, { expiresIn: '7d' });
-    res.status(201).json({ token, user: { id, username, elo: 1200, gamesPlayed: 0, gamesWon: 0 } });
+    const newUser = getUserByUsername(username)!;
+    res.status(201).json({ token, user: toUserProfile(newUser) });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });
