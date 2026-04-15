@@ -45,6 +45,7 @@ export interface GameHistoryEntry {
   turns: number;
   gameMode: string;
   createdAt: string;
+  rankedGamesNewer?: number;
 }
 
 export interface FriendEntry {
@@ -63,16 +64,17 @@ export interface RoomInfo {
 
 // ── WebSocket messages (client → server) ─────────────────────────
 export type ClientMessage =
-  | { type: 'CREATE_ROOM' }
+  | { type: 'CREATE_ROOM'; preferredSlot?: Player }
   | { type: 'JOIN_ROOM'; roomCode: string }
   | { type: 'ACTION'; action: unknown }   // TurnAction — typed on each side
-  | { type: 'MATCHMAKING_JOIN' }
+  | { type: 'SURRENDER' }
+  | { type: 'MATCHMAKING_JOIN'; ranked: boolean }
   | { type: 'MATCHMAKING_LEAVE' }
   | { type: 'PING' };
 
 // ── WebSocket messages (server → client) ─────────────────────────
 export type ServerMessage =
-  | { type: 'ROOM_JOINED';          roomCode: string; playerSlot: Player; opponentUsername?: string }
+  | { type: 'ROOM_JOINED';          roomCode: string; playerSlot: Player; opponentUsername?: string; opponentElo?: number; opponentInPlacement?: boolean; ranked?: boolean }
   | { type: 'OPPONENT_JOINED';      opponentUsername: string }
   | { type: 'GAME_STATE';           state: unknown }  // GameState — typed on each side
   | { type: 'GAME_OVER';            winner: Player | null; isDraw: boolean; eloChangeMe: number; eloChangeOpp: number; newEloMe: number }
@@ -89,4 +91,6 @@ export interface LeaderboardEntry {
   gamesWon: number;
   gamesPlayed: number;
   winRate: number;
+  isInPlacement: boolean;
+  country?: string;
 }

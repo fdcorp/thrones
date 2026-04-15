@@ -99,6 +99,11 @@
   z-index: 1;
 }
 
+.winnerName {
+  font-weight: 700;
+  color: var(--white);
+}
+
 .divider {
   width: 120px;
   height: 1px;

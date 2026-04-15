@@ -51,6 +51,11 @@ export async function apiGetLeaderboard() {
   return handleResponse<{ leaderboard: LeaderboardEntry[] }>(res);
 }
 
+export async function apiGetAllPlayers() {
+  const res = await fetch(`${BASE}/api/players`, { headers: authHeaders(null) });
+  return handleResponse<{ players: LeaderboardEntry[] }>(res);
+}
+
 // ── Profile ───────────────────────────────────────────────────────
 
 export async function apiGetProfile(username: string) {
@@ -67,9 +72,9 @@ export async function apiUpdateProfile(token: string, country: string | null) {
   return handleResponse<{ user: UserProfile }>(res);
 }
 
-export async function apiGetHistory(username: string) {
-  const res = await fetch(`${BASE}/api/history/${encodeURIComponent(username)}`, { headers: authHeaders(null) });
-  return handleResponse<{ history: GameHistoryEntry[] }>(res);
+export async function apiGetHistory(username: string, page = 1) {
+  const res = await fetch(`${BASE}/api/history/${encodeURIComponent(username)}?page=${page}`, { headers: authHeaders(null) });
+  return handleResponse<{ history: GameHistoryEntry[]; total: number; page: number; pageSize: number }>(res);
 }
 
 export async function apiGetFriends(token: string) {

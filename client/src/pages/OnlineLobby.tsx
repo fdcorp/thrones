@@ -1,65 +1,40 @@
 import { useState } from 'react';
 import { useLang } from '@/i18n';
 import { useAuthStore } from '@/store/authStore';
-import { useOnlineStore, useSocket } from '@/hooks/useSocket';
-import { useGameStore } from '@/store/gameStore';
-import type { TurnAction } from '@/engine/types';
+import { useOnlineStore } from '@/hooks/useSocket';
 import styles from './OnlineLobby.module.css';
+
+import { Player } from '@/engine/types';
 
 interface OnlineLobbyProps {
   onGameReady: () => void;
   onBack: () => void;
+  createRoom: (preferredSlot?: Player) => Promise<void>;
+  joinRoom: (code: string) => Promise<void>;
+  joinQueue: (ranked: boolean) => Promise<void>;
+  leaveQueue: () => void;
 }
 
-export function OnlineLobby({ onGameReady, onBack }: OnlineLobbyProps) {
+export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joinRoom, joinQueue, leaveQueue }: OnlineLobbyProps) {
   const t       = useLang();
   const user    = useAuthStore(s => s.user);
   const online  = useOnlineStore();
-  const { setOnlineState, setOnlineDispatch } = useGameStore();
 
-  const [joinCode, setJoinCode]     = useState('');
-  const [copied, setCopied]         = useState(false);
-  const [isLoading, setIsLoading]   = useState(false);
+  const [joinCode, setJoinCode]           = useState('');
+  const [copied, setCopied]               = useState(false);
+  const [isLoading, setIsLoading]         = useState(false);
+  const [showColorPick, setShowColorPick] = useState(false);
+  const [showMatchPick, setShowMatchPick] = useState(false);
 
-  const { createRoom, joinRoom, joinQueue, leaveQueue, sendAction } = useSocket({
-    onRoomJoined: (code, slot, opponentUsername) => {
-      online.setRoom(code, slot);
-      if (opponentUsername) {
-        online.setOpponent(opponentUsername);
-      } else {
-        online.setStatus('waiting');
-      }
-    },
-    onOpponentJoined: (opponentUsername) => {
-      online.setOpponent(opponentUsername);
-    },
-    onGameState: (state) => {
-      setOnlineState(state as Parameters<typeof setOnlineState>[0]);
-      if (online.status === 'waiting' || online.status === 'creating') {
-        online.setStatus('playing');
-      }
-      onGameReady();
-    },
-    onError: (msg) => {
-      online.setError(msg);
-      setIsLoading(false);
-    },
-    onPlayerDisconnected: () => {
-      online.setStatus('disconnected');
-    },
-  });
-
-  // Wire online dispatch once (safe to call multiple times, stable ref)
-  if (!useGameStore.getState().onlineDispatch) {
-    setOnlineDispatch((action: TurnAction) => sendAction(action));
-  }
-
-  async function handleCreate() {
-    if (!user) return;
+  async function handleColorPicked(choice: Player | 'random') {
+    const slot = choice === 'random'
+      ? (Math.random() < 0.5 ? Player.P1 : Player.P2)
+      : choice;
+    setShowColorPick(false);
     setIsLoading(true);
     online.reset();
     try {
-      await createRoom();
+      await createRoom(slot);
       online.setStatus('creating');
     } catch {
       online.setError(t.online.mustBeLoggedIn);
@@ -67,12 +42,13 @@ export function OnlineLobby({ onGameReady, onBack }: OnlineLobbyProps) {
     }
   }
 
-  async function handleMatchmaking() {
+  async function handleMatchmaking(ranked: boolean) {
     if (!user) return;
+    setShowMatchPick(false);
     setIsLoading(true);
     online.reset();
     try {
-      await joinQueue();
+      await joinQueue(ranked);
       online.setStatus('searching');
     } catch {
       online.setError(t.online.mustBeLoggedIn);
@@ -120,6 +96,48 @@ export function OnlineLobby({ onGameReady, onBack }: OnlineLobbyProps) {
     );
   }
 
+  // Color pick before creating room
+  if (showColorPick) {
+    return (
+      <div className={styles.card}>
+        <div className={styles.title}>CHOISIR SA COULEUR</div>
+        <button className={styles.btnPrimary} onClick={() => handleColorPicked(Player.P1)}>
+          ♔ OR — Jouer en premier
+        </button>
+        <button className={styles.btnSecondary} onClick={() => handleColorPicked(Player.P2)}>
+          ♔ ARGENT — Jouer en deuxième
+        </button>
+        <button className={styles.btnSecondary} onClick={() => handleColorPicked('random')}>
+          ⚄ ALÉATOIRE
+        </button>
+        <button className={styles.btnGhost} onClick={() => setShowColorPick(false)}>
+          <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          Retour
+        </button>
+      </div>
+    );
+  }
+
+  // Matchmaking mode pick
+  if (showMatchPick) {
+    return (
+      <div className={styles.card}>
+        <div className={styles.title}>MATCHMAKING</div>
+        <button className={styles.btnPrimary} onClick={() => handleMatchmaking(false)}>
+          🎲 FOR FUN
+        </button>
+        <button className={styles.btnSecondary} onClick={() => handleMatchmaking(true)}>
+          <span>⚔️ RANKED</span>
+          <span className={styles.eloTag}>{user.elo} ELO</span>
+        </button>
+        <button className={styles.btnGhost} onClick={() => setShowMatchPick(false)}>
+          <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          {t.aiConfig.back}
+        </button>
+      </div>
+    );
+  }
+
   // Matchmaking — searching for opponent
   if (online.status === 'searching') {
     return (
@@ -132,6 +150,20 @@ export function OnlineLobby({ onGameReady, onBack }: OnlineLobbyProps) {
         <button className={styles.btnGhost} onClick={handleCancelMatchmaking}>
           <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
           Annuler
+        </button>
+      </div>
+    );
+  }
+
+  // Error state — connection failed while trying to match
+  if (online.status === 'idle' && online.error) {
+    return (
+      <div className={styles.card}>
+        <div className={styles.title}>MATCHMAKING</div>
+        <div className={styles.error}>{online.error}</div>
+        <button className={styles.btnGhost} onClick={() => { online.reset(); }}>
+          <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          {t.aiConfig.back}
         </button>
       </div>
     );
@@ -166,13 +198,13 @@ export function OnlineLobby({ onGameReady, onBack }: OnlineLobbyProps) {
 
       {online.error && <div className={styles.error}>{online.error}</div>}
 
-      <button className={styles.btnPrimary} onClick={handleMatchmaking} disabled={isLoading}>
+      <button className={styles.btnPrimary} onClick={() => setShowMatchPick(true)} disabled={isLoading}>
         MATCHMAKING
       </button>
 
       <div className={styles.orDivider}><span>ou</span></div>
 
-      <button className={styles.btnSecondary} onClick={handleCreate} disabled={isLoading}>
+      <button className={styles.btnSecondary} onClick={() => setShowColorPick(true)} disabled={isLoading}>
         {t.online.createRoom}
       </button>
 

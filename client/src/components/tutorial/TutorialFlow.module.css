@@ -660,6 +660,16 @@
   line-height: 1.5;
 }
 
+.eloNote {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 300;
+  font-size: 0.76rem;
+  color: rgba(240,236,228,0.45);
+  font-style: italic;
+  margin-top: 1rem;
+  text-align: center;
+}
+
 /* ── CTA ─────────────────────────────────────────────────────────────────── */
 .ctaSection {
   display: flex;

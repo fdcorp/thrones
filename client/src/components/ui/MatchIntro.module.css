@@ -1,0 +1,76 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(10, 10, 15, 0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s ease;
+}
+
+.overlay.in   { opacity: 0; }
+.overlay.hold { opacity: 1; }
+.overlay.out  { opacity: 0; pointer-events: none; }
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  width: 100%;
+  max-width: 700px;
+  padding: 0 2rem;
+}
+
+/* ── Sides ─────────────────────────────────────────────── */
+.side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sideLeft  { align-items: flex-end;  text-align: right; }
+.sideRight { align-items: flex-start; text-align: left; }
+
+.label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  opacity: 0.5;
+}
+
+.username {
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  word-break: break-all;
+}
+
+.elo {
+  font-size: 0.8rem;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  opacity: 0.6;
+}
+
+/* ── Colors ─────────────────────────────────────────────── */
+.gold   .label,
+.gold   .username { color: var(--gold); }
+.gold   .elo      { color: var(--gold-light); }
+
+.silver .label,
+.silver .username { color: var(--silver); }
+.silver .elo      { color: var(--silver-light); }
+
+/* ── VS ─────────────────────────────────────────────────── */
+.vs {
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  color: var(--white);
+  opacity: 0.3;
+  flex-shrink: 0;
+}

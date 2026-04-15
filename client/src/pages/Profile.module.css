@@ -63,6 +63,12 @@
   display: block;
 }
 
+.usernameRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .username {
   font-size: 1.6rem;
   font-weight: 800;
@@ -278,7 +284,7 @@
 
 .historyRow {
   display: grid;
-  grid-template-columns: 2.5rem 1fr auto auto;
+  grid-template-columns: max-content 1fr auto auto;
   align-items: center;
   gap: 0.75rem;
   padding: 0.5rem 0.75rem;
@@ -321,6 +327,14 @@
 .historyEloPos { color: #6db86d; }
 .historyEloNeg { color: #c46060; }
 .historyEloNeutral { color: var(--muted); }
+
+.historyPlacement {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--gold-dim);
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
 
 .modeBadge {
   font-size: 0.6rem;
@@ -430,3 +444,47 @@
   color: var(--gold);
 }
 .addFriendBtnActive:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); }
+
+/* ── Pagination ──────────────────────────────────────────────── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.pageBtn {
+  background: none;
+  border: 1px solid var(--border-bright);
+  color: var(--white);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms, color 150ms;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pageBtn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.06);
+  border-color: var(--gold-dim);
+  color: var(--gold);
+}
+.pageBtn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.pageLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  min-width: 3.5rem;
+  text-align: center;
+}

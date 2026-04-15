@@ -308,52 +308,32 @@ export function TutorialFlow() {
           </div>
         </div>
 
-        {/* Échelle des rangs */}
-        <div className={styles.rankedLadder}>
-          {[
-            { label: t.tutorial.tierUnranked,  sub: null,          color: 'muted'    },
-            { label: 'Bronze',                 sub: 'V → I',       color: 'bronze'   },
-            { label: 'Silver',                 sub: 'V → I',       color: 'silver'   },
-            { label: 'Gold',                   sub: 'V → I',       color: 'gold'     },
-            { label: 'Platinum',               sub: 'V → I',       color: 'platinum' },
-            { label: 'Diamond',                sub: 'V → I',       color: 'diamond'  },
-            { label: 'Master',                 sub: null,          color: 'master'   },
-            { label: 'King',                   sub: null,          color: 'king'     },
-          ].map((tier, i, arr) => (
-            <div key={tier.label} className={styles.rankedLadderItem}>
-              <div className={`${styles.rankedTierBadge} ${styles[`tier_${tier.color}`]}`}>
-                <span className={styles.rankedTierName}>{tier.label}</span>
-                {tier.sub && <span className={styles.rankedTierSub}>{tier.sub}</span>}
-              </div>
-              {i < arr.length - 1 && <span className={styles.rankedArrow}>›</span>}
-            </div>
-          ))}
-        </div>
-
-        {/* Comment monter */}
+        {/* ELO explanation */}
         <div className={styles.rankedFlow}>
           <div className={styles.rankedFlowStep}>
-            <div className={styles.rankedFlowNum}>1</div>
+            <div className={styles.rankedFlowNum}>?</div>
             <div>
-              <div className={styles.rankedFlowTitle}>{t.tutorial.rankedPlacement}</div>
-              <div className={styles.rankedFlowBody}>{t.tutorial.rankedPlacementDesc}</div>
+              <div className={styles.rankedFlowTitle}>{t.tutorial.eloWhat}</div>
+              <div className={styles.rankedFlowBody}>{t.tutorial.eloWhatDesc}</div>
             </div>
           </div>
           <div className={styles.rankedFlowStep}>
-            <div className={styles.rankedFlowNum}>2</div>
+            <div className={styles.rankedFlowNum}>↑</div>
             <div>
-              <div className={styles.rankedFlowTitle}>{t.tutorial.rankedLp}</div>
-              <div className={styles.rankedFlowBody}>{t.tutorial.rankedLpDesc}</div>
+              <div className={styles.rankedFlowTitle}>{t.tutorial.eloWin}</div>
+              <div className={styles.rankedFlowBody}>{t.tutorial.eloWinDesc}</div>
             </div>
           </div>
           <div className={styles.rankedFlowStep}>
-            <div className={styles.rankedFlowNum}>3</div>
+            <div className={styles.rankedFlowNum}>↓</div>
             <div>
-              <div className={styles.rankedFlowTitle}>{t.tutorial.rankedPromo}</div>
-              <div className={styles.rankedFlowBody}>{t.tutorial.rankedPromoDesc}</div>
+              <div className={styles.rankedFlowTitle}>{t.tutorial.eloLose}</div>
+              <div className={styles.rankedFlowBody}>{t.tutorial.eloLoseDesc}</div>
             </div>
           </div>
         </div>
+
+        <p className={styles.eloNote}>{t.tutorial.eloNote}</p>
 
       </section>
 

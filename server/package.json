@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "predev": "kill-port 3001 --silent || true",
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
@@ -22,6 +23,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^22.0.0",
     "@types/ws": "^8.5.10",
+    "kill-port": "^2.0.1",
     "tsx": "^4.7.0",
     "typescript": "^5.4.5"
   }

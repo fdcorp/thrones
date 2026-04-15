@@ -18,7 +18,15 @@
       "Bash(ngrok update:*)",
       "Bash(powershell -Command \"& 'C:\\\\Users\\\\fndzd\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Links\\\\ngrok.exe' update\")",
       "Bash(powershell -Command \"Get-Command ngrok -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source; where.exe ngrok 2>&1\")",
-      "Bash(powershell -Command \"& 'C:\\\\Users\\\\fndzd\\\\AppData\\\\Local\\\\ngrok\\\\ngrok.exe' version\")"
+      "Bash(powershell -Command \"& 'C:\\\\Users\\\\fndzd\\\\AppData\\\\Local\\\\ngrok\\\\ngrok.exe' version\")",
+      "Bash(netstat -ano)",
+      "Bash(findstr :3001)",
+      "Bash(taskkill /PID 18156 /F)",
+      "Bash(cmd /c \"taskkill /PID 18156 /F\")",
+      "Bash(echo \"exit: $?\")",
+      "Bash(cmd /c \"netstat -ano | findstr :3001\")",
+      "Bash(cmd /c \"tasklist | findstr node\")",
+      "Bash(node -e ':*)"
     ]
   }
 }

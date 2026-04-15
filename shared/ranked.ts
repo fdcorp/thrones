@@ -670,6 +670,15 @@ export class RankedSystem {
       rankB = this._assignInitialTier(rankB);
     }
 
+    // Recovery: players who finished placement before the ranked system was wired up
+    // will have provisional_games_left=0 but visible_tier=PEASANT — assign their tier now.
+    if (rankA.provisional_games_left === 0 && rankA.visible_tier === Tier.PEASANT) {
+      rankA = this._assignInitialTier(rankA);
+    }
+    if (rankB.provisional_games_left === 0 && rankB.visible_tier === Tier.PEASANT) {
+      rankB = this._assignInitialTier(rankB);
+    }
+
     // Apply LP only for non-placement players
     if (rankA.provisional_games_left === 0 && rankA.visible_tier !== Tier.PEASANT) {
       rankA = applyLpDelta(rankA, lpDeltaA);

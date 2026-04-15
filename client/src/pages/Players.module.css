@@ -45,6 +45,23 @@
   margin-right: auto;
 }
 
+.searchInput {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 300;
+  font-size: 0.82rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--white);
+  padding: 0.5rem 0.9rem;
+  width: 100%;
+  outline: none;
+  margin-bottom: 1rem;
+  transition: border-color 160ms ease;
+}
+.searchInput::placeholder { color: rgba(255,255,255,0.25); }
+.searchInput:focus { border-color: rgba(255,255,255,0.28); }
+
 .content {
   flex: 1;
   padding: 2rem 1.5rem;
@@ -53,7 +70,6 @@
   width: 100%;
 }
 
-/* Table */
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -98,19 +114,12 @@
 }
 .row td:first-child { text-align: left; }
 
-.rank {
-  font-weight: 600;
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  color: var(--muted);
-}
-.rankTop { color: var(--gold); font-weight: 700; }
-
 .playerCell {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
+
 .avatar {
   width: 28px;
   height: 28px;
@@ -135,6 +144,7 @@
   justify-content: center;
   flex-shrink: 0;
 }
+
 .username {
   font-weight: 500;
   font-size: 0.78rem;
@@ -167,15 +177,9 @@
   text-transform: uppercase;
 }
 
-.winRate {
-  font-weight: 500;
-  font-size: 0.72rem;
-  color: rgba(255,255,255,0.6);
-}
-
 .actionCell {
   text-align: right !important;
-  width: 100px;
+  width: 110px;
 }
 
 .addBtn {
@@ -199,20 +203,14 @@
 }
 .addBtn:disabled { opacity: 0.5; cursor: default; }
 
-.addBtnDone {
-  border-color: rgba(100,180,100,0.4);
-  color: #6db86d;
-}
-
 .friendTag {
   font-size: 0.62rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   color: #6db86d;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
-/* Loading / empty */
 .loading, .empty {
   text-align: center;
   font-family: 'Lexend', sans-serif;
@@ -230,10 +228,4 @@
   color: rgba(220,80,80,0.8);
   text-align: center;
   padding: 1.5rem;
-}
-
-@media (max-width: 639px) {
-  .content { padding: 1rem 0.75rem; }
-  .thead th, .row td { padding: 0.6rem 0.5rem; font-size: 0.65rem; }
-  .eloCell { font-size: 0.72rem; }
 }

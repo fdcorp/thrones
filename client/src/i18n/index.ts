@@ -80,8 +80,12 @@ export interface Translation {
     draw: string;
     mutualAgreement: string;
     conquered: string;
+    victory: string;
+    defeat: string;
     replay: string;
     menu: string;
+    findRanked: string;
+    findCasual: string;
     drawReasons: {
       repetition: string;
       stagnation: string;
@@ -154,13 +158,13 @@ export interface Translation {
     rankedCountsDesc: string;
     rankedNoCounts: string;
     rankedNoCountsDesc: string;
-    tierUnranked: string;
-    rankedPlacement: string;
-    rankedPlacementDesc: string;
-    rankedLp: string;
-    rankedLpDesc: string;
-    rankedPromo: string;
-    rankedPromoDesc: string;
+    eloWhat: string;
+    eloWhatDesc: string;
+    eloWin: string;
+    eloWinDesc: string;
+    eloLose: string;
+    eloLoseDesc: string;
+    eloNote: string;
     playNow: string;
     backToMenu: string;
     chooseMode: string;
@@ -216,6 +220,18 @@ export interface Translation {
     winRate: string;
     you: string;
     noGames: string;
+    addFriend: string;
+    added: string;
+  };
+
+  players: {
+    title: string;
+    player: string;
+    elo: string;
+    you: string;
+    noPlayers: string;
+    addFriend: string;
+    friend: string;
   };
 
   profile: {
@@ -232,6 +248,7 @@ export interface Translation {
     loss: string;
     draw: string;
     modeOnline: string;
+    modeOnlineCasual: string;
     modeAI: string;
     modeLocal: string;
     turns: (n: number) => string;

@@ -9,12 +9,15 @@ import { AshParticles } from '@/components/board/AshParticles';
 import { PlayerPanel } from '@/components/ui/PlayerPanel';
 import { GameLog } from '@/components/ui/GameLog';
 import { EndScreen } from '@/components/ui/EndScreen';
+import { MatchIntro } from '@/components/ui/MatchIntro';
 import { LangToggle } from '@/components/ui/LangToggle';
 import { CustomPanel } from '@/components/ui/CustomPanel';
 import { AIConfig } from '@/components/lobby/AIConfig';
 import { OnlineLobby } from './OnlineLobby';
+import { useSocket, useOnlineStore } from '@/hooks/useSocket';
+import { useAuthStore } from '@/store/authStore';
 import { Player, GamePhase } from '@/engine/types';
-import type { AILevel, GameMode } from '@/engine/types';
+import type { AILevel, GameMode, TurnAction } from '@/engine/types';
 import { isMuted, setMuted } from '@/utils/sounds';
 import { useLang } from '@/i18n';
 import colorStyles from './ColorSelect.module.css';
@@ -48,9 +51,72 @@ export function Game() {
   const navigate   = useNavigate();
   const t = useLang();
 
+  const user   = useAuthStore(s => s.user);
+  const online = useOnlineStore();
+  const { setOnlineState, setOnlineDispatch } = useGameStore();
+
+  // Socket lives here so it persists after OnlineLobby unmounts
+  const { createRoom, joinRoom, joinQueue, leaveQueue, sendAction, sendSurrender, disconnect } = useSocket({
+    onRoomJoined: (code, slot, opponentUsername, opponentElo, opponentInPlacement, ranked) => {
+      online.setRoom(code, slot);
+      online.setIsRanked(ranked ?? false);
+      if (opponentUsername) {
+        online.setOpponent(opponentUsername, opponentElo, opponentInPlacement);
+      } else {
+        online.setStatus('waiting');
+      }
+    },
+    onOpponentJoined: (opponentUsername) => {
+      online.setOpponent(opponentUsername);
+    },
+    onGameState: (state) => {
+      const isFirstState = useGameStore.getState().gameState === null;
+      setOnlineState(state as Parameters<typeof setOnlineState>[0]);
+      if (online.status === 'waiting' || online.status === 'creating' || online.status === 'searching') {
+        online.setStatus('playing');
+      }
+      const { opponentUsername } = useOnlineStore.getState();
+      if (isFirstState && opponentUsername) {
+        useOnlineStore.getState().setShowIntro(true);
+        setTimeout(() => useOnlineStore.getState().setShowIntro(false), 5000);
+      }
+      setShowOnlineLobby(false);
+    },
+    onError: (msg) => {
+      online.setError(msg);
+      // If error happens during lobby phase, return to lobby so the error is visible
+      const s = useOnlineStore.getState().status;
+      if (s !== 'playing') {
+        useOnlineStore.getState().setStatus('idle');
+      }
+    },
+    onPlayerDisconnected: () => {
+      online.setStatus('disconnected');
+    },
+    onGameOver: (_winner, _isDraw, eloChange, newElo) => {
+      online.setGameOver(eloChange, newElo);
+      // Refresh full user profile so header shows updated ELO, rank, placement counter
+      useAuthStore.getState().refreshMe();
+    },
+  });
+
+  // Wire sendAction into game store — must be in useEffect, never during render
+  useEffect(() => {
+    if (mode !== 'online') return;
+    setOnlineDispatch((action: TurnAction) => sendAction(action));
+    return () => setOnlineDispatch(null);
+  }, [mode, sendAction]);
+
   // Activate AI hook
   useAI();
   useSounds();
+
+  // Flip board for P2 in online mode once slot is known
+  useEffect(() => {
+    if (mode === 'online' && online.mySlot) {
+      setBoardFlipped(online.mySlot === Player.P2);
+    }
+  }, [mode, online.mySlot]);
 
   useEffect(() => {
     return () => {
@@ -92,6 +158,16 @@ export function Game() {
     resetGame();
   };
 
+  const handleFindMatch = () => {
+    const wasRanked = useOnlineStore.getState().isRanked;
+    resetGame();
+    clearSel();
+    online.reset();
+    online.setStatus('searching');
+    setShowOnlineLobby(true);
+    joinQueue(wasRanked);
+  };
+
   // Online lobby screen
   if (showOnlineLobby) {
     return (
@@ -115,6 +191,10 @@ export function Game() {
           <OnlineLobby
             onGameReady={() => setShowOnlineLobby(false)}
             onBack={() => navigate('/')}
+            createRoom={createRoom}
+            joinRoom={joinRoom}
+            joinQueue={joinQueue}
+            leaveQueue={leaveQueue}
           />
         </div>
       </div>
@@ -222,12 +302,36 @@ export function Game() {
   if (!gameState) return null;
 
   const isEnded = gameState.phase === GamePhase.ENDED;
-  // human plays P2 → P1 (opponent) on top, P2 (human) on bottom
-  const topPlayer    = humanPlayer === Player.P2 ? Player.P1 : Player.P2;
-  const bottomPlayer = humanPlayer === Player.P2 ? Player.P2 : Player.P1;
+  // In online mode use mySlot, otherwise use humanPlayer choice
+  const effectiveHuman = mode === 'online' ? (online.mySlot ?? Player.P1) : (humanPlayer ?? Player.P1);
+  const topPlayer    = effectiveHuman === Player.P2 ? Player.P1 : Player.P2;
+  const bottomPlayer = effectiveHuman === Player.P2 ? Player.P2 : Player.P1;
+
+  // Online player names
+  const myName       = user?.username ?? undefined;
+  const opponentName = online.opponentUsername ?? undefined;
+  const mySlot       = online.mySlot;
+  const nameForPlayer = (p: Player): string | undefined => {
+    if (mode !== 'online') return undefined;
+    return p === mySlot ? myName : opponentName;
+  };
 
   return (
     <div className={styles.page}>
+
+      {/* Pre-match intro — overlay for 3s when online game starts */}
+      {mode === 'online' && online.showIntro && online.mySlot && user && online.opponentUsername && (
+        <MatchIntro
+          myUsername={user.username}
+          myElo={user.elo}
+          myInPlacement={user.rank?.isInPlacement ?? false}
+          mySlot={online.mySlot}
+          opponentUsername={online.opponentUsername}
+          opponentElo={online.opponentElo}
+          opponentInPlacement={online.opponentInPlacement}
+        />
+      )}
+
       <header className={styles.header}>
         <svg viewBox="0 0 1191 216" aria-label="THRONES" className={styles.headerTitle} fill="white" xmlns="http://www.w3.org/2000/svg">
           <path d="M115.59,65.086l0,128.078l-50.717,0l0,-128.078l-46.861,0l0,-39.499l145.023,0l0,39.499l-47.445,0Z"/>
@@ -313,6 +417,7 @@ export function Game() {
             player={topPlayer}
             gameState={gameState}
             isActive={gameState.currentPlayer === topPlayer && !aiThinking}
+            playerName={nameForPlayer(topPlayer)}
           />
           {/* ── Action buttons ── */}
           <div className={styles.actionZone}>
@@ -330,7 +435,15 @@ export function Game() {
             </button>
             <button
               className={`${styles.actionBtn} ${styles.abandonBtn}`}
-              onClick={surrender}
+              onClick={() => {
+                if (gameState.phase !== GamePhase.PLAYING) return;
+                if (mode === 'online') {
+                  // Send SURRENDER to server → server broadcasts GAME_STATE ENDED to both players
+                  sendSurrender();
+                } else {
+                  surrender();
+                }
+              }}
               disabled={aiThinking}
               title={t.game.surrenderTitle}
             >
@@ -345,6 +458,7 @@ export function Game() {
             player={bottomPlayer}
             gameState={gameState}
             isActive={gameState.currentPlayer === bottomPlayer && !aiThinking}
+            playerName={nameForPlayer(bottomPlayer)}
           />
         </div>
 
@@ -360,7 +474,16 @@ export function Game() {
               winner={gameState.winner}
               isDraw={gameState.isDraw}
               drawReason={gameState.drawReason}
+              mySlot={mode === 'online' ? online.mySlot : null}
+              winnerName={
+                gameState.winner == null ? undefined :
+                mode === 'online'
+                  ? (gameState.winner === online.mySlot ? (user?.username ?? undefined) : (online.opponentUsername ?? undefined))
+                  : (gameState.winner === Player.P1 ? t.panel.player1 : t.panel.player2)
+              }
               onReplay={handleReplay}
+              onFindMatch={mode === 'online' ? handleFindMatch : undefined}
+              isRanked={online.isRanked}
             />
           )}
           <HexBoard />

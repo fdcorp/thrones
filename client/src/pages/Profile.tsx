@@ -111,6 +111,9 @@ export function Profile() {
 
   const [profile, setProfile]     = useState<UserProfile | null>(null);
   const [history, setHistory]     = useState<GameHistoryEntry[]>([]);
+  const [histTotal, setHistTotal] = useState(0);
+  const [histPage, setHistPage]   = useState(1);
+  const HIST_PAGE_SIZE = 15;
   const [friends, setFriends]     = useState<FriendEntry[]>([]);
   const [loading, setLoading]     = useState(true);
   const [error, setError]         = useState<string | null>(null);
@@ -130,22 +133,31 @@ export function Profile() {
 
   const lang = t.lang;
 
+  // Load profile (runs when username changes)
   useEffect(() => {
     if (!username) return;
     setLoading(true);
     setError(null);
-
-    Promise.all([
-      apiGetProfile(username),
-      apiGetHistory(username),
-    ]).then(([{ profile: p }, { history: h }]) => {
-      setProfile(p);
-      setHistory(h);
-      setSelectedCountry(p.country ?? '');
-    }).catch(err => {
-      setError((err as Error).message);
-    }).finally(() => setLoading(false));
+    setHistPage(1);
+    apiGetProfile(username)
+      .then(({ profile: p }) => {
+        setProfile(p);
+        setSelectedCountry(p.country ?? '');
+      })
+      .catch(err => setError((err as Error).message))
+      .finally(() => setLoading(false));
   }, [username]);
+
+  // Load history (runs on username change and page change)
+  useEffect(() => {
+    if (!username) return;
+    apiGetHistory(username, histPage)
+      .then(({ history: h, total }) => {
+        setHistory(h);
+        setHistTotal(total);
+      })
+      .catch(() => {});
+  }, [username, histPage]);
 
   // Own profile: load own friends list
   useEffect(() => {
@@ -216,7 +228,8 @@ export function Profile() {
   function getModeLabel(mode: string): string {
     if (mode === 'ai') return t.profile.modeAI;
     if (mode === 'local') return t.profile.modeLocal;
-    return t.profile.modeOnline;
+    if (mode === 'online_casual') return t.profile.modeOnlineCasual;
+    return t.profile.modeOnline; // 'online_ranked' and any legacy value
   }
 
   if (loading) return (
@@ -253,23 +266,12 @@ export function Profile() {
 
       {/* Header */}
       <div className={styles.header}>
-        <div className={styles.username}>
-          {profile.username}
+        <div className={styles.usernameRow}>
+          <div className={styles.username}>{profile.username}</div>
+          <div className={styles.eloTag}>
+            {profile.elo} <span className={styles.eloLp}>ELO</span>
+          </div>
         </div>
-        <div className={styles.eloTag}>
-          {profile.rank.isInPlacement
-            ? `Matchs de placement ${10 - profile.rank.provisionalGamesLeft}/10`
-            : profile.rank.tier === 'PEASANT'
-              ? 'Non classé'
-              : profile.rank.display
-          }
-          {profile.rank.isInPlacement || profile.rank.tier === 'PEASANT' ? null : (
-            <span className={styles.eloLp}>{profile.rank.leaguePoints} LP</span>
-          )}
-        </div>
-        {profile.rank.isProvisional && !profile.rank.isInPlacement && (
-          <div className={styles.provisionalBadge}>PROVISIONAL</div>
-        )}
         <div className={styles.dates}>
           <span>{t.profile.memberSince} <strong>{formatDate(profile.createdAt, lang)}</strong></span>
           <span>{t.profile.lastSeen} <strong>{profile.lastLogin ? formatDate(profile.lastLogin, lang) : t.profile.never}</strong></span>
@@ -396,37 +398,74 @@ export function Profile() {
           <div className={styles.sectionTitle}>{t.profile.matchHistory}</div>
           {history.length === 0
             ? <div className={styles.empty}>{t.profile.noHistory}</div>
-            : (
-              <div className={styles.historyList}>
-                {history.map(entry => {
-                  const delta = entry.eloChangeMe;
-                  const eloClass = delta > 0 ? styles.historyEloPos : delta < 0 ? styles.historyEloNeg : styles.historyEloNeutral;
-                  const isOnline = entry.gameMode === 'online';
-                  return (
-                    <div key={entry.id} className={styles.historyRow}>
-                      <span className={`${styles.resultBadge} ${getResultClass(entry)}`}>
-                        {getResultLabel(entry)}
-                      </span>
-                      <span className={styles.historyOpponent}>
-                        {entry.opponentUsername ?? '—'}
-                      </span>
-                      <span className={styles.historyMeta}>
-                        <span className={styles.modeBadge}>{getModeLabel(entry.gameMode)}</span>
-                        {' '}
-                        {t.profile.turns(entry.turns)}
-                        {' · '}
-                        {formatDate(entry.createdAt, lang)}
-                      </span>
-                      {isOnline && (
-                        <span className={`${styles.historyElo} ${eloClass}`}>
-                          {t.profile.eloChange(delta)}
-                        </span>
-                      )}
+            : (() => {
+                const totalPages = Math.ceil(histTotal / HIST_PAGE_SIZE);
+                return (
+                  <>
+                    <div className={styles.historyList}>
+                      {history.map(entry => {
+                        const delta      = entry.eloChangeMe;
+                        const eloClass   = delta > 0 ? styles.historyEloPos : delta < 0 ? styles.historyEloNeg : styles.historyEloNeutral;
+                        const isRanked   = entry.gameMode === 'online_ranked';
+                        // rankedGamesNewer = how many ranked games came AFTER this one
+                        // chronological rank of this game = totalRanked - rankedGamesNewer
+                        // it's a placement game if that number is between 1 and 10
+                        const totalRanked = profile.rank.totalRankedGamesPlayed;
+                        const chronoRank  = isRanked && entry.rankedGamesNewer != null
+                          ? totalRanked - entry.rankedGamesNewer
+                          : null;
+                        const placementN  = chronoRank != null && chronoRank >= 1 && chronoRank <= 10 ? chronoRank : null;
+                        return (
+                          <div key={entry.id} className={styles.historyRow}>
+                            <span className={`${styles.resultBadge} ${getResultClass(entry)}`}>
+                              {getResultLabel(entry)}
+                            </span>
+                            <span className={styles.historyOpponent}>
+                              {entry.opponentUsername ?? '—'}
+                            </span>
+                            <span className={styles.historyMeta}>
+                              <span className={styles.modeBadge}>{getModeLabel(entry.gameMode)}</span>
+                              {' '}
+                              {t.profile.turns(entry.turns)}
+                              {' · '}
+                              {formatDate(entry.createdAt, lang)}
+                            </span>
+                            {isRanked && placementN != null && (
+                              <span className={styles.historyPlacement}>
+                                Placement {placementN}/10
+                              </span>
+                            )}
+                            {isRanked && placementN == null && (
+                              <span className={`${styles.historyElo} ${eloClass}`}>
+                                {t.profile.eloChange(delta)}
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
-                  );
-                })}
-              </div>
-            )
+                    {totalPages > 1 && (
+                      <div className={styles.pagination}>
+                        <button
+                          className={styles.pageBtn}
+                          onClick={() => setHistPage(p => Math.max(1, p - 1))}
+                          disabled={histPage === 1}
+                        >
+                          ←
+                        </button>
+                        <span className={styles.pageLabel}>{histPage} / {totalPages}</span>
+                        <button
+                          className={styles.pageBtn}
+                          onClick={() => setHistPage(p => Math.min(totalPages, p + 1))}
+                          disabled={histPage === totalPages}
+                        >
+                          →
+                        </button>
+                      </div>
+                    )}
+                  </>
+                );
+              })()
           }
         </div>
 

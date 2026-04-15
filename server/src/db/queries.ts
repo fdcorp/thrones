@@ -84,6 +84,23 @@ export function updateElo(userId: number, newElo: number, won: boolean) {
   ).run(newElo, won ? 1 : 0, userId);
 }
 
+/** Update only the elo column — used alongside updateRankedFields which handles games_played/won. */
+export function setEloOnly(userId: number, newElo: number) {
+  getDb().prepare('UPDATE users SET elo = ? WHERE id = ?').run(newElo, userId);
+}
+
+/** Decrement provisional_games_left and increment total_ranked_games_played after each ranked game. */
+export function updateRankedProgress(userId: number, currentGamesLeft: number, currentTotalPlayed: number) {
+  const newGamesLeft   = currentGamesLeft > 0 ? currentGamesLeft - 1 : 0;
+  const newTotalPlayed = currentTotalPlayed + 1;
+  getDb().prepare(`
+    UPDATE users SET
+      provisional_games_left    = ?,
+      total_ranked_games_played = ?
+    WHERE id = ?
+  `).run(newGamesLeft, newTotalPlayed, userId);
+}
+
 // ── Ranked queries ────────────────────────────────────────────────
 
 const _rankedSystem = new RankedSystem(1);
@@ -207,7 +224,14 @@ export function updateCountry(userId: number, country: string | null) {
 
 // ── Game history ──────────────────────────────────────────────────
 
-export function getGameHistory(userId: number, limit = 20): GameHistoryEntry[] {
+export function getGameHistoryCount(userId: number): number {
+  const row = getDb().prepare(
+    `SELECT COUNT(*) AS cnt FROM games WHERE player1_id = ? OR player2_id = ?`
+  ).get(userId, userId) as { cnt: number };
+  return row.cnt;
+}
+
+export function getGameHistory(userId: number, limit = 15, offset = 0): GameHistoryEntry[] {
   const db = getDb();
   const rows = db.prepare(`
     SELECT
@@ -217,14 +241,20 @@ export function getGameHistory(userId: number, limit = 20): GameHistoryEntry[] {
       g.created_at,
       g.winner_id,
       CASE WHEN g.player1_id = $uid THEN g.elo_change_p1 ELSE g.elo_change_p2 END AS elo_change_me,
-      CASE WHEN g.player1_id = $uid THEN u2.username ELSE u1.username END AS opponent_username
+      CASE WHEN g.player1_id = $uid THEN u2.username ELSE u1.username END AS opponent_username,
+      (
+        SELECT COUNT(*) FROM games g2
+        WHERE (g2.player1_id = $uid OR g2.player2_id = $uid)
+          AND g2.game_mode = 'online_ranked'
+          AND g2.created_at > g.created_at
+      ) AS ranked_games_newer
     FROM games g
     LEFT JOIN users u1 ON g.player1_id = u1.id
     LEFT JOIN users u2 ON g.player2_id = u2.id
     WHERE g.player1_id = $uid OR g.player2_id = $uid
     ORDER BY g.created_at DESC
-    LIMIT $limit
-  `).all({ uid: userId, limit }) as {
+    LIMIT $limit OFFSET $offset
+  `).all({ uid: userId, limit, offset }) as {
     id: number;
     turns: number;
     game_mode: string;
@@ -232,16 +262,18 @@ export function getGameHistory(userId: number, limit = 20): GameHistoryEntry[] {
     winner_id: number | null;
     elo_change_me: number;
     opponent_username: string | null;
+    ranked_games_newer: number;
   }[];
 
   return rows.map(r => ({
-    id:               r.id,
-    opponentUsername: r.opponent_username,
-    winnerId:         r.winner_id,
-    eloChangeMe:      r.elo_change_me,
-    turns:            r.turns,
-    gameMode:         r.game_mode,
-    createdAt:        r.created_at,
+    id:                r.id,
+    opponentUsername:  r.opponent_username,
+    winnerId:          r.winner_id,
+    eloChangeMe:       r.elo_change_me,
+    turns:             r.turns,
+    gameMode:          r.game_mode,
+    createdAt:         r.created_at,
+    rankedGamesNewer:  r.ranked_games_newer,
   }));
 }
 
@@ -285,24 +317,50 @@ export function getFriends(userId: number): FriendEntry[] {
 
 // ── Leaderboard ───────────────────────────────────────────────────
 
+export function getAllPlayers(): LeaderboardEntry[] {
+  const db = getDb();
+  const rows = db.prepare(`
+    SELECT id, username, elo, games_played, games_won, provisional_games_left, country
+    FROM users
+    ORDER BY username ASC
+  `).all() as { id: number; username: string; elo: number; games_played: number; games_won: number; provisional_games_left: number; country: string | null }[];
+
+  return rows.map((row, idx) => ({
+    rank:          idx + 1,
+    id:            row.id,
+    username:      row.username,
+    elo:           row.elo,
+    gamesWon:      row.games_won,
+    gamesPlayed:   row.games_played,
+    winRate:       row.games_played > 0
+      ? Math.round((row.games_won / row.games_played) * 100)
+      : 0,
+    isInPlacement: row.provisional_games_left > 0,
+    country:       row.country ?? undefined,
+  }));
+}
+
 export function getLeaderboard(limit = 50): LeaderboardEntry[] {
   const db = getDb();
   const rows = db.prepare(`
-    SELECT id, username, elo, games_played, games_won
+    SELECT id, username, elo, games_played, games_won, country
     FROM users
+    WHERE provisional_games_left = 0
     ORDER BY elo DESC
     LIMIT ?
-  `).all(limit) as { id: number; username: string; elo: number; games_played: number; games_won: number }[];
+  `).all(limit) as { id: number; username: string; elo: number; games_played: number; games_won: number; country: string | null }[];
 
-  return rows.map((row, i) => ({
-    rank:        i + 1,
-    id:          row.id,
-    username:    row.username,
-    elo:         row.elo,
-    gamesWon:    row.games_won,
-    gamesPlayed: row.games_played,
-    winRate:     row.games_played > 0
+  return rows.map((row, idx) => ({
+    rank:          idx + 1,
+    id:            row.id,
+    username:      row.username,
+    elo:           row.elo,
+    gamesWon:      row.games_won,
+    gamesPlayed:   row.games_played,
+    winRate:       row.games_played > 0
       ? Math.round((row.games_won / row.games_played) * 100)
       : 0,
+    isInPlacement: false,
+    country:       row.country ?? undefined,
   }));
 }

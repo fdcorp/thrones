@@ -6,6 +6,7 @@ export interface RoomPlayer {
   userId: number;
   username: string;
   slot: Player;
+  ranked?: boolean;
 }
 
 export interface Room {
@@ -13,6 +14,7 @@ export interface Room {
   players: RoomPlayer[];
   gameState: unknown | null;
   status: 'waiting' | 'playing' | 'finished';
+  ranked: boolean;
   createdAt: Date;
 }
 
@@ -27,7 +29,7 @@ function generateCode(): string {
   return code;
 }
 
-export function createRoom(player: RoomPlayer): Room {
+export function createRoom(player: RoomPlayer, ranked = false): Room {
   let code: string;
   do { code = generateCode(); } while (rooms.has(code));
 
@@ -36,6 +38,7 @@ export function createRoom(player: RoomPlayer): Room {
     players: [player],
     gameState: null,
     status: 'waiting',
+    ranked,
     createdAt: new Date(),
   };
   rooms.set(code, room);
@@ -46,7 +49,7 @@ export function joinRoom(code: string, player: RoomPlayer): Room | null {
   const room = rooms.get(code);
   if (!room || room.status !== 'waiting' || room.players.length >= 2) return null;
 
-  player.slot = Player.P2; // second player is always P2 initially
+  // slot is already set by the caller
   room.players.push(player);
   room.status = 'playing';
   return room;
@@ -59,9 +62,32 @@ export function getRoomByUserId(userId: number): Room | undefined {
   return undefined;
 }
 
+export function getRoomByWs(ws: WebSocket): Room | undefined {
+  for (const room of rooms.values()) {
+    if (room.players.some(p => p.ws === ws)) return room;
+  }
+  return undefined;
+}
+
 export function removePlayerFromRoom(userId: number) {
   for (const [code, room] of rooms.entries()) {
     const idx = room.players.findIndex(p => p.userId === userId);
+    if (idx !== -1) {
+      room.players.splice(idx, 1);
+      if (room.players.length === 0) {
+        rooms.delete(code);
+      } else {
+        room.status = 'finished';
+      }
+      return room;
+    }
+  }
+  return undefined;
+}
+
+export function removePlayerFromRoomByWs(ws: WebSocket) {
+  for (const [code, room] of rooms.entries()) {
+    const idx = room.players.findIndex(p => p.ws === ws);
     if (idx !== -1) {
       room.players.splice(idx, 1);
       if (room.players.length === 0) {

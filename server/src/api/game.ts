@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getLeaderboard } from '../db/queries';
+import { getLeaderboard, getAllPlayers } from '../db/queries';
 
 const router = Router();
 
@@ -8,6 +8,17 @@ router.get('/leaderboard', (_req, res) => {
   try {
     const entries = getLeaderboard(50);
     res.json({ leaderboard: entries });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// GET /api/players
+router.get('/players', (_req, res) => {
+  try {
+    const entries = getAllPlayers();
+    res.json({ players: entries });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });

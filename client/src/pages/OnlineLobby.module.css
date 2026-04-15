@@ -95,6 +95,21 @@
 }
 .btnSecondary:disabled { opacity: 0.45; cursor: default; transform: none; }
 
+.btnSecondary:has(.eloTag) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.eloTag {
+  font-size: 0.6rem;
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  color: rgba(201,168,76,0.5);
+  text-transform: uppercase;
+}
+
 .codeInputRow {
   display: flex;
   gap: 0.5rem;

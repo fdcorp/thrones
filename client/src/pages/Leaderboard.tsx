@@ -63,20 +63,33 @@ export function Leaderboard() {
                     className={`${styles.row} ${isMe ? styles.rowMe : ''}`}
                   >
                     <td>
-                      <span className={`${styles.rank} ${entry.rank <= 3 ? styles.rankTop : ''}`}>
-                        {entry.rank <= 3 ? ['♛', '♜', '♝'][entry.rank - 1] : `#${entry.rank}`}
-                      </span>
+                      <span className={styles.rank}>#{entry.rank}</span>
                     </td>
                     <td>
                       <div className={styles.playerCell}>
-                        <div className={styles.avatar}>
-                          {entry.username[0].toUpperCase()}
-                        </div>
+                        {entry.country ? (
+                          <div className={styles.avatarFlag}>
+                            <img
+                              src={`https://flagcdn.com/20x15/${entry.country.toLowerCase()}.png`}
+                              srcSet={`https://flagcdn.com/40x30/${entry.country.toLowerCase()}.png 2x`}
+                              width={20}
+                              height={15}
+                              alt={entry.country}
+                              style={{ display: 'block', borderRadius: '1px' }}
+                            />
+                          </div>
+                        ) : (
+                          <div className={styles.avatar}>
+                            {entry.username[0].toUpperCase()}
+                          </div>
+                        )}
                         <span className={styles.username}>{entry.username}</span>
                         {isMe && <span className={styles.youTag}>{t.leaderboard.you}</span>}
                       </div>
                     </td>
-                    <td><span className={styles.eloCell}>{entry.elo}</span></td>
+                    <td>
+                      <span className={styles.eloCell}>{entry.elo}</span>
+                    </td>
                     <td>{entry.gamesWon}</td>
                     <td>{entry.gamesPlayed}</td>
                     <td>

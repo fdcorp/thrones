@@ -29,4 +29,5 @@ setupWsServer(server);
 
 server.listen(PORT, () => {
   console.log(`Thrones server running on http://localhost:${PORT}`);
+  console.log(`[WS] Ranked/casual queues active — matchmaking v2`);
 });

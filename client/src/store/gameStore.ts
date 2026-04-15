@@ -12,6 +12,7 @@ interface GameStore {
   isUndoing: boolean;
   // Online-specific: when set, dispatch is intercepted by the socket hook
   onlineDispatch: ((action: TurnAction) => void) | null;
+  onlineSurrender: (() => void) | null;
 
   startGame: (mode: GameMode, aiLevel?: AILevel, humanPlayer?: Player) => void;
   dispatch: (action: TurnAction) => void;
@@ -21,6 +22,7 @@ interface GameStore {
   resetGame: () => void;
   setAiThinking: (thinking: boolean) => void;
   setOnlineDispatch: (fn: ((action: TurnAction) => void) | null) => void;
+  setOnlineSurrender: (fn: (() => void) | null) => void;
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -30,6 +32,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   aiThinking: false,
   isUndoing: false,
   onlineDispatch: null,
+  onlineSurrender: null,
 
   startGame: (mode, aiLevel, humanPlayer) => {
     const gameState = initGame(mode, aiLevel, humanPlayer);
@@ -51,8 +54,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   surrender: () => {
-    const { gameState } = get();
+    const { gameState, onlineSurrender } = get();
     if (!gameState || gameState.phase !== GamePhase.PLAYING) return;
+    // In online mode, let the server handle it and broadcast to both players
+    if (onlineSurrender) { onlineSurrender(); return; }
     const winner = gameState.currentPlayer === Player.P1 ? Player.P2 : Player.P1;
     set({
       gameState: {
@@ -88,9 +93,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   resetGame: () => {
-    set({ gameState: null, history: [], previousState: null, aiThinking: false, onlineDispatch: null });
+    set({ gameState: null, history: [], previousState: null, aiThinking: false, onlineDispatch: null, onlineSurrender: null });
   },
 
   setAiThinking: (thinking) => set({ aiThinking: thinking }),
   setOnlineDispatch: (fn) => set({ onlineDispatch: fn }),
+  setOnlineSurrender: (fn) => set({ onlineSurrender: fn }),
 }));

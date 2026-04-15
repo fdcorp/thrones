@@ -776,13 +776,33 @@ npm install express ws better-sqlite3 jsonwebtoken bcrypt dotenv
 npm install -D @types/express @types/ws @types/better-sqlite3 @types/jsonwebtoken @types/bcrypt typescript ts-node nodemon
 ```
 
-#### `server/src/db/schema.sql`
+#### Schéma DB réel (implémenté)
+
 ```sql
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  elo INTEGER NOT NULL DEFAULT 1000,
+  games_played INTEGER NOT NULL DEFAULT 0,
+  games_won INTEGER NOT NULL DEFAULT 0,
+  country TEXT,
+  last_login TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  -- Glicko-2 (hidden — matchmaking only, not shown to users)
+  hidden_mmr REAL NOT NULL DEFAULT 1500,
+  rating_deviation REAL NOT NULL DEFAULT 350,
+  volatility REAL NOT NULL DEFAULT 0.06,
+  -- Visible rank fields (kept in DB for future use, not displayed)
+  visible_tier TEXT NOT NULL DEFAULT 'PEASANT',
+  visible_division TEXT,
+  league_points INTEGER NOT NULL DEFAULT 0,
+  season_number INTEGER NOT NULL DEFAULT 1,
+  provisional_games_left INTEGER NOT NULL DEFAULT 10,
+  total_ranked_games_played INTEGER NOT NULL DEFAULT 0,
+  in_promotion_series INTEGER NOT NULL DEFAULT 0,
+  promotion_wins INTEGER NOT NULL DEFAULT 0,
+  promotion_losses INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE games (
@@ -790,45 +810,66 @@ CREATE TABLE games (
   player1_id INTEGER REFERENCES users(id),
   player2_id INTEGER REFERENCES users(id),
   winner_id INTEGER REFERENCES users(id),
-  mode TEXT NOT NULL,
+  elo_change_p1 INTEGER NOT NULL DEFAULT 0,
+  elo_change_p2 INTEGER NOT NULL DEFAULT 0,
   turns INTEGER,
+  game_mode TEXT NOT NULL DEFAULT 'online_casual',
+  mmr_change_p1 REAL,
+  mmr_change_p2 REAL,
+  lp_change_p1 INTEGER,
+  lp_change_p2 INTEGER,
   ended_at DATETIME,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE friends (
+  user_id INTEGER REFERENCES users(id),
+  friend_id INTEGER REFERENCES users(id),
+  PRIMARY KEY (user_id, friend_id)
+);
 ```
 
-#### `server/src/ws/roomManager.ts`
-- Gérer les rooms en mémoire : `Map<roomCode, Room>`
-- `Room` : `{ code, player1, player2, gameState, status }`
-- `createRoom(player): { code, room }` — génère un code à 6 caractères unique
-- `joinRoom(code, player): Room | null`
-- `getRoomByPlayer(playerId): Room | null`
+**Note sur le système de classement :**
+- Seul l'**ELO** (formule K=32 standard) est affiché aux utilisateurs partout dans l'interface.
+- Le système Glicko-2 (`shared/ranked.ts`) tourne en backend pour le hidden MMR (matchmaking), mais ses tiers/divisions/LP ne sont **pas affichés**.
+- Un joueur est **UNRANKED** tant que `provisional_games_left > 0` (10 parties de placement). Il n'apparaît pas dans le leaderboard mais apparaît dans la page Players avec le label UNRANKED.
+- Tout le monde commence à ELO 1000. L'ELO est affiché à côté du pseudo sur le profil.
 
-#### `server/src/ws/gameSession.ts`
-- Synchroniser le `GameState` entre les deux clients d'une room
-- À chaque action du joueur : valider côté serveur via `engine/gameState.applyAction`, broadcaster le nouveau state aux deux clients
-- Messages WebSocket (définis dans `shared/types.ts`) :
-  - `ROOM_JOINED` — confirmation de connexion à la room
-  - `GAME_STATE` — broadcast du nouvel état après chaque action
-  - `PLAYER_DISCONNECTED` — notifier si un joueur quitte
-  - `ACTION` — action envoyée par un client
+#### `server/src/ws/roomManager.ts` (implémenté)
+- Rooms en mémoire : `Map<roomCode, Room>`
+- `Room` : `{ code, players: RoomPlayer[], gameState, status: 'waiting'|'playing'|'finished', ranked?: boolean }`
+- Matchmaking : files séparées `rankedQueue` et `casualQueue`
+- Gestion déconnexion : victoire par forfait si partie en cours
 
-#### `server/src/api/auth.ts`
-- `POST /api/register` — créer un compte (username + password, hash bcrypt)
-- `POST /api/login` — retourner un JWT valide 7 jours
-- `GET /api/me` — retourner les infos du compte (middleware JWT requis)
+#### `server/src/ws/gameSession.ts` (implémenté)
+- `handleGameOver(room, winnerSlot, isDraw, turns, gameMode)`
+- Ranked : calcule ELO (K=32) + Glicko-2 via `processMatchResult` → persiste avec `updateRankedFields` + `setEloOnly`
+- Casual : sauvegarde partie, ELO inchangé
+- Envoie `GAME_OVER` à chaque joueur avec `eloChangeMe`, `newEloMe`
 
-#### `client/src/hooks/useSocket.ts`
-- Gérer la connexion WebSocket au serveur
-- Écouter les messages `GAME_STATE` → mettre à jour `gameStore`
-- Envoyer les actions via `ACTION` message
-- Gérer la reconnexion automatique si la connexion est perdue
+#### `server/src/api/` (implémenté)
+- `POST /api/register` — créer un compte
+- `POST /api/login` — JWT 7 jours
+- `GET /api/me` — profil du compte connecté
+- `GET /api/profile/:username` — profil public
+- `PUT /api/profile` — modifier le pays
+- `GET /api/history/:username?page=N` — historique paginé (15/page)
+- `GET /api/leaderboard` — top 50 joueurs **ayant terminé le placement**, triés par ELO DESC
+- `GET /api/players` — **tous** les joueurs triés alphabétiquement, avec `isInPlacement` flag
+- `POST /api/friends/:username` — ajouter un ami
+- `DELETE /api/friends/:username` — retirer un ami
+- `GET /api/friends` — liste d'amis
+- `GET /api/friends/check/:username` — vérifier si ami
 
-#### Test mode online
-- Ouvrir deux onglets sur `localhost:3000` (ou via ngrok pour un ami distant)
-- Créer une room dans le premier onglet → copier le code
-- Rejoindre depuis le second onglet avec le code
-- Jouer une partie complète — vérifier la synchronisation en temps réel
+#### `client/src/hooks/useSocket.ts` (implémenté)
+- Store Zustand `useOnlineStore` : `status`, `roomCode`, `playerSlot`, `opponentUsername`, `opponentElo`, `opponentInPlacement`, `isRanked`
+- Gestion WebSocket : reconnexion, PING/PONG keepalive
+- Messages : `ROOM_JOINED`, `GAME_STATE`, `GAME_OVER`, `PLAYER_DISCONNECTED`, `MATCHMAKING_JOIN/LEAVE`
+
+#### Pages online implémentées
+- `/leaderboard` — Ranking par ELO (joueurs ayant terminé le placement uniquement)
+- `/players` — Tous les joueurs alphabétiques + champ de recherche + UNRANKED pour ceux en placement
+- `/profile/:username` — Profil avec ELO affiché à côté du pseudo, historique paginé, amis, pays
 
 ---
 

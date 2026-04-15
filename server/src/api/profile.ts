@@ -4,6 +4,7 @@ import {
   getUserById,
   updateCountry,
   getGameHistory,
+  getGameHistoryCount,
   getFriends,
   addFriend,
   removeFriend,
@@ -37,18 +38,26 @@ router.put('/profile', requireAuth, (req: AuthRequest, res) => {
   res.json({ user: user ? toUserProfile(user) : null });
 });
 
+const HISTORY_PAGE_SIZE = 15;
+
 // GET /api/history — own match history (auth required)
 router.get('/history', requireAuth, (req: AuthRequest, res) => {
-  const history = getGameHistory(req.userId!, 30);
-  res.json({ history });
+  const page   = Math.max(1, parseInt((req.query.page as string) ?? '1', 10) || 1);
+  const offset = (page - 1) * HISTORY_PAGE_SIZE;
+  const total  = getGameHistoryCount(req.userId!);
+  const history = getGameHistory(req.userId!, HISTORY_PAGE_SIZE, offset);
+  res.json({ history, total, page, pageSize: HISTORY_PAGE_SIZE });
 });
 
 // GET /api/history/:username — public match history
 router.get('/history/:username', (req, res) => {
   const user = getUserByUsername(req.params.username);
   if (!user) { res.status(404).json({ error: 'User not found' }); return; }
-  const history = getGameHistory(user.id, 30);
-  res.json({ history });
+  const page   = Math.max(1, parseInt((req.query.page as string) ?? '1', 10) || 1);
+  const offset = (page - 1) * HISTORY_PAGE_SIZE;
+  const total  = getGameHistoryCount(user.id);
+  const history = getGameHistory(user.id, HISTORY_PAGE_SIZE, offset);
+  res.json({ history, total, page, pageSize: HISTORY_PAGE_SIZE });
 });
 
 // GET /api/friends — own friends list (auth required)

@@ -4,5 +4,9 @@ client/.vite/
 server/dist/
 *.local
 .env
+.env.production
 .DS_Store
 Thumbs.db
+*.db
+*.db-shm
+*.db-wal

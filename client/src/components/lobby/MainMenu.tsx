@@ -80,14 +80,7 @@ export function MainMenu() {
                 />
               )}
               <span className={styles.userBadgeName}>{user.username}</span>
-              <span className={styles.userBadgeElo}>
-                {user.rank?.isInPlacement
-                  ? `Placement ${10 - (user.rank.provisionalGamesLeft ?? 10)}/10`
-                  : user.rank?.tier === 'PEASANT'
-                    ? 'Non classé'
-                    : (user.rank?.display ?? user.elo)
-                }
-              </span>
+              <span className={styles.userBadgeElo}>{user.elo} ELO</span>
             </button>
             <button className={styles.gearBtn} onClick={logout} title="Déconnexion" aria-label="Déconnexion">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -199,7 +192,7 @@ export function MainMenu() {
               <span>{t.menu.friends}</span>
               <span className={styles.soonTag}>{t.menu.comingSoon}</span>
             </button>
-            <button key="players" className={styles.dropItem} onClick={() => navigate('/leaderboard')}>
+            <button key="players" className={styles.dropItem} onClick={() => navigate('/players')}>
               {t.menu.players}
             </button>
             <button key="ranking" className={styles.dropItem} onClick={() => navigate('/leaderboard')}>
