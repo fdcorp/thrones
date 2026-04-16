@@ -104,6 +104,12 @@
   letter-spacing: 0;
 }
 
+.unranked {
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
 .provisionalBadge {
   font-size: 0.6rem;
   font-weight: 700;

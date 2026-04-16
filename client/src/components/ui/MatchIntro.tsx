@@ -36,7 +36,7 @@ export function MatchIntro({ myUsername, myElo, myInPlacement, mySlot, opponentU
         <div className={`${styles.side} ${styles.sideLeft} ${styles.gold}`}>
           <div className={styles.label}>JOUEUR 1</div>
           <div className={styles.username}>{p1Username}</div>
-          {p1Elo != null && <div className={styles.elo}>{p1Elo} ELO</div>}
+          {p1InPlacement ? <div className={styles.elo}>UNRANKED</div> : p1Elo != null && <div className={styles.elo}>{p1Elo} ELO</div>}
         </div>
 
         {/* VS */}
@@ -46,7 +46,7 @@ export function MatchIntro({ myUsername, myElo, myInPlacement, mySlot, opponentU
         <div className={`${styles.side} ${styles.sideRight} ${styles.silver}`}>
           <div className={styles.label}>JOUEUR 2</div>
           <div className={styles.username}>{p2Username}</div>
-          {p2Elo != null && <div className={styles.elo}>{p2Elo} ELO</div>}
+          {p2InPlacement ? <div className={styles.elo}>UNRANKED</div> : p2Elo != null && <div className={styles.elo}>{p2Elo} ELO</div>}
         </div>
 
       </div>

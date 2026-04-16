@@ -269,7 +269,10 @@ export function Profile() {
         <div className={styles.usernameRow}>
           <div className={styles.username}>{profile.username}</div>
           <div className={styles.eloTag}>
-            {profile.elo} <span className={styles.eloLp}>ELO</span>
+            {profile.rank?.isInPlacement
+              ? <span className={styles.unranked}>UNRANKED</span>
+              : <>{profile.elo} <span className={styles.eloLp}>ELO</span></>
+            }
           </div>
         </div>
         <div className={styles.dates}>
