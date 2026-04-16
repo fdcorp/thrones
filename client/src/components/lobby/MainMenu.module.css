@@ -637,4 +637,10 @@
     font-size: 0.7rem;
     padding: 0.75rem 1.25rem;
   }
+  .version {
+    font-size: 0.48rem;
+    letter-spacing: 0.08em;
+    text-align: center;
+    white-space: nowrap;
+  }
 }
