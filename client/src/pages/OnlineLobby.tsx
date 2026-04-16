@@ -100,19 +100,19 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
   if (showColorPick) {
     return (
       <div className={styles.card}>
-        <div className={styles.title}>CHOISIR SA COULEUR</div>
+        <div className={styles.title}>{t.online.chooseColor}</div>
         <button className={styles.btnPrimary} onClick={() => handleColorPicked(Player.P1)}>
-          ♔ OR — Jouer en premier
+          {t.online.colorGold}
         </button>
         <button className={styles.btnSecondary} onClick={() => handleColorPicked(Player.P2)}>
-          ♔ ARGENT — Jouer en deuxième
+          {t.online.colorSilver}
         </button>
         <button className={styles.btnSecondary} onClick={() => handleColorPicked('random')}>
-          ⚄ ALÉATOIRE
+          {t.online.colorRandom}
         </button>
         <button className={styles.btnGhost} onClick={() => setShowColorPick(false)}>
           <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          Retour
+          {t.aiConfig.back}
         </button>
       </div>
     );
@@ -150,10 +150,10 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
         <div className={styles.waiting}>
           <span className={styles.waitingDots} />
         </div>
-        <p className={styles.subtitle}>Recherche d'un adversaire en cours...</p>
+        <p className={styles.subtitle}>{t.online.searchingOpponent}</p>
         <button className={styles.btnGhost} onClick={handleCancelMatchmaking}>
           <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          Annuler
+          {t.online.cancelSearch}
         </button>
       </div>
     );
@@ -206,13 +206,13 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
         MATCHMAKING
       </button>
 
-      <div className={styles.orDivider}><span>ou</span></div>
+      <div className={styles.orDivider}><span>{t.online.orDivider}</span></div>
 
       <button className={styles.btnSecondary} onClick={() => setShowColorPick(true)} disabled={isLoading}>
         {t.online.createRoom}
       </button>
 
-      <div className={styles.orDivider}><span>ou</span></div>
+      <div className={styles.orDivider}><span>{t.online.orDivider}</span></div>
 
       <div className={styles.codeInputRow}>
         <input

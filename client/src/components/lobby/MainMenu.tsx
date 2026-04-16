@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLang } from '@/i18n';
-import { LangToggle } from '@/components/ui/LangToggle';
 import { CustomPanel } from '@/components/ui/CustomPanel';
 import { useAuthStore } from '@/store/authStore';
 import styles from './MainMenu.module.css';
@@ -60,7 +59,6 @@ export function MainMenu() {
 
       {/* Top-right controls */}
       <div className={styles.langWrap}>
-        <LangToggle />
         {user ? (
           <div className={styles.userBadge}>
             <button

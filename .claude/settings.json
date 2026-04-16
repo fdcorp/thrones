@@ -26,7 +26,12 @@
       "Bash(echo \"exit: $?\")",
       "Bash(cmd /c \"netstat -ano | findstr :3001\")",
       "Bash(cmd /c \"tasklist | findstr node\")",
-      "Bash(node -e ':*)"
+      "Bash(node -e ':*)",
+      "Bash(cat client/.env)",
+      "Bash(cat client/.env.production)",
+      "Bash(cat server/.env)",
+      "Bash(cat client/.gitignore)",
+      "Bash(cat .gitignore)"
     ]
   }
 }

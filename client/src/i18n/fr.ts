@@ -218,6 +218,13 @@ export const fr: Translation = {
     mustBeLoggedIn:      'Vous devez être connecté pour jouer en ligne',
     roomNotFound:        'Room introuvable',
     roomFull:            'Room complète',
+    chooseColor:         'CHOISIR SA COULEUR',
+    colorGold:           '♔ OR — Jouer en premier',
+    colorSilver:         '♔ ARGENT — Jouer en deuxième',
+    colorRandom:         '⚄ ALÉATOIRE',
+    searchingOpponent:   'Recherche d\'un adversaire en cours…',
+    cancelSearch:        'Annuler',
+    orDivider:           'ou',
   },
 
   leaderboard: {

@@ -207,6 +207,13 @@ export interface Translation {
     mustBeLoggedIn: string;
     roomNotFound: string;
     roomFull: string;
+    chooseColor: string;
+    colorGold: string;
+    colorSilver: string;
+    colorRandom: string;
+    searchingOpponent: string;
+    cancelSearch: string;
+    orDivider: string;
   };
 
   leaderboard: {

@@ -9,10 +9,15 @@ interface LangStore {
   toggle: () => void;
 }
 
+function detectLang(): Lang {
+  const browser = navigator.language || 'en';
+  return browser.toLowerCase().startsWith('fr') ? 'fr' : 'en';
+}
+
 export const useLangStore = create<LangStore>()(
   persist(
     (set, get) => ({
-      lang: 'fr',
+      lang: detectLang(),
       setLang: (lang) => set({ lang }),
       toggle: () => set({ lang: get().lang === 'fr' ? 'en' : 'fr' }),
     }),

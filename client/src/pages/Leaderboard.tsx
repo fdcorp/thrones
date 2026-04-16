@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLang } from '@/i18n';
 import { useAuthStore } from '@/store/authStore';
-import { LangToggle } from '@/components/ui/LangToggle';
 import { apiGetLeaderboard } from '@/lib/api';
 import type { LeaderboardEntry } from '../../../shared/types';
 import styles from './Leaderboard.module.css';
@@ -33,7 +32,6 @@ export function Leaderboard() {
           Menu
         </button>
         <span className={styles.headerTitle}>{t.leaderboard.title}</span>
-        <LangToggle />
       </header>
 
       <div className={styles.content}>
