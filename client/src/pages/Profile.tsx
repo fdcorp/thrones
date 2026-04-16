@@ -14,6 +14,7 @@ import {
   apiDeclineFriend,
 } from '@/lib/api';
 import type { UserProfile, GameHistoryEntry, FriendEntry, FriendRequest } from '../../../shared/types';
+import { PageLogo } from '@/components/ui/PageLogo';
 import styles from './Profile.module.css';
 
 // ── Flag image helper (flagcdn.com — reliable on Windows) ─────────
@@ -274,12 +275,7 @@ export function Profile() {
 
       {/* Top bar */}
       <header className={styles.topBar}>
-        <button className={styles.back} onClick={() => navigate('/')}>
-          <svg viewBox="0 0 16 16" fill="none">
-            <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          Menu
-        </button>
+        <PageLogo />
       </header>
 
       {/* Header */}

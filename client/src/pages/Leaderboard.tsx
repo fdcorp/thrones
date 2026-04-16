@@ -4,6 +4,7 @@ import { useLang } from '@/i18n';
 import { useAuthStore } from '@/store/authStore';
 import { apiGetLeaderboard } from '@/lib/api';
 import type { LeaderboardEntry } from '../../../shared/types';
+import { PageLogo } from '@/components/ui/PageLogo';
 import styles from './Leaderboard.module.css';
 
 export function Leaderboard() {
@@ -25,12 +26,7 @@ export function Leaderboard() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <button className={styles.backBtn} onClick={() => navigate('/')}>
-          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          Menu
-        </button>
+        <PageLogo />
         <span className={styles.headerTitle}>{t.leaderboard.title}</span>
       </header>
 
