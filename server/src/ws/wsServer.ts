@@ -122,7 +122,7 @@ export function setupWsServer(httpServer: Server) {
             const newState = { ...(room.gameState as object), phase: 'ENDED', winner: winnerSlot, isDraw: false, drawReason: null };
             room.gameState = newState;
             broadcast(room, { type: 'GAME_STATE', state: newState });
-            handleGameOver(room, winnerSlot, false, gs.turnNumber, room.ranked ? 'online_ranked' : 'online_casual');
+            handleGameOver(room, winnerSlot, false, gs.turnNumber, room.ranked ? 'online_ranked' : room.isMatchmaking ? 'online_casual' : 'online_custom');
             break;
           }
 
@@ -137,7 +137,7 @@ export function setupWsServer(httpServer: Server) {
             const ns = newState as { phase: string; winner: string | null; isDraw: boolean; turnNumber: number };
             if (ns.phase === 'ENDED') {
               const winnerSlot = ns.winner as Player | null;
-              handleGameOver(room, winnerSlot, ns.isDraw, ns.turnNumber, room.ranked ? 'online_ranked' : 'online_casual');
+              handleGameOver(room, winnerSlot, ns.isDraw, ns.turnNumber, room.ranked ? 'online_ranked' : room.isMatchmaking ? 'online_casual' : 'online_custom');
             }
           } catch {
             sendTo(player, { type: 'ERROR', message: 'Invalid action' });
@@ -164,7 +164,7 @@ export function setupWsServer(httpServer: Server) {
           };
           room.gameState = newState;
           broadcast(room, { type: 'GAME_STATE', state: newState });
-          handleGameOver(room, winnerSlot, false, gs.turnNumber, room.ranked ? 'online_ranked' : 'online_casual');
+          handleGameOver(room, winnerSlot, false, gs.turnNumber, room.ranked ? 'online_ranked' : room.isMatchmaking ? 'online_casual' : 'online_custom');
           break;
         }
 
@@ -196,7 +196,7 @@ export function setupWsServer(httpServer: Server) {
             const host = queue.shift()!;
             const guest: RoomPlayer = { ...seeker, slot: Player.P2 };
 
-            const room = createRoom(host, isRanked);
+            const room = createRoom(host, isRanked, true);
             console.log(`[MATCHMAKING] Match found! host=${host.username} guest=${guest.username} ranked=${isRanked} → room.ranked=${room.ranked}`);
             const joined = joinRoom(room.code, guest);
             if (!joined) break;
@@ -249,7 +249,7 @@ export function setupWsServer(httpServer: Server) {
           // Notify remaining player with new game state
           sendTo(winner, { type: 'GAME_STATE', state: newState });
           // Record game over (ELO etc.) — both players still in room at this point
-          handleGameOver(room, winner.slot, false, gs.turnNumber, room.ranked ? 'online_ranked' : 'online_casual');
+          handleGameOver(room, winner.slot, false, gs.turnNumber, room.ranked ? 'online_ranked' : room.isMatchmaking ? 'online_casual' : 'online_custom');
         }
         room.status = 'finished';
       } else {

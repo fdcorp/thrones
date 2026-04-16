@@ -244,6 +244,7 @@ export function Profile() {
     if (mode === 'ai') return t.profile.modeAI;
     if (mode === 'local') return t.profile.modeLocal;
     if (mode === 'online_casual') return t.profile.modeOnlineCasual;
+    if (mode === 'online_custom') return t.profile.modeOnlineCustom;
     return t.profile.modeOnline; // 'online_ranked' and any legacy value
   }
 

@@ -15,6 +15,7 @@ export interface Room {
   gameState: unknown | null;
   status: 'waiting' | 'playing' | 'finished';
   ranked: boolean;
+  isMatchmaking: boolean;
   createdAt: Date;
 }
 
@@ -29,7 +30,7 @@ function generateCode(): string {
   return code;
 }
 
-export function createRoom(player: RoomPlayer, ranked = false): Room {
+export function createRoom(player: RoomPlayer, ranked = false, isMatchmaking = false): Room {
   let code: string;
   do { code = generateCode(); } while (rooms.has(code));
 
@@ -39,6 +40,7 @@ export function createRoom(player: RoomPlayer, ranked = false): Room {
     gameState: null,
     status: 'waiting',
     ranked,
+    isMatchmaking,
     createdAt: new Date(),
   };
   rooms.set(code, room);

@@ -257,6 +257,7 @@ export interface Translation {
     draw: string;
     modeOnline: string;
     modeOnlineCasual: string;
+    modeOnlineCustom: string;
     modeAI: string;
     modeLocal: string;
     turns: (n: number) => string;

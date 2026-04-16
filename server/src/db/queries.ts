@@ -193,7 +193,7 @@ export function saveGame(
   eloChangeP1: number,
   eloChangeP2: number,
   turns:       number,
-  gameMode:    'local' | 'ai' | 'online_casual' | 'online_ranked' = 'online_casual',
+  gameMode:    'local' | 'ai' | 'online_casual' | 'online_ranked' | 'online_custom' = 'online_casual',
   mmrChangeP1: number | null = null,
   mmrChangeP2: number | null = null,
   lpChangeP1:  number | null = null,

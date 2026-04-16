@@ -37,7 +37,7 @@ export async function handleGameOver(
   winnerSlot: Player | null,
   isDraw: boolean,
   turns: number,
-  gameMode: 'online_casual' | 'online_ranked' = 'online_casual',
+  gameMode: 'online_casual' | 'online_ranked' | 'online_custom' = 'online_casual',
 ) {
   if (room.players.length < 2) return;
 
