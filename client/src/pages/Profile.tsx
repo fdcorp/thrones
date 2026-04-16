@@ -363,9 +363,9 @@ export function Profile() {
                     <div className={styles.friendsList}>
                       {friends.map(f => (
                         <div key={f.id} className={styles.friendRow} onClick={() => navigate(`/profile/${f.username}`)}>
-                          <div className={styles.friendAvatar}>
+                          <div className={f.country ? styles.friendAvatarFlag : styles.friendAvatar}>
                             {f.country
-                              ? <FlagImg code={f.country} size={24} className={styles.avatarFlag} />
+                              ? <FlagImg code={f.country} size={20} />
                               : f.username[0]}
                           </div>
                           <span className={styles.friendName}>
