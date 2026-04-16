@@ -318,7 +318,7 @@ export function Profile() {
                 onChange={e => setSelectedCountry(e.target.value)}
               >
                 <option value="">{t.profile.countryLabel}</option>
-                {COUNTRIES.map(c => (
+                {[...COUNTRIES].sort((a, b) => (lang === 'fr' ? a.nameFr : a.name).localeCompare(lang === 'fr' ? b.nameFr : b.name, lang)).map(c => (
                   <option key={c.code} value={c.code}>
                     {lang === 'fr' ? c.nameFr : c.name}
                   </option>
