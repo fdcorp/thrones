@@ -485,7 +485,7 @@ export function Game() {
               isRanked={online.isRanked}
             />
           )}
-          <HexBoard />
+          <HexBoard localPlayer={mode === 'online' ? online.mySlot : null} />
         </div>
 
         {/* Right column: Game Log */}

@@ -149,7 +149,12 @@ function BoardDefs() {
   );
 }
 
-export function HexBoard() {
+interface HexBoardProps {
+  /** In online mode: the local player's slot. Clicks are ignored when it's not their turn. */
+  localPlayer?: Player | null;
+}
+
+export function HexBoard({ localPlayer }: HexBoardProps = {}) {
   const gameState   = useGameStore(s => s.gameState);
   const dispatch    = useGameStore(s => s.dispatch);
   const aiThinking  = useGameStore(s => s.aiThinking);
@@ -163,6 +168,8 @@ export function HexBoard() {
     if (!gameState || aiThinking) return;
     const { board, currentPlayer, phase } = gameState;
     if (phase !== 'PLAYING') return;
+    // In online mode: ignore clicks when it's not the local player's turn
+    if (localPlayer != null && currentPlayer !== localPlayer) return;
 
     const {
       interactionMode, selectedUnitId,
