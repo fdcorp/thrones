@@ -52,7 +52,10 @@ router.post('/register', async (req, res) => {
     const id          = createUser(username, hash, email, verifyToken);
 
     // Send verification email (non-blocking)
-    sendVerificationEmail(email, username, verifyToken).catch(console.error);
+    console.log('[register] sending verification email to', email);
+    sendVerificationEmail(email, username, verifyToken)
+      .then(() => console.log('[register] email sent OK to', email))
+      .catch(err => console.error('[register] email error:', err?.message ?? err));
 
     const token   = jwt.sign({ id, username }, JWT_SECRET, { expiresIn: '7d' });
     const newUser = getUserByUsername(username)!;
