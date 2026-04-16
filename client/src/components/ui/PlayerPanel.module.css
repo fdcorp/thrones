@@ -290,20 +290,22 @@
   }
   .units {
     gap: 3px;
+    min-height: 28px;      /* reserve slot row from the start — no jump on first capture */
+    flex-wrap: nowrap;     /* never wrap to a second row */
+    overflow-x: auto;      /* scroll horizontally if many captures */
+    -webkit-overflow-scrolling: touch;
   }
   .unitSlot {
     width: 28px;
     height: 28px;
+    flex-shrink: 0;
   }
   .unitIcon {
     width: 22px;
     height: 22px;
   }
-  .respawnHint {
-    font-size: 0.52rem;
-    text-align: left;
-    opacity: 0.7;
-  }
+  /* Hide text hint on mobile — glowing slot is enough feedback */
+  .respawnHint { display: none; }
 }
 
 @keyframes goldPulse {
