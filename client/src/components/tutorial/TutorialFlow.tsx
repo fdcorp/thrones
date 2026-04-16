@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { DemoBoard } from './DemoBoard';
 import { useLang } from '@/i18n';
 import styles from './TutorialFlow.module.css';
@@ -110,9 +108,7 @@ function Divider() {
 
 // ── Main component ─────────────────────────────────────────────────────────
 export function TutorialFlow() {
-  const navigate = useNavigate();
   const t = useLang();
-  const [showModal, setShowModal] = useState(false);
 
   return (
     <div className={styles.page}>
@@ -339,36 +335,6 @@ export function TutorialFlow() {
 
       <Divider />
 
-      {/* ── CTA ──────────────────────────────────────────────── */}
-      <section className={styles.ctaSection}>
-        <button className={styles.ctaBtn} onClick={() => setShowModal(true)}>
-          {t.tutorial.playNow}
-        </button>
-        <button className={styles.menuBtn} onClick={() => navigate('/')}>
-          {t.tutorial.backToMenu}
-        </button>
-      </section>
-
-      {/* ── Mode modal ───────────────────────────────────────── */}
-      {showModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
-          <div className={styles.modalBox} onClick={e => e.stopPropagation()}>
-            <div className={styles.modalTitle}>{t.tutorial.chooseMode}</div>
-            <button className={styles.modalBtn} onClick={() => navigate('/game?mode=local')}>
-              {t.tutorial.playLocal}
-            </button>
-            <button className={styles.modalBtn} onClick={() => navigate('/game?mode=ai')}>
-              {t.tutorial.playAI}
-            </button>
-            <button className={styles.modalBtnDisabled} disabled>
-              {t.tutorial.playOnlineSoon}
-            </button>
-            <button className={styles.modalCancel} onClick={() => setShowModal(false)}>
-              {t.tutorial.cancel}
-            </button>
-          </div>
-        </div>
-      )}
 
     </div>
   );
