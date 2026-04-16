@@ -1,14 +1,13 @@
-// Uses Node.js built-in SQLite (node:sqlite) — available in Node 22.5+ / Node 24
-import { DatabaseSync } from 'node:sqlite';
+import Database from 'better-sqlite3';
 import fs from 'fs';
 import path from 'path';
 import { DB_PATH } from '../config';
 
-let db: DatabaseSync;
+let db: Database.Database;
 
-export function getDb(): DatabaseSync {
+export function getDb(): Database.Database {
   if (!db) {
-    db = new DatabaseSync(DB_PATH);
+    db = new Database(DB_PATH);
     db.exec('PRAGMA journal_mode = WAL');
     db.exec('PRAGMA foreign_keys = ON');
 
@@ -42,7 +41,7 @@ export function getDb(): DatabaseSync {
   return db;
 }
 
-function runMigration(db: DatabaseSync, table: string, column: string, sql: string) {
+function runMigration(db: Database.Database, table: string, column: string, sql: string) {
   const cols = db.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[];
   if (!cols.some(c => c.name === column)) {
     db.exec(sql);
