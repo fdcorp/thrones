@@ -475,6 +475,16 @@ export function Game() {
                   ? (gameState.winner === online.mySlot ? (user?.username ?? undefined) : (online.opponentUsername ?? undefined))
                   : (gameState.winner === Player.P1 ? t.panel.player1 : t.panel.player2)
               }
+              winnerLabel={(() => {
+                if (mode !== 'ai' || gameState.winner == null) return undefined;
+                const botPlayer = humanPlayer === Player.P1 ? Player.P2 : Player.P1;
+                if (gameState.winner !== botPlayer) return undefined;
+                const labels: Record<string, string> = {
+                  easy: 'BOT FACILE', medium: 'BOT MOYEN',
+                  hard: 'BOT DIFFICILE', expert: 'BOT EXPERT',
+                };
+                return aiLevel ? labels[aiLevel] : 'BOT';
+              })()}
               onReplay={handleReplay}
               onFindMatch={mode === 'online' ? handleFindMatch : undefined}
               isRanked={online.isRanked}

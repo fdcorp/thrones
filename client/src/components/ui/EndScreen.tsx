@@ -10,12 +10,13 @@ interface EndScreenProps {
   drawReason: DrawReason | null;
   mySlot?: Player | null;
   winnerName?: string;
+  winnerLabel?: string;
   onReplay: () => void;
   onFindMatch?: () => void;
   isRanked?: boolean;
 }
 
-export function EndScreen({ winner, isDraw, drawReason, mySlot, winnerName, onReplay, onFindMatch, isRanked }: EndScreenProps) {
+export function EndScreen({ winner, isDraw, drawReason, mySlot, winnerName, winnerLabel, onReplay, onFindMatch, isRanked }: EndScreenProps) {
   const navigate = useNavigate();
   const t = useLang();
   const isP1 = winner === Player.P1;
@@ -68,7 +69,7 @@ export function EndScreen({ winner, isDraw, drawReason, mySlot, winnerName, onRe
                 filter: 'drop-shadow(0 0 20px rgba(168,180,192,0.4))',
               }}
             >
-              {isP1 ? t.panel.player1 : t.panel.player2}
+              {winnerLabel ?? (isP1 ? t.panel.player1 : t.panel.player2)}
             </div>
             <div className={styles.divider} />
             <div className={styles.subtitle}>

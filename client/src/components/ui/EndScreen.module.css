@@ -68,6 +68,7 @@
   font-size: clamp(2rem, 6vw, 3.8rem);
   letter-spacing: 0.18em;
   text-transform: uppercase;
+  white-space: nowrap;
   background: linear-gradient(180deg, #fff5d6 0%, var(--gold) 40%, var(--gold-light) 60%, var(--gold) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -118,6 +119,19 @@
   margin-top: 0.25rem;
   position: relative;
   z-index: 1;
+}
+
+@media (max-width: 500px) {
+  .card {
+    padding: 2.5rem 2rem;
+  }
+  .title {
+    font-size: clamp(1.6rem, 8vw, 2.8rem);
+  }
+  .actions {
+    flex-direction: column;
+    width: 100%;
+  }
 }
 
 @keyframes fadeIn {
