@@ -10,7 +10,8 @@ import { getDb } from './db/database';
 
 const app = express();
 
-app.use(cors({ origin: CLIENT_ORIGIN, credentials: true }));
+const allowedOrigins = CLIENT_ORIGIN.split(',').map(s => s.trim()).filter(Boolean);
+app.use(cors({ origin: allowedOrigins.length === 1 ? allowedOrigins[0] : allowedOrigins, credentials: true }));
 app.use(express.json());
 
 // Health check
