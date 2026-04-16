@@ -17,7 +17,8 @@ export interface Translation {
     friends: string;
     players: string;
     ranking: string;
-    comingSoon: string;
+    comingSoon:  string;
+    tournaments: string;
   };
 
   aiConfig: {

@@ -15,6 +15,7 @@ export const fr: Translation = {
     players:      'Joueurs',
     ranking:      'Classement',
     comingSoon:   'Bientôt',
+    tournaments:  'Tournois',
   },
 
   aiConfig: {

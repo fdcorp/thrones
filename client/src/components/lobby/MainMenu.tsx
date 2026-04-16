@@ -190,6 +190,10 @@ export function MainMenu() {
             </svg>
           </button>
           <div className={`${styles.dropdown} ${openMenu === 'community' ? styles.dropdownOpen : ''}`}>
+            <button key="tournaments" className={`${styles.dropItem} ${styles.dropItemDisabled}`} disabled>
+              <span>{t.menu.tournaments}</span>
+              <span className={styles.soonTag}>{t.menu.comingSoon}</span>
+            </button>
             <button key="players" className={styles.dropItem} onClick={() => navigate('/players')}>
               {t.menu.players}
             </button>

@@ -14,7 +14,8 @@ export const en: Translation = {
     friends:    'Friends',
     players:    'Players',
     ranking:    'Ranking',
-    comingSoon: 'Coming soon',
+    comingSoon:  'Coming soon',
+    tournaments: 'Tournaments',
   },
 
   aiConfig: {
