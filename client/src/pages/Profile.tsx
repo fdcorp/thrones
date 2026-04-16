@@ -363,9 +363,12 @@ export function Profile() {
                     <div className={styles.friendsList}>
                       {friends.map(f => (
                         <div key={f.id} className={styles.friendRow} onClick={() => navigate(`/profile/${f.username}`)}>
-                          <div className={styles.friendAvatar}>{f.username[0]}</div>
+                          <div className={styles.friendAvatar}>
+                            {f.country
+                              ? <FlagImg code={f.country} size={24} className={styles.avatarFlag} />
+                              : f.username[0]}
+                          </div>
                           <span className={styles.friendName}>
-                            {f.country && <FlagImg code={f.country} size={18} />}
                             {f.username}
                           </span>
                           <span className={styles.friendElo}>{f.elo}</span>
@@ -391,9 +394,12 @@ export function Profile() {
                     <div className={styles.friendsList}>
                       {requests.map(r => (
                         <div key={r.id} className={styles.friendRow} onClick={() => navigate(`/profile/${r.username}`)}>
-                          <div className={styles.friendAvatar}>{r.username[0]}</div>
+                          <div className={styles.friendAvatar}>
+                            {r.country
+                              ? <FlagImg code={r.country} size={24} className={styles.avatarFlag} />
+                              : r.username[0]}
+                          </div>
                           <span className={styles.friendName}>
-                            {r.country && <FlagImg code={r.country} size={18} />}
                             {r.username}
                           </span>
                           <span className={styles.friendElo}>{r.elo}</span>
