@@ -215,6 +215,8 @@ export interface Translation {
     searchingOpponent: string;
     cancelSearch: string;
     orDivider: string;
+    rankedMode: string;
+    customGame: string;
   };
 
   leaderboard: {

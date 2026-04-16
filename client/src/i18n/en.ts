@@ -226,6 +226,8 @@ export const en: Translation = {
     searchingOpponent:   'Searching for an opponent…',
     cancelSearch:        'Cancel',
     orDivider:           'or',
+    rankedMode:          'Ranked',
+    customGame:          'Custom game',
   },
 
   leaderboard: {

@@ -24,7 +24,7 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
   const [copied, setCopied]               = useState(false);
   const [isLoading, setIsLoading]         = useState(false);
   const [showColorPick, setShowColorPick] = useState(false);
-  const [showMatchPick, setShowMatchPick] = useState(false);
+  const [showCustom, setShowCustom]       = useState(false);
 
   async function handleColorPicked(choice: Player | 'random') {
     const slot = choice === 'random'
@@ -44,7 +44,6 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
 
   async function handleMatchmaking(ranked: boolean) {
     if (!user) return;
-    setShowMatchPick(false);
     setIsLoading(true);
     online.reset();
     try {
@@ -118,23 +117,40 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
     );
   }
 
-  // Matchmaking mode pick
-  if (showMatchPick) {
+  // Custom game sub-screen (create room or join by code)
+  if (showCustom) {
     return (
       <div className={styles.card}>
-        <div className={styles.title}>MATCHMAKING</div>
-        <button className={styles.btnPrimary} onClick={() => handleMatchmaking(false)}>
-          {t.online.casualMode}
+        <div className={styles.title}>{t.online.customGame}</div>
+
+        {online.error && <div className={styles.error}>{online.error}</div>}
+
+        <button className={styles.btnPrimary} onClick={() => setShowColorPick(true)} disabled={isLoading}>
+          {t.online.createRoom}
         </button>
-        <button className={styles.btnSecondary} onClick={() => handleMatchmaking(true)}>
-          <span>⚔️ RANKED</span>
-          <span className={styles.eloTag}>
-            {user.rank?.isInPlacement
-              ? `Placement ${10 - (user.rank.provisionalGamesLeft ?? 10)}/10`
-              : `${user.elo} ELO`}
-          </span>
-        </button>
-        <button className={styles.btnGhost} onClick={() => setShowMatchPick(false)}>
+
+        <div className={styles.orDivider}><span>{t.online.orDivider}</span></div>
+
+        <div className={styles.codeInputRow}>
+          <input
+            className={styles.codeInput}
+            type="text"
+            value={joinCode}
+            onChange={e => setJoinCode(e.target.value.toUpperCase().slice(0, 6))}
+            placeholder="ABC123"
+            maxLength={6}
+          />
+          <button
+            className={styles.btnSecondary}
+            style={{ width: 'auto', padding: '0.8rem 1.2rem' }}
+            onClick={handleJoin}
+            disabled={isLoading || joinCode.length < 6}
+          >
+            {t.online.joinRoom}
+          </button>
+        </div>
+
+        <button className={styles.btnGhost} onClick={() => { setShowCustom(false); online.reset(); }}>
           <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
           {t.aiConfig.back}
         </button>
@@ -195,43 +211,29 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
     );
   }
 
-  // Default lobby
+  // Default lobby — 3 buttons
   return (
     <div className={styles.card}>
       <div className={styles.title}>ONLINE</div>
 
       {online.error && <div className={styles.error}>{online.error}</div>}
 
-      <button className={styles.btnPrimary} onClick={() => setShowMatchPick(true)} disabled={isLoading}>
-        MATCHMAKING
+      <button className={styles.btnPrimary} onClick={() => handleMatchmaking(false)} disabled={isLoading}>
+        {t.online.casualMode}
       </button>
 
-      <div className={styles.orDivider}><span>{t.online.orDivider}</span></div>
-
-      <button className={styles.btnSecondary} onClick={() => setShowColorPick(true)} disabled={isLoading}>
-        {t.online.createRoom}
+      <button className={styles.btnSecondary} onClick={() => handleMatchmaking(true)} disabled={isLoading}>
+        <span>{t.online.rankedMode}</span>
+        <span className={styles.eloTag}>
+          {user.rank?.isInPlacement
+            ? `Placement ${10 - (user.rank.provisionalGamesLeft ?? 10)}/10`
+            : `${user.elo} ELO`}
+        </span>
       </button>
 
-      <div className={styles.orDivider}><span>{t.online.orDivider}</span></div>
-
-      <div className={styles.codeInputRow}>
-        <input
-          className={styles.codeInput}
-          type="text"
-          value={joinCode}
-          onChange={e => setJoinCode(e.target.value.toUpperCase().slice(0, 6))}
-          placeholder="ABC123"
-          maxLength={6}
-        />
-        <button
-          className={styles.btnSecondary}
-          style={{ width: 'auto', padding: '0.8rem 1.2rem' }}
-          onClick={handleJoin}
-          disabled={isLoading || joinCode.length < 6}
-        >
-          {t.online.joinRoom}
-        </button>
-      </div>
+      <button className={styles.btnSecondary} onClick={() => setShowCustom(true)} disabled={isLoading}>
+        {t.online.customGame}
+      </button>
 
       <button className={styles.btnGhost} onClick={onBack}>
         <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>

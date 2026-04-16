@@ -226,6 +226,8 @@ export const fr: Translation = {
     searchingOpponent:   'Recherche d\'un adversaire en cours…',
     cancelSearch:        'Annuler',
     orDivider:           'ou',
+    rankedMode:          'Ranked',
+    customGame:          'Partie personnalisée',
   },
 
   leaderboard: {
