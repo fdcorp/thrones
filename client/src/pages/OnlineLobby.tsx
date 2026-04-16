@@ -3,6 +3,7 @@ import { useLang } from '@/i18n';
 import { useAuthStore } from '@/store/authStore';
 import { useOnlineStore } from '@/hooks/useSocket';
 import styles from './OnlineLobby.module.css';
+import colorStyles from './ColorSelect.module.css';
 
 import { Player } from '@/engine/types';
 
@@ -98,19 +99,50 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
   // Color pick before creating room
   if (showColorPick) {
     return (
-      <div className={styles.card}>
-        <div className={styles.title}>{t.online.chooseColor}</div>
-        <button className={styles.btnPrimary} onClick={() => handleColorPicked(Player.P1)}>
-          {t.online.colorGold}
-        </button>
-        <button className={styles.btnSecondary} onClick={() => handleColorPicked(Player.P2)}>
-          {t.online.colorSilver}
-        </button>
-        <button className={styles.btnSecondary} onClick={() => handleColorPicked('random')}>
-          {t.online.colorRandom}
-        </button>
-        <button className={styles.btnGhost} onClick={() => setShowColorPick(false)}>
+      <div className={colorStyles.card}>
+        <div className={colorStyles.title}>{t.game.chooseSide}</div>
+        <div className={colorStyles.subtitle}>{t.game.chooseQuestion}</div>
+        <div className={colorStyles.options}>
+          <button className={`${colorStyles.option} ${colorStyles.optionGold}`} onClick={() => handleColorPicked(Player.P1)}>
+            <span className={colorStyles.optionDot} style={{ background: 'var(--gold)', boxShadow: '0 0 10px rgba(201,168,76,0.8)' }} />
+            <span className={colorStyles.optionName}>{t.game.gold}</span>
+            <span className={colorStyles.optionDesc}>{t.game.goldDesc}</span>
+          </button>
+          <button className={`${colorStyles.option} ${colorStyles.optionSilver}`} onClick={() => handleColorPicked(Player.P2)}>
+            <span className={colorStyles.optionDot} style={{ background: 'var(--silver)', boxShadow: '0 0 10px rgba(168,180,192,0.8)' }} />
+            <span className={colorStyles.optionName}>{t.game.silver}</span>
+            <span className={colorStyles.optionDesc}>{t.game.silverDesc}</span>
+          </button>
+          <button className={`${colorStyles.option} ${colorStyles.optionRandom}`} onClick={() => handleColorPicked('random')}>
+            <span className={colorStyles.optionDot} style={{ background: 'linear-gradient(135deg, var(--gold), var(--silver))' }} />
+            <span className={colorStyles.optionName}>{t.game.random}</span>
+            <span className={colorStyles.optionDesc}>{t.game.randomDesc}</span>
+          </button>
+        </div>
+        <button className={colorStyles.backBtn} onClick={() => setShowColorPick(false)}>
           <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          {t.aiConfig.back}
+        </button>
+      </div>
+    );
+  }
+
+  // Waiting for opponent after creating room
+  if (online.status === 'waiting' && online.roomCode) {
+    return (
+      <div className={styles.card}>
+        <div className={styles.title}>{t.online.waitingForOpponent}</div>
+        <div className={styles.codeDisplay}>
+          <span className={styles.codeLabel}>{t.online.roomCode}</span>
+          <span className={styles.codeValue}>{online.roomCode}</span>
+          <button className={styles.copyBtn} onClick={handleCopy}>
+            {copied ? t.online.codeCopied : t.online.copyCode}
+          </button>
+        </div>
+        <div className={styles.waiting}>
+          <span className={styles.waitingDots} />
+        </div>
+        <button className={styles.btnGhost} onClick={() => { online.reset(); setIsLoading(false); }}>
           {t.aiConfig.back}
         </button>
       </div>
@@ -183,28 +215,6 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
         <div className={styles.error}>{online.error}</div>
         <button className={styles.btnGhost} onClick={() => { online.reset(); }}>
           <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          {t.aiConfig.back}
-        </button>
-      </div>
-    );
-  }
-
-  // Waiting for opponent after creating room
-  if (online.status === 'waiting' && online.roomCode) {
-    return (
-      <div className={styles.card}>
-        <div className={styles.title}>{t.online.waitingForOpponent}</div>
-        <div className={styles.codeDisplay}>
-          <span className={styles.codeLabel}>{t.online.roomCode}</span>
-          <span className={styles.codeValue}>{online.roomCode}</span>
-          <button className={styles.copyBtn} onClick={handleCopy}>
-            {copied ? t.online.codeCopied : t.online.copyCode}
-          </button>
-        </div>
-        <div className={styles.waiting}>
-          <span className={styles.waitingDots} />
-        </div>
-        <button className={styles.btnGhost} onClick={() => { online.reset(); setIsLoading(false); }}>
           {t.aiConfig.back}
         </button>
       </div>
