@@ -44,6 +44,7 @@ export function toUserProfile(u: DbUser): UserProfile {
     elo:         u.elo,
     gamesPlayed: u.games_played,
     gamesWon:    u.games_won,
+    emailVerified: !!u.email_verified,
     country:     u.country ?? undefined,
     lastLogin:   u.last_login ?? undefined,
     createdAt:   u.created_at,
@@ -74,6 +75,10 @@ export function createUser(username: string, passwordHash: string, email?: strin
 
 export function getUserByEmail(email: string): DbUser | undefined {
   return getDb().prepare('SELECT * FROM users WHERE email = ?').get(email) as DbUser | undefined;
+}
+
+export function setEmailVerifyToken(userId: number, token: string) {
+  getDb().prepare('UPDATE users SET email_verify_token = ? WHERE id = ?').run(token, userId);
 }
 
 export function verifyEmailToken(token: string): boolean {

@@ -12,6 +12,7 @@ export interface UserProfile {
   elo: number;
   gamesPlayed: number;
   gamesWon: number;
+  emailVerified: boolean;
   country?: string;
   lastLogin?: string;
   createdAt?: string;

@@ -5,7 +5,7 @@ import crypto from 'crypto';
 import { JWT_SECRET } from '../config';
 import {
   createUser, getUserByUsername, getUserByEmail, toUserProfile, updateLastLogin,
-  verifyEmailToken, setPasswordResetToken, getUserByResetToken, resetPassword,
+  verifyEmailToken, setEmailVerifyToken, setPasswordResetToken, getUserByResetToken, resetPassword,
 } from '../db/queries';
 import { requireAuth, type AuthRequest } from '../middleware/auth';
 import { sendVerificationEmail, sendPasswordResetEmail } from '../email';
@@ -109,6 +109,23 @@ router.get('/verify-email', (req, res) => {
   const ok = verifyEmailToken(token);
   if (!ok) { res.status(400).json({ error: 'Invalid or expired token' }); return; }
   res.json({ ok: true });
+});
+
+// POST /api/resend-verification
+router.post('/resend-verification', requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const user = getUserByUsername(req.username!);
+    if (!user) { res.status(404).json({ error: 'User not found' }); return; }
+    if (user.email_verified) { res.json({ ok: true }); return; }
+    if (!user.email) { res.status(400).json({ error: 'No email on file' }); return; }
+    const token = crypto.randomBytes(32).toString('hex');
+    setEmailVerifyToken(user.id, token);
+    await sendVerificationEmail(user.email, user.username, token);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[resend-verification]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 // POST /api/forgot-password

@@ -203,6 +203,7 @@ export interface Translation {
     forgotSuccess: string;
     backToLogin: string;
     verifyEmailBanner: string;
+    resendVerification: string;
   };
 
   online: {

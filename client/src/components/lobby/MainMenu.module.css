@@ -631,6 +631,37 @@
   margin: 0;
 }
 
+.verifyBanner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1.1rem;
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.3);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+
+.verifyResendBtn {
+  background: none;
+  border: 1px solid rgba(201,168,76,0.4);
+  color: var(--gold);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 150ms;
+}
+.verifyResendBtn:hover:not(:disabled) { background: rgba(201,168,76,0.12); }
+.verifyResendBtn:disabled { opacity: 0.6; cursor: default; }
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }

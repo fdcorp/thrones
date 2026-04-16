@@ -18,7 +18,8 @@ export function MainMenu() {
   const [openMenu, setOpenMenu] = useState<'play' | 'community' | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const { user, loading: authLoading, error: authError, login, register, logout, clearError, forgotPassword } = useAuthStore();
+  const { user, loading: authLoading, error: authError, login, register, logout, clearError, forgotPassword, resendVerification } = useAuthStore();
+  const [resendSent, setResendSent] = useState(false);
 
   useEffect(() => {
     if (!openMenu) return;
@@ -150,6 +151,20 @@ export function MainMenu() {
         <div className={styles.ornamentLine} />
       </div>
 
+      {/* Email verification banner */}
+      {user && !user.emailVerified && (
+        <div className={styles.verifyBanner}>
+          <span>{t.auth.verifyEmailBanner}</span>
+          <button
+            className={styles.verifyResendBtn}
+            onClick={async () => { await resendVerification(); setResendSent(true); }}
+            disabled={resendSent}
+          >
+            {resendSent ? '✓' : t.auth.resendVerification}
+          </button>
+        </div>
+      )}
+
       {/* Glass nav card */}
       <div className={styles.card} ref={cardRef}>
         <div className={styles.cardShimmer} aria-hidden />
@@ -158,8 +173,10 @@ export function MainMenu() {
         <div className={styles.dropGroup}>
           <button
             className={`${styles.btnPrimary} ${styles.btnDrop}`}
-            onClick={() => toggleMenu('play')}
+            onClick={() => user && !user.emailVerified ? null : toggleMenu('play')}
             aria-expanded={openMenu === 'play'}
+            disabled={user ? !user.emailVerified : false}
+            title={user && !user.emailVerified ? t.auth.verifyEmailBanner : undefined}
           >
             <span>{t.menu.play}</span>
             <svg

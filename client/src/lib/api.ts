@@ -33,6 +33,14 @@ export async function apiVerifyEmail(token: string) {
   return handleResponse<{ ok: boolean }>(res);
 }
 
+export async function apiResendVerification(token: string) {
+  const res = await fetch(`${BASE}/api/resend-verification`, {
+    method: 'POST',
+    headers: authHeaders(token),
+  });
+  return handleResponse<{ ok: boolean }>(res);
+}
+
 export async function apiForgotPassword(email: string) {
   const res = await fetch(`${BASE}/api/forgot-password`, {
     method: 'POST',

@@ -31,7 +31,8 @@
       "Bash(cat client/.env.production)",
       "Bash(cat server/.env)",
       "Bash(cat client/.gitignore)",
-      "Bash(cat .gitignore)"
+      "Bash(cat .gitignore)",
+      "Bash(ssh dev@178.104.168.23 \"pm2 show thrones-server 2>/dev/null | grep -E 'script|interpreter|exec'\")"
     ]
   }
 }

@@ -213,7 +213,8 @@ export const en: Translation = {
     forgotBtn:            'SEND RESET LINK',
     forgotSuccess:        'If this email exists, a reset link has been sent.',
     backToLogin:          '← Back to sign in',
-    verifyEmailBanner:    'Check your inbox to verify your email address.',
+    verifyEmailBanner:    'Verify your email to play.',
+    resendVerification:   'Resend email',
   },
 
   online: {

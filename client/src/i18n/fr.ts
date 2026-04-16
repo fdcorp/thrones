@@ -213,7 +213,8 @@ export const fr: Translation = {
     forgotBtn:            'ENVOYER LE LIEN',
     forgotSuccess:        'Si cet email existe, un lien a été envoyé.',
     backToLogin:          '← Retour à la connexion',
-    verifyEmailBanner:    'Vérifiez votre boîte mail pour confirmer votre adresse email.',
+    verifyEmailBanner:    'Vérifiez votre email pour jouer.',
+    resendVerification:   'Renvoyer l\'email',
   },
 
   online: {
