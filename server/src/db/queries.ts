@@ -1,6 +1,6 @@
 // Uses node:sqlite (built-in Node 22.5+)
 import { getDb } from './database';
-import type { LeaderboardEntry, UserProfile, GameHistoryEntry, FriendEntry } from '../../../shared/types';
+import type { LeaderboardEntry, UserProfile, GameHistoryEntry, FriendEntry, FriendRequest } from '../../../shared/types';
 import { RankedSystem, type PlayerRank, type PlayerRankDbRow } from '../../../shared/ranked';
 
 // ── Internal DB type ──────────────────────────────────────────────
@@ -312,6 +312,62 @@ export function getFriends(userId: number): FriendEntry[] {
     username:r.username,
     elo:     r.elo,
     country: r.country ?? undefined,
+  }));
+}
+
+// ── Friend requests ───────────────────────────────────────────────
+
+export function sendFriendRequest(fromId: number, toId: number) {
+  getDb().prepare(
+    'INSERT OR IGNORE INTO friend_requests (from_id, to_id) VALUES (?, ?)'
+  ).run(fromId, toId);
+}
+
+export function acceptFriendRequest(fromId: number, toId: number) {
+  const db = getDb();
+  const accept = db.transaction(() => {
+    // Remove the request
+    db.prepare('DELETE FROM friend_requests WHERE from_id = ? AND to_id = ?').run(fromId, toId);
+    // Create bidirectional friendship
+    db.prepare('INSERT OR IGNORE INTO friends (user_id, friend_id) VALUES (?, ?)').run(toId, fromId);
+    db.prepare('INSERT OR IGNORE INTO friends (user_id, friend_id) VALUES (?, ?)').run(fromId, toId);
+  });
+  accept();
+}
+
+export function declineFriendRequest(fromId: number, toId: number) {
+  getDb().prepare(
+    'DELETE FROM friend_requests WHERE from_id = ? AND to_id = ?'
+  ).run(fromId, toId);
+}
+
+export function cancelFriendRequest(fromId: number, toId: number) {
+  getDb().prepare(
+    'DELETE FROM friend_requests WHERE from_id = ? AND to_id = ?'
+  ).run(fromId, toId);
+}
+
+export function hasPendingRequest(fromId: number, toId: number): boolean {
+  return !!getDb().prepare(
+    'SELECT 1 FROM friend_requests WHERE from_id = ? AND to_id = ?'
+  ).get(fromId, toId);
+}
+
+export function getIncomingRequests(userId: number): FriendRequest[] {
+  const rows = getDb().prepare(`
+    SELECT u.id, u.username, u.elo, u.country, fr.created_at
+    FROM friend_requests fr
+    JOIN users u ON fr.from_id = u.id
+    WHERE fr.to_id = ?
+    ORDER BY fr.created_at DESC
+  `).all(userId) as { id: number; username: string; elo: number; country: string | null; created_at: string }[];
+
+  return rows.map(r => ({
+    id:        r.id,
+    username:  r.username,
+    elo:       r.elo,
+    country:   r.country ?? undefined,
+    createdAt: r.created_at,
   }));
 }
 

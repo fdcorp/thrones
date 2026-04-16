@@ -1,4 +1,4 @@
-import type { LeaderboardEntry, UserProfile, GameHistoryEntry, FriendEntry } from '../../../shared/types';
+import type { LeaderboardEntry, UserProfile, GameHistoryEntry, FriendEntry, FriendRequest } from '../../../shared/types';
 
 const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
 
@@ -102,5 +102,26 @@ export async function apiCheckFriend(token: string, username: string) {
   const res = await fetch(`${BASE}/api/friends/check/${encodeURIComponent(username)}`, {
     headers: authHeaders(token),
   });
-  return handleResponse<{ isFriend: boolean }>(res);
+  return handleResponse<{ isFriend: boolean; sentByMe: boolean; sentByThem: boolean }>(res);
+}
+
+export async function apiGetFriendRequests(token: string) {
+  const res = await fetch(`${BASE}/api/friends/requests`, { headers: authHeaders(token) });
+  return handleResponse<{ requests: FriendRequest[] }>(res);
+}
+
+export async function apiAcceptFriend(token: string, username: string) {
+  const res = await fetch(`${BASE}/api/friends/accept/${encodeURIComponent(username)}`, {
+    method: 'POST',
+    headers: authHeaders(token),
+  });
+  return handleResponse<{ ok: boolean }>(res);
+}
+
+export async function apiDeclineFriend(token: string, username: string) {
+  const res = await fetch(`${BASE}/api/friends/decline/${encodeURIComponent(username)}`, {
+    method: 'DELETE',
+    headers: authHeaders(token),
+  });
+  return handleResponse<{ ok: boolean }>(res);
 }

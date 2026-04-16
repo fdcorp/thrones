@@ -211,6 +211,13 @@
   opacity: 0.8;
 }
 
+.requestSentTag {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
 .loading, .empty {
   text-align: center;
   font-family: 'Lexend', sans-serif;

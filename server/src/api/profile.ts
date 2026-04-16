@@ -6,10 +6,15 @@ import {
   getGameHistory,
   getGameHistoryCount,
   getFriends,
-  addFriend,
   removeFriend,
   areFriends,
   toUserProfile,
+  sendFriendRequest,
+  acceptFriendRequest,
+  declineFriendRequest,
+  cancelFriendRequest,
+  hasPendingRequest,
+  getIncomingRequests,
 } from '../db/queries';
 import { requireAuth, type AuthRequest } from '../middleware/auth';
 
@@ -66,20 +71,59 @@ router.get('/friends', requireAuth, (req: AuthRequest, res) => {
   res.json({ friends });
 });
 
-// GET /api/friends/check/:username — check if friends (auth required)
+// GET /api/friends/requests — incoming friend requests (auth required)
+router.get('/friends/requests', requireAuth, (req: AuthRequest, res) => {
+  const requests = getIncomingRequests(req.userId!);
+  res.json({ requests });
+});
+
+// GET /api/friends/check/:username — check friend/request status (auth required)
 // Must be declared BEFORE /friends/:username to avoid shadowing
 router.get('/friends/check/:username', requireAuth, (req: AuthRequest, res) => {
   const target = getUserByUsername(req.params.username);
-  if (!target) { res.json({ isFriend: false }); return; }
-  res.json({ isFriend: areFriends(req.userId!, target.id) });
+  if (!target) { res.json({ isFriend: false, sentByMe: false, sentByThem: false }); return; }
+  res.json({
+    isFriend:   areFriends(req.userId!, target.id),
+    sentByMe:   hasPendingRequest(req.userId!, target.id),
+    sentByThem: hasPendingRequest(target.id, req.userId!),
+  });
 });
 
-// POST /api/friends/:username — add friend (auth required)
+// POST /api/friends/:username — send friend request (auth required)
 router.post('/friends/:username', requireAuth, (req: AuthRequest, res) => {
   const target = getUserByUsername(req.params.username);
   if (!target) { res.status(404).json({ error: 'User not found' }); return; }
   if (target.id === req.userId) { res.status(400).json({ error: 'Cannot add yourself' }); return; }
-  addFriend(req.userId!, target.id);
+  if (areFriends(req.userId!, target.id)) { res.status(400).json({ error: 'Already friends' }); return; }
+  // If they already sent us a request → auto-accept
+  if (hasPendingRequest(target.id, req.userId!)) {
+    acceptFriendRequest(target.id, req.userId!);
+    res.json({ ok: true, accepted: true });
+    return;
+  }
+  sendFriendRequest(req.userId!, target.id);
+  res.json({ ok: true, accepted: false });
+});
+
+// POST /api/friends/accept/:username — accept incoming request (auth required)
+router.post('/friends/accept/:username', requireAuth, (req: AuthRequest, res) => {
+  const target = getUserByUsername(req.params.username);
+  if (!target) { res.status(404).json({ error: 'User not found' }); return; }
+  if (!hasPendingRequest(target.id, req.userId!)) {
+    res.status(400).json({ error: 'No pending request from this user' }); return;
+  }
+  acceptFriendRequest(target.id, req.userId!);
+  res.json({ ok: true });
+});
+
+// DELETE /api/friends/decline/:username — decline or cancel a request (auth required)
+router.delete('/friends/decline/:username', requireAuth, (req: AuthRequest, res) => {
+  const target = getUserByUsername(req.params.username);
+  if (!target) { res.status(404).json({ error: 'User not found' }); return; }
+  // Decline incoming: target sent to me
+  declineFriendRequest(target.id, req.userId!);
+  // Cancel outgoing: I sent to target
+  cancelFriendRequest(req.userId!, target.id);
   res.json({ ok: true });
 });
 
@@ -88,6 +132,7 @@ router.delete('/friends/:username', requireAuth, (req: AuthRequest, res) => {
   const target = getUserByUsername(req.params.username);
   if (!target) { res.status(404).json({ error: 'User not found' }); return; }
   removeFriend(req.userId!, target.id);
+  removeFriend(target.id, req.userId!);
   res.json({ ok: true });
 });
 

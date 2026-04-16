@@ -9,8 +9,11 @@ import {
   apiAddFriend,
   apiRemoveFriend,
   apiCheckFriend,
+  apiGetFriendRequests,
+  apiAcceptFriend,
+  apiDeclineFriend,
 } from '@/lib/api';
-import type { UserProfile, GameHistoryEntry, FriendEntry } from '../../../shared/types';
+import type { UserProfile, GameHistoryEntry, FriendEntry, FriendRequest } from '../../../shared/types';
 import styles from './Profile.module.css';
 
 // ── Flag image helper (flagcdn.com — reliable on Windows) ─────────
@@ -114,9 +117,11 @@ export function Profile() {
   const [histTotal, setHistTotal] = useState(0);
   const [histPage, setHistPage]   = useState(1);
   const HIST_PAGE_SIZE = 15;
-  const [friends, setFriends]     = useState<FriendEntry[]>([]);
-  const [loading, setLoading]     = useState(true);
-  const [error, setError]         = useState<string | null>(null);
+  const [friends, setFriends]       = useState<FriendEntry[]>([]);
+  const [requests, setRequests]     = useState<FriendRequest[]>([]);
+  const [friendsTab, setFriendsTab] = useState<'friends' | 'requests'>('friends');
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState<string | null>(null);
 
   // Country edit state (own profile only)
   const [selectedCountry, setSelectedCountry] = useState('');
@@ -124,12 +129,10 @@ export function Profile() {
   const [savedMsg, setSavedMsg]   = useState(false);
 
   // Friend state (viewing another profile while logged in)
-  const [isFriend, setIsFriend]       = useState(false);
-  const [friendMsg, setFriendMsg]     = useState('');
-
-  // Add friend by username (own profile)
-  const [showAddFriend, setShowAddFriend]         = useState(false);
-  const [addFriendUsername, setAddFriendUsername] = useState('');
+  const [isFriend, setIsFriend]     = useState(false);
+  const [sentByMe, setSentByMe]     = useState(false);
+  const [sentByThem, setSentByThem] = useState(false);
+  const [friendMsg, setFriendMsg]   = useState('');
 
   const lang = t.lang;
 
@@ -159,16 +162,21 @@ export function Profile() {
       .catch(() => {});
   }, [username, histPage]);
 
-  // Own profile: load own friends list
+  // Own profile: load own friends list + incoming requests
   useEffect(() => {
     if (!isOwnProfile || !token) return;
     apiGetFriends(token).then(({ friends: f }) => setFriends(f)).catch(() => {});
+    apiGetFriendRequests(token).then(({ requests: r }) => setRequests(r)).catch(() => {});
   }, [isOwnProfile, token]);
 
   // Viewing someone else's profile: check friend status
   useEffect(() => {
     if (isOwnProfile || !token || !username) return;
-    apiCheckFriend(token, username).then(({ isFriend: f }) => setIsFriend(f)).catch(() => {});
+    apiCheckFriend(token, username).then(({ isFriend: f, sentByMe: s, sentByThem: r }) => {
+      setIsFriend(f);
+      setSentByMe(s);
+      setSentByThem(r);
+    }).catch(() => {});
   }, [isOwnProfile, token, username]);
 
   async function handleSaveCountry() {
@@ -181,22 +189,6 @@ export function Profile() {
     setTimeout(() => setSavedMsg(false), 2000);
   }
 
-  async function handleAddFriendByName() {
-    if (!token || !addFriendUsername.trim()) return;
-    try {
-      await apiAddFriend(token, addFriendUsername.trim());
-      setFriendMsg(t.profile.friendAdded);
-      setAddFriendUsername('');
-      setShowAddFriend(false);
-      // Refresh friends list
-      const { friends: f } = await apiGetFriends(token);
-      setFriends(f);
-    } catch (e) {
-      setFriendMsg((e as Error).message);
-    }
-    setTimeout(() => setFriendMsg(''), 3000);
-  }
-
   async function handleToggleFriend() {
     if (!token || !username) return;
     try {
@@ -204,13 +196,36 @@ export function Profile() {
         await apiRemoveFriend(token, username);
         setIsFriend(false);
         setFriendMsg(t.profile.friendRemoved);
+      } else if (sentByThem) {
+        await apiAcceptFriend(token, username);
+        setIsFriend(true);
+        setSentByThem(false);
+        setFriendMsg(t.profile.friendAdded);
+      } else if (sentByMe) {
+        await apiDeclineFriend(token, username);
+        setSentByMe(false);
+        setFriendMsg(t.profile.friendRemoved);
       } else {
         await apiAddFriend(token, username);
-        setIsFriend(true);
-        setFriendMsg(t.profile.friendAdded);
+        setSentByMe(true);
+        setFriendMsg(t.profile.requestSentMsg);
       }
       setTimeout(() => setFriendMsg(''), 2000);
     } catch {}
+  }
+
+  async function handleAcceptRequest(username: string) {
+    if (!token) return;
+    await apiAcceptFriend(token, username);
+    setRequests(prev => prev.filter(r => r.username !== username));
+    const { friends: f } = await apiGetFriends(token);
+    setFriends(f);
+  }
+
+  async function handleDeclineRequest(username: string) {
+    if (!token) return;
+    await apiDeclineFriend(token, username);
+    setRequests(prev => prev.filter(r => r.username !== username));
   }
 
   function getResultLabel(entry: GameHistoryEntry): string {
@@ -318,78 +333,107 @@ export function Profile() {
           </div>
         )}
 
-        {/* Friends (own profile: manage / other profile: add/remove) */}
+        {/* Friends (own profile: tabs Amis/Demandes / other profile: add/request buttons) */}
         <div className={styles.card}>
-          <div className={styles.sectionTitleRow}>
-            <span className={styles.sectionTitle} style={{ marginBottom: 0, borderBottom: 'none', paddingBottom: 0 }}>{t.profile.friends}</span>
-            {isOwnProfile && (
-              <button
-                className={styles.addFriendInline}
-                onClick={() => setShowAddFriend(v => !v)}
-              >
-                + {t.profile.addFriend}
-              </button>
-            )}
-          </div>
-          <div className={styles.sectionDivider} />
-
-          {isOwnProfile && showAddFriend && (
-            <div className={styles.addFriendRow}>
-              <input
-                className={styles.addFriendInput}
-                type="text"
-                value={addFriendUsername}
-                onChange={e => setAddFriendUsername(e.target.value)}
-                placeholder="Username…"
-                onKeyDown={e => e.key === 'Enter' && handleAddFriendByName()}
-              />
-              <button className={styles.saveBtn} onClick={handleAddFriendByName} disabled={!addFriendUsername.trim()}>
-                {t.profile.addFriend}
-              </button>
-              {friendMsg && <span className={styles.savedMsg}>{friendMsg}</span>}
-            </div>
-          )}
-
           {isOwnProfile ? (
-            friends.length === 0
-              ? <div className={styles.empty}>{t.profile.noFriends}</div>
-              : (
-                <div className={styles.friendsList}>
-                  {friends.map(f => (
-                    <div key={f.id} className={styles.friendRow} onClick={() => navigate(`/profile/${f.username}`)}>
-                      <div className={styles.friendAvatar}>{f.username[0]}</div>
-                      <span className={styles.friendName}>
-                        {f.country && <FlagImg code={f.country} size={18} />}
-                        {f.username}
-                      </span>
-                      <span className={styles.friendElo}>{f.elo}</span>
-                      <button
-                        className={styles.removeFriendBtn}
-                        onClick={async e => {
-                          e.stopPropagation();
-                          if (!token) return;
-                          await apiRemoveFriend(token, f.username);
-                          setFriends(prev => prev.filter(x => x.id !== f.id));
-                        }}
-                      >
-                        {t.profile.removeFriend}
-                      </button>
+            <>
+              {/* Tabs */}
+              <div className={styles.friendsTabs}>
+                <button
+                  className={`${styles.friendsTabBtn} ${friendsTab === 'friends' ? styles.friendsTabActive : ''}`}
+                  onClick={() => setFriendsTab('friends')}
+                >
+                  {t.profile.friendsTab}
+                  {friends.length > 0 && <span className={styles.friendsTabCount}>{friends.length}</span>}
+                </button>
+                <button
+                  className={`${styles.friendsTabBtn} ${friendsTab === 'requests' ? styles.friendsTabActive : ''}`}
+                  onClick={() => setFriendsTab('requests')}
+                >
+                  {t.profile.requestsTab}
+                  {requests.length > 0 && <span className={styles.friendsTabBadge}>{requests.length}</span>}
+                </button>
+              </div>
+              <div className={styles.sectionDivider} />
+
+              {friendsTab === 'friends' ? (
+                friends.length === 0
+                  ? <div className={styles.empty}>{t.profile.noFriends}</div>
+                  : (
+                    <div className={styles.friendsList}>
+                      {friends.map(f => (
+                        <div key={f.id} className={styles.friendRow} onClick={() => navigate(`/profile/${f.username}`)}>
+                          <div className={styles.friendAvatar}>{f.username[0]}</div>
+                          <span className={styles.friendName}>
+                            {f.country && <FlagImg code={f.country} size={18} />}
+                            {f.username}
+                          </span>
+                          <span className={styles.friendElo}>{f.elo}</span>
+                          <button
+                            className={styles.removeFriendBtn}
+                            onClick={async e => {
+                              e.stopPropagation();
+                              if (!token) return;
+                              await apiRemoveFriend(token, f.username);
+                              setFriends(prev => prev.filter(x => x.id !== f.id));
+                            }}
+                          >
+                            {t.profile.removeFriend}
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )
+                  )
+              ) : (
+                requests.length === 0
+                  ? <div className={styles.empty}>{t.profile.noRequests}</div>
+                  : (
+                    <div className={styles.friendsList}>
+                      {requests.map(r => (
+                        <div key={r.id} className={styles.friendRow} onClick={() => navigate(`/profile/${r.username}`)}>
+                          <div className={styles.friendAvatar}>{r.username[0]}</div>
+                          <span className={styles.friendName}>
+                            {r.country && <FlagImg code={r.country} size={18} />}
+                            {r.username}
+                          </span>
+                          <span className={styles.friendElo}>{r.elo}</span>
+                          <div className={styles.requestActions} onClick={e => e.stopPropagation()}>
+                            <button className={styles.acceptBtn} onClick={() => handleAcceptRequest(r.username)}>
+                              {t.profile.acceptFriend}
+                            </button>
+                            <button className={styles.removeFriendBtn} onClick={() => handleDeclineRequest(r.username)}>
+                              {t.profile.declineFriend}
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )
+              )}
+            </>
           ) : (
             <>
-              {/* Viewing another user: only show add/remove if logged in */}
+              <div className={styles.sectionTitle} style={{ marginBottom: '0.75rem' }}>{t.profile.friends}</div>
               {token && me && (
                 <>
                   {friendMsg && <div className={styles.savedMsg} style={{ marginBottom: '0.5rem' }}>{friendMsg}</div>}
-                  <button
-                    className={`${styles.addFriendBtn} ${isFriend ? '' : styles.addFriendBtnActive}`}
-                    onClick={handleToggleFriend}
-                  >
-                    {isFriend ? t.profile.removeFriend : t.profile.addFriend}
-                  </button>
+                  {isFriend ? (
+                    <button className={styles.addFriendBtn} onClick={handleToggleFriend}>
+                      {t.profile.removeFriend}
+                    </button>
+                  ) : sentByThem ? (
+                    <button className={`${styles.addFriendBtn} ${styles.addFriendBtnActive}`} onClick={handleToggleFriend}>
+                      {t.profile.acceptFriend}
+                    </button>
+                  ) : sentByMe ? (
+                    <button className={styles.addFriendBtn} onClick={handleToggleFriend}>
+                      {t.profile.requestSent} · {t.profile.cancelRequest}
+                    </button>
+                  ) : (
+                    <button className={`${styles.addFriendBtn} ${styles.addFriendBtnActive}`} onClick={handleToggleFriend}>
+                      + {t.profile.addFriend}
+                    </button>
+                  )}
                 </>
               )}
             </>

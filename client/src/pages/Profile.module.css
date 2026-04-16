@@ -361,6 +361,76 @@
   padding: 1.5rem 0;
 }
 
+/* ── Friends tabs ────────────────────────────────────────── */
+.friendsTabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0;
+}
+
+.friendsTabBtn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5rem 0.5rem;
+  cursor: pointer;
+  transition: color 150ms;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-bottom: 2px solid transparent;
+}
+.friendsTabBtn:hover { color: var(--white); }
+.friendsTabActive {
+  color: var(--white);
+  border-bottom-color: var(--gold-dim);
+}
+
+.friendsTabCount {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.05rem 0.35rem;
+}
+
+.friendsTabBadge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--gold);
+  background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 10px;
+  padding: 0.05rem 0.35rem;
+}
+
+.requestActions {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.acceptBtn {
+  background: none;
+  border: 1px solid rgba(100,180,100,0.4);
+  color: #6db86d;
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: 2px;
+  transition: background 150ms;
+}
+.acceptBtn:hover { background: rgba(100,180,100,0.1); }
+
 /* ── Friends ─────────────────────────────────────────────── */
 .friendsList {
   display: flex;

@@ -55,6 +55,14 @@ export interface FriendEntry {
   country?: string;
 }
 
+export interface FriendRequest {
+  id: number;
+  username: string;
+  elo: number;
+  country?: string;
+  createdAt: string;
+}
+
 // ── Room ──────────────────────────────────────────────────────────
 export interface RoomInfo {
   code: string;

@@ -11,12 +11,13 @@ export function Players() {
   const t        = useLang();
   const { user, token } = useAuthStore();
 
-  const [entries, setEntries]     = useState<LeaderboardEntry[]>([]);
-  const [friendIds, setFriendIds] = useState<Set<number>>(new Set());
-  const [loading, setLoading]     = useState(true);
-  const [error, setError]         = useState<string | null>(null);
-  const [adding, setAdding]       = useState<Set<number>>(new Set());
-  const [search, setSearch]       = useState('');
+  const [entries, setEntries]             = useState<LeaderboardEntry[]>([]);
+  const [friendIds, setFriendIds]         = useState<Set<number>>(new Set());
+  const [requestSentIds, setRequestSentIds] = useState<Set<number>>(new Set());
+  const [loading, setLoading]             = useState(true);
+  const [error, setError]                 = useState<string | null>(null);
+  const [adding, setAdding]               = useState<Set<number>>(new Set());
+  const [search, setSearch]               = useState('');
 
   const filtered = search.trim()
     ? entries.filter(e => e.username.toLowerCase().includes(search.trim().toLowerCase()))
@@ -47,8 +48,12 @@ export function Players() {
     if (!token) return;
     setAdding(prev => new Set(prev).add(entry.id));
     try {
-      await apiAddFriend(token, entry.username);
-      setFriendIds(prev => new Set(prev).add(entry.id));
+      const { accepted } = await apiAddFriend(token, entry.username) as { ok: boolean; accepted?: boolean };
+      if (accepted) {
+        setFriendIds(prev => new Set(prev).add(entry.id));
+      } else {
+        setRequestSentIds(prev => new Set(prev).add(entry.id));
+      }
     } catch {
       // ignore
     } finally {
@@ -94,10 +99,10 @@ export function Players() {
             </thead>
             <tbody>
               {filtered.map(entry => {
-                const isMe     = user?.id === entry.id;
-                const isFriend = friendIds.has(entry.id);
-                const isAdding = adding.has(entry.id);
-                const canAdd   = !!token && !isMe && !isFriend;
+                const isMe        = user?.id === entry.id;
+                const isFriend    = friendIds.has(entry.id);
+                const isAdding    = adding.has(entry.id);
+                const requestSent = requestSentIds.has(entry.id);
 
                 return (
                   <tr
@@ -135,9 +140,11 @@ export function Players() {
                       }
                     </td>
                     <td className={styles.actionCell}>
-                      {isFriend ? (
+                      {isMe ? null : isFriend ? (
                         <span className={styles.friendTag}>✓ {t.players.friend}</span>
-                      ) : canAdd ? (
+                      ) : requestSent ? (
+                        <span className={styles.requestSentTag}>{t.profile.requestSent}</span>
+                      ) : token ? (
                         <button
                           className={styles.addBtn}
                           onClick={() => handleAddFriend(entry)}

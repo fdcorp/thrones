@@ -59,3 +59,10 @@ CREATE TABLE IF NOT EXISTS friends (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id, friend_id)
 );
+
+CREATE TABLE IF NOT EXISTS friend_requests (
+  from_id    INTEGER NOT NULL REFERENCES users(id),
+  to_id      INTEGER NOT NULL REFERENCES users(id),
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (from_id, to_id)
+);
