@@ -11,7 +11,9 @@
 
 /* ── Top nav bar ─────────────────────────────────────────── */
 .topBar {
-  width: 100%;
+  width: calc(100% + 2rem);
+  margin-left: -1rem;
+  margin-right: -1rem;
   display: flex;
   align-items: center;
   padding: 0.85rem 1.5rem;
