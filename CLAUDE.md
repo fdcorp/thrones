@@ -901,4 +901,54 @@ thrones/
 
 ---
 
+## 7. Déploiement Production
+
+> Ces informations concernent l'environnement de production en ligne. À lire avant toute intervention sur le serveur.
+
+### Infos serveur
+
+| Élément | Valeur |
+|---|---|
+| Domaine | https://www.thronesonline.com |
+| Hébergeur | Hetzner VPS |
+| SSH | `ssh dev@178.104.168.23` |
+| Répertoire projet | `~/thrones/` |
+| Node.js | v22 (MODULE_VERSION 127) |
+
+### Process manager PM2
+
+- `thrones-server` (id 7) — backend Node.js port 3001 — **NE PAS TOUCHER `mon-jeu` (id 1)**
+- Le serveur tourne sur le **JS compilé** dans `dist/` — il faut toujours recompiler après chaque modification TypeScript
+
+### Procédure de déploiement standard
+
+```bash
+ssh dev@178.104.168.23 "cd ~/thrones && git pull && cd client && npm run build && cd ../server && npm run build && pm2 restart thrones-server --update-env"
+```
+
+### Fichier .env du serveur
+
+`~/thrones/server/.env` contient : `PORT`, `JWT_SECRET`, `DB_PATH`, `CLIENT_ORIGIN`, `RESEND_API_KEY`, `CLIENT_URL`
+
+### Problèmes connus et solutions
+
+**`better-sqlite3` crash (MODULE_VERSION mismatch)**
+```bash
+ssh dev@178.104.168.23 "cd ~/thrones/server && rm -rf node_modules/better-sqlite3 && npm install better-sqlite3 && npm run build && pm2 restart thrones-server --update-env"
+```
+
+**`git pull` bloqué par fichiers locaux modifiés**
+```bash
+git checkout server/package-lock.json server/package.json server/thrones.db-shm server/thrones.db-wal 2>/dev/null
+```
+
+**Supprimer un compte utilisateur** (utiliser Python — les guillemets bash posent problème avec sqlite3) :
+```bash
+ssh dev@178.104.168.23 "python3 -c \"import sqlite3; c=sqlite3.connect('/home/dev/thrones/server/thrones.db'); c.execute(\\\"DELETE FROM users WHERE username='NOM'\\\"); c.commit(); print('deleted:', c.total_changes)\""
+```
+
+**Variables .env non prises en compte** : toujours utiliser `pm2 restart thrones-server --update-env`
+
+---
+
 *THRONES · Implementation Plan v1 · First Edition 2026*
