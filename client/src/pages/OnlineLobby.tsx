@@ -124,7 +124,7 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
       <div className={styles.card}>
         <div className={styles.title}>MATCHMAKING</div>
         <button className={styles.btnPrimary} onClick={() => handleMatchmaking(false)}>
-          🎲 FOR FUN
+          {t.online.casualMode}
         </button>
         <button className={styles.btnSecondary} onClick={() => handleMatchmaking(true)}>
           <span>⚔️ RANKED</span>

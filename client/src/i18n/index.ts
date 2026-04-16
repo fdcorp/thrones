@@ -207,6 +207,7 @@ export interface Translation {
     mustBeLoggedIn: string;
     roomNotFound: string;
     roomFull: string;
+    casualMode: string;
     chooseColor: string;
     colorGold: string;
     colorSilver: string;
