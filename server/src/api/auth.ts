@@ -1,19 +1,24 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { JWT_SECRET } from '../config';
-import { createUser, getUserByUsername, toUserProfile, updateLastLogin } from '../db/queries';
+import {
+  createUser, getUserByUsername, getUserByEmail, toUserProfile, updateLastLogin,
+  verifyEmailToken, setPasswordResetToken, getUserByResetToken, resetPassword,
+} from '../db/queries';
 import { requireAuth, type AuthRequest } from '../middleware/auth';
+import { sendVerificationEmail, sendPasswordResetEmail } from '../email';
 
 const router = Router();
 const SALT_ROUNDS = 12;
 
 // POST /api/register
 router.post('/register', async (req, res) => {
-  const { username, password } = req.body as { username?: string; password?: string };
+  const { username, password, email } = req.body as { username?: string; password?: string; email?: string };
 
-  if (!username || !password) {
-    res.status(400).json({ error: 'Username and password required' });
+  if (!username || !password || !email) {
+    res.status(400).json({ error: 'Username, email and password required' });
     return;
   }
   if (username.length < 2 || username.length > 20) {
@@ -28,16 +33,28 @@ router.post('/register', async (req, res) => {
     res.status(400).json({ error: 'Username: letters, numbers, _ and - only' });
     return;
   }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    res.status(400).json({ error: 'Invalid email address' });
+    return;
+  }
 
   try {
-    const existing = getUserByUsername(username);
-    if (existing) {
+    if (getUserByUsername(username)) {
       res.status(409).json({ error: 'Username already taken' });
       return;
     }
-    const hash = await bcrypt.hash(password, SALT_ROUNDS);
-    const id   = createUser(username, hash);
-    const token = jwt.sign({ id, username }, JWT_SECRET, { expiresIn: '7d' });
+    if (getUserByEmail(email)) {
+      res.status(409).json({ error: 'Email already registered' });
+      return;
+    }
+    const hash        = await bcrypt.hash(password, SALT_ROUNDS);
+    const verifyToken = crypto.randomBytes(32).toString('hex');
+    const id          = createUser(username, hash, email, verifyToken);
+
+    // Send verification email (non-blocking)
+    sendVerificationEmail(email, username, verifyToken).catch(console.error);
+
+    const token   = jwt.sign({ id, username }, JWT_SECRET, { expiresIn: '7d' });
     const newUser = getUserByUsername(username)!;
     res.status(201).json({ token, user: toUserProfile(newUser) });
   } catch (err) {
@@ -80,6 +97,50 @@ router.get('/me', requireAuth, (req: AuthRequest, res) => {
   const user = getUserByUsername(req.username!);
   if (!user) { res.status(404).json({ error: 'User not found' }); return; }
   res.json({ user: toUserProfile(user) });
+});
+
+// GET /api/verify-email?token=xxx
+router.get('/verify-email', (req, res) => {
+  const { token } = req.query as { token?: string };
+  if (!token) { res.status(400).json({ error: 'Token required' }); return; }
+  const ok = verifyEmailToken(token);
+  if (!ok) { res.status(400).json({ error: 'Invalid or expired token' }); return; }
+  res.json({ ok: true });
+});
+
+// POST /api/forgot-password
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body as { email?: string };
+  // Always return 200 to avoid email enumeration
+  res.json({ ok: true });
+  if (!email) return;
+  try {
+    const user = getUserByEmail(email);
+    if (!user) return;
+    const token   = crypto.randomBytes(32).toString('hex');
+    const expires = Date.now() + 60 * 60 * 1000; // 1 hour
+    setPasswordResetToken(user.id, token, expires);
+    await sendPasswordResetEmail(user.email!, user.username, token);
+  } catch (err) {
+    console.error('[forgot-password]', err);
+  }
+});
+
+// POST /api/reset-password
+router.post('/reset-password', async (req, res) => {
+  const { token, password } = req.body as { token?: string; password?: string };
+  if (!token || !password) { res.status(400).json({ error: 'Token and password required' }); return; }
+  if (password.length < 6) { res.status(400).json({ error: 'Password must be at least 6 characters' }); return; }
+  try {
+    const user = getUserByResetToken(token);
+    if (!user) { res.status(400).json({ error: 'Invalid or expired reset link' }); return; }
+    const hash = await bcrypt.hash(password, SALT_ROUNDS);
+    resetPassword(user.id, hash);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 export default router;

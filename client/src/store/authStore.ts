@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { UserProfile } from '../../../shared/types';
-import { apiLogin, apiRegister, apiGetMe, apiUpdateProfile } from '@/lib/api';
+import { apiLogin, apiRegister, apiGetMe, apiUpdateProfile, apiForgotPassword } from '@/lib/api';
 
 interface AuthState {
   user:  UserProfile | null;
@@ -12,7 +12,8 @@ interface AuthState {
 
 interface AuthActions {
   login(username: string, password: string): Promise<void>;
-  register(username: string, password: string): Promise<void>;
+  register(username: string, password: string, email: string): Promise<void>;
+  forgotPassword(email: string): Promise<void>;
   logout(): void;
   refreshMe(): Promise<void>;
   updateElo(newElo: number): void;
@@ -38,13 +39,23 @@ export const useAuthStore = create<AuthState & AuthActions>()(
         }
       },
 
-      async register(username, password) {
+      async register(username, password, email) {
         set({ loading: true, error: null });
         try {
-          const { token, user } = await apiRegister(username, password);
+          const { token, user } = await apiRegister(username, password, email);
           set({ token, user, loading: false });
         } catch (e) {
           set({ error: (e as Error).message, loading: false });
+        }
+      },
+
+      async forgotPassword(email) {
+        set({ loading: true, error: null });
+        try {
+          await apiForgotPassword(email);
+          set({ loading: false });
+        } catch {
+          set({ loading: false });
         }
       },
 

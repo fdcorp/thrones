@@ -10,13 +10,15 @@ export function MainMenu() {
   const t = useLang();
   const [showCustom, setShowCustom] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot'>('login');
   const [authUsername, setAuthUsername] = useState('');
   const [authPassword, setAuthPassword] = useState('');
+  const [authEmail, setAuthEmail] = useState('');
+  const [forgotSent, setForgotSent] = useState(false);
   const [openMenu, setOpenMenu] = useState<'play' | 'community' | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const { user, loading: authLoading, error: authError, login, register, logout, clearError } = useAuthStore();
+  const { user, loading: authLoading, error: authError, login, register, logout, clearError, forgotPassword } = useAuthStore();
 
   useEffect(() => {
     if (!openMenu) return;
@@ -37,18 +39,24 @@ export function MainMenu() {
     setAuthMode(mode);
     setAuthUsername('');
     setAuthPassword('');
+    setAuthEmail('');
+    setForgotSent(false);
     clearError();
     setShowAuth(true);
   }
 
   async function handleAuthSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (authMode === 'forgot') {
+      await forgotPassword(authEmail);
+      setForgotSent(true);
+      return;
+    }
     if (authMode === 'login') {
       await login(authUsername, authPassword);
     } else {
-      await register(authUsername, authPassword);
+      await register(authUsername, authPassword, authEmail);
     }
-    // Close on success (no error in store)
     if (!useAuthStore.getState().error) {
       setShowAuth(false);
     }
@@ -217,7 +225,7 @@ export function MainMenu() {
           <div className={styles.authBox} onClick={e => e.stopPropagation()}>
             <div className={styles.authHeader}>
               <span className={styles.authTitle}>
-                {authMode === 'login' ? t.auth.loginTitle : t.auth.registerTitle}
+                {authMode === 'login' ? t.auth.loginTitle : authMode === 'register' ? t.auth.registerTitle : t.auth.forgotTitle}
               </span>
               <button className={styles.authClose} onClick={() => setShowAuth(false)} aria-label="Fermer">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -227,44 +235,105 @@ export function MainMenu() {
             </div>
             <form className={styles.authBody} onSubmit={handleAuthSubmit}>
               {authError && <div className={styles.authError}>{authError}</div>}
-              <div className={styles.authField}>
-                <label className={styles.authLabel}>{t.auth.username}</label>
-                <input
-                  className={styles.authInput}
-                  type="text"
-                  value={authUsername}
-                  onChange={e => setAuthUsername(e.target.value)}
-                  placeholder={t.auth.usernamePlaceholder}
-                  autoComplete="username"
-                  required
-                  minLength={2}
-                  maxLength={20}
-                />
-              </div>
-              <div className={styles.authField}>
-                <label className={styles.authLabel}>{t.auth.password}</label>
-                <input
-                  className={styles.authInput}
-                  type="password"
-                  value={authPassword}
-                  onChange={e => setAuthPassword(e.target.value)}
-                  placeholder="••••••••"
-                  autoComplete={authMode === 'login' ? 'current-password' : 'new-password'}
-                  required
-                  minLength={6}
-                />
-              </div>
-              <button className={styles.authLoginBtn} type="submit" disabled={authLoading}>
-                {authLoading ? '...' : authMode === 'login' ? t.auth.loginBtn : t.auth.registerBtn}
-              </button>
-              <div className={styles.authDivider}><span>{t.auth.or}</span></div>
-              <button
-                type="button"
-                className={styles.authRegisterBtn}
-                onClick={() => { setAuthMode(m => m === 'login' ? 'register' : 'login'); clearError(); }}
-              >
-                {authMode === 'login' ? t.auth.switchToRegister : t.auth.switchToLogin}
-              </button>
+
+              {authMode === 'forgot' ? (
+                forgotSent ? (
+                  <p className={styles.authSuccess}>{t.auth.forgotSuccess}</p>
+                ) : (
+                  <>
+                    <p className={styles.authDesc}>{t.auth.forgotDesc}</p>
+                    <div className={styles.authField}>
+                      <label className={styles.authLabel}>{t.auth.email}</label>
+                      <input
+                        className={styles.authInput}
+                        type="email"
+                        value={authEmail}
+                        onChange={e => setAuthEmail(e.target.value)}
+                        placeholder={t.auth.emailPlaceholder}
+                        autoComplete="email"
+                        required
+                      />
+                    </div>
+                    <button className={styles.authLoginBtn} type="submit" disabled={authLoading}>
+                      {authLoading ? '...' : t.auth.forgotBtn}
+                    </button>
+                  </>
+                )
+              ) : (
+                <>
+                  <div className={styles.authField}>
+                    <label className={styles.authLabel}>{t.auth.username}</label>
+                    <input
+                      className={styles.authInput}
+                      type="text"
+                      value={authUsername}
+                      onChange={e => setAuthUsername(e.target.value)}
+                      placeholder={t.auth.usernamePlaceholder}
+                      autoComplete="username"
+                      required
+                      minLength={2}
+                      maxLength={20}
+                    />
+                  </div>
+                  {authMode === 'register' && (
+                    <div className={styles.authField}>
+                      <label className={styles.authLabel}>{t.auth.email}</label>
+                      <input
+                        className={styles.authInput}
+                        type="email"
+                        value={authEmail}
+                        onChange={e => setAuthEmail(e.target.value)}
+                        placeholder={t.auth.emailPlaceholder}
+                        autoComplete="email"
+                        required
+                      />
+                    </div>
+                  )}
+                  <div className={styles.authField}>
+                    <label className={styles.authLabel}>{t.auth.password}</label>
+                    <input
+                      className={styles.authInput}
+                      type="password"
+                      value={authPassword}
+                      onChange={e => setAuthPassword(e.target.value)}
+                      placeholder="••••••••"
+                      autoComplete={authMode === 'login' ? 'current-password' : 'new-password'}
+                      required
+                      minLength={6}
+                    />
+                  </div>
+                  {authMode === 'login' && (
+                    <button
+                      type="button"
+                      className={styles.authForgotBtn}
+                      onClick={() => { setAuthMode('forgot'); clearError(); }}
+                    >
+                      {t.auth.forgotPassword}
+                    </button>
+                  )}
+                  <button className={styles.authLoginBtn} type="submit" disabled={authLoading}>
+                    {authLoading ? '...' : authMode === 'login' ? t.auth.loginBtn : t.auth.registerBtn}
+                  </button>
+                  <div className={styles.authDivider}><span>{t.auth.or}</span></div>
+                  <button
+                    type="button"
+                    className={styles.authRegisterBtn}
+                    onClick={() => { setAuthMode(m => m === 'login' ? 'register' : 'login'); clearError(); setAuthEmail(''); }}
+                  >
+                    {authMode === 'login' ? t.auth.switchToRegister : t.auth.switchToLogin}
+                  </button>
+                </>
+              )}
+
+              {authMode === 'forgot' && (
+                <button
+                  type="button"
+                  className={styles.authRegisterBtn}
+                  onClick={() => { setAuthMode('login'); clearError(); setForgotSent(false); }}
+                >
+                  {t.auth.backToLogin}
+                </button>
+              )}
             </form>
           </div>
         </div>

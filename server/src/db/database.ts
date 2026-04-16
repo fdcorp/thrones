@@ -37,6 +37,13 @@ export function getDb(): Database.Database {
     runMigration(db, 'games',  'mmr_change_p2',              'ALTER TABLE games ADD COLUMN mmr_change_p2 REAL');
     runMigration(db, 'games',  'lp_change_p1',               'ALTER TABLE games ADD COLUMN lp_change_p1 INTEGER');
     runMigration(db, 'games',  'lp_change_p2',               'ALTER TABLE games ADD COLUMN lp_change_p2 INTEGER');
+
+    // Email auth — added in email verification update
+    runMigration(db, 'users',  'email',                      'ALTER TABLE users ADD COLUMN email TEXT');
+    runMigration(db, 'users',  'email_verified',             'ALTER TABLE users ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 0');
+    runMigration(db, 'users',  'email_verify_token',         'ALTER TABLE users ADD COLUMN email_verify_token TEXT');
+    runMigration(db, 'users',  'password_reset_token',       'ALTER TABLE users ADD COLUMN password_reset_token TEXT');
+    runMigration(db, 'users',  'password_reset_expires',     'ALTER TABLE users ADD COLUMN password_reset_expires INTEGER');
   }
   return db;
 }

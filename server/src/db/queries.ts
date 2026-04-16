@@ -9,6 +9,11 @@ export interface DbUser {
   id: number;
   username: string;
   password_hash: string;
+  email: string | null;
+  email_verified: 0 | 1;
+  email_verify_token: string | null;
+  password_reset_token: string | null;
+  password_reset_expires: number | null;
   elo: number;
   games_played: number;
   games_won: number;
@@ -60,11 +65,42 @@ export function toUserProfile(u: DbUser): UserProfile {
 
 // ── User queries ──────────────────────────────────────────────────
 
-export function createUser(username: string, passwordHash: string): number {
+export function createUser(username: string, passwordHash: string, email?: string, verifyToken?: string): number {
   const db   = getDb();
-  const stmt = db.prepare('INSERT INTO users (username, password_hash) VALUES (?, ?)');
-  const res  = stmt.run(username, passwordHash) as { lastInsertRowid: number };
+  const stmt = db.prepare('INSERT INTO users (username, password_hash, email, email_verify_token) VALUES (?, ?, ?, ?)');
+  const res  = stmt.run(username, passwordHash, email ?? null, verifyToken ?? null) as { lastInsertRowid: number };
   return res.lastInsertRowid;
+}
+
+export function getUserByEmail(email: string): DbUser | undefined {
+  return getDb().prepare('SELECT * FROM users WHERE email = ?').get(email) as DbUser | undefined;
+}
+
+export function verifyEmailToken(token: string): boolean {
+  const db   = getDb();
+  const user = db.prepare('SELECT id FROM users WHERE email_verify_token = ?').get(token) as { id: number } | undefined;
+  if (!user) return false;
+  db.prepare('UPDATE users SET email_verified = 1, email_verify_token = NULL WHERE id = ?').run(user.id);
+  return true;
+}
+
+export function setPasswordResetToken(userId: number, token: string, expiresAt: number) {
+  getDb().prepare(
+    'UPDATE users SET password_reset_token = ?, password_reset_expires = ? WHERE id = ?'
+  ).run(token, expiresAt, userId);
+}
+
+export function getUserByResetToken(token: string): DbUser | undefined {
+  const now  = Date.now();
+  return getDb().prepare(
+    'SELECT * FROM users WHERE password_reset_token = ? AND password_reset_expires > ?'
+  ).get(token, now) as DbUser | undefined;
+}
+
+export function resetPassword(userId: number, newHash: string) {
+  getDb().prepare(
+    'UPDATE users SET password_hash = ?, password_reset_token = NULL, password_reset_expires = NULL WHERE id = ?'
+  ).run(newHash, userId);
 }
 
 export function getUserByUsername(username: string): DbUser | undefined {

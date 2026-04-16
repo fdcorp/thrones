@@ -185,6 +185,8 @@ export interface Translation {
     registerTitle: string;
     username: string;
     usernamePlaceholder: string;
+    email: string;
+    emailPlaceholder: string;
     password: string;
     loginBtn: string;
     registerBtn: string;
@@ -194,6 +196,13 @@ export interface Translation {
     loggedInAs: string;
     logout: string;
     eloRating: string;
+    forgotPassword: string;
+    forgotTitle: string;
+    forgotDesc: string;
+    forgotBtn: string;
+    forgotSuccess: string;
+    backToLogin: string;
+    verifyEmailBanner: string;
   };
 
   online: {

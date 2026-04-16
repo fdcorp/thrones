@@ -19,13 +19,36 @@ async function handleResponse<T>(res: Response): Promise<T> {
 
 // ── Auth ──────────────────────────────────────────────────────────
 
-export async function apiRegister(username: string, password: string) {
+export async function apiRegister(username: string, password: string, email: string) {
   const res = await fetch(`${BASE}/api/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ username, password, email }),
   });
   return handleResponse<{ token: string; user: UserProfile }>(res);
+}
+
+export async function apiVerifyEmail(token: string) {
+  const res = await fetch(`${BASE}/api/verify-email?token=${encodeURIComponent(token)}`);
+  return handleResponse<{ ok: boolean }>(res);
+}
+
+export async function apiForgotPassword(email: string) {
+  const res = await fetch(`${BASE}/api/forgot-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+  return handleResponse<{ ok: boolean }>(res);
+}
+
+export async function apiResetPassword(token: string, password: string) {
+  const res = await fetch(`${BASE}/api/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, password }),
+  });
+  return handleResponse<{ ok: boolean }>(res);
 }
 
 export async function apiLogin(username: string, password: string) {
