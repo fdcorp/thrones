@@ -2,6 +2,7 @@ import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import disposableDomains from 'disposable-email-domains';
 import { JWT_SECRET } from '../config';
 import {
   createUser, getUserByUsername, getUserByEmail, toUserProfile, updateLastLogin,
@@ -35,6 +36,11 @@ router.post('/register', async (req, res) => {
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     res.status(400).json({ error: 'Invalid email address' });
+    return;
+  }
+  const emailDomain = email.split('@')[1].toLowerCase();
+  if (disposableDomains.includes(emailDomain)) {
+    res.status(400).json({ error: 'Disposable email addresses are not allowed' });
     return;
   }
 
