@@ -112,8 +112,19 @@
 
 .codeInputRow {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   width: 100%;
+}
+
+.codeInputRow .codeInput {
+  min-width: 0;
+  flex: 1 1 120px;
+}
+
+.joinBtn {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .codeInput {

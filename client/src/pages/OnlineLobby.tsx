@@ -173,8 +173,8 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
             maxLength={6}
           />
           <button
-            className={styles.btnSecondary}
-            style={{ width: 'auto', padding: '0.8rem 1.2rem' }}
+            className={`${styles.btnSecondary} ${styles.joinBtn}`}
+            style={{ padding: '0.8rem 1.2rem' }}
             onClick={handleJoin}
             disabled={isLoading || joinCode.length < 6}
           >
