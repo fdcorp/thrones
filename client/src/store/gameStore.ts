@@ -93,7 +93,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   resetGame: () => {
-    set({ gameState: null, history: [], previousState: null, aiThinking: false, onlineDispatch: null, onlineSurrender: null });
+    // Do NOT clear onlineDispatch/onlineSurrender here — the useEffect in Game.tsx
+    // manages those. Clearing them here causes the 2nd online game to dispatch
+    // actions locally instead of sending them to the server (rematch bug).
+    set({ gameState: null, history: [], previousState: null, aiThinking: false });
   },
 
   setAiThinking: (thinking) => set({ aiThinking: thinking }),
