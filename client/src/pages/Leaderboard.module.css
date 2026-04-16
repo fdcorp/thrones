@@ -233,8 +233,7 @@
 }
 
 @media (max-width: 639px) {
-  .content { padding: 1rem 0.75rem; }
-  .table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .content { padding: 1rem 0.75rem; overflow-x: auto; }
   .thead th, .row td { padding: 0.6rem 0.5rem; font-size: 0.65rem; }
   .eloCell { font-size: 0.72rem; }
   .actionCell { width: 80px; }
