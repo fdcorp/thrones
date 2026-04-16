@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { apiVerifyEmail } from '@/lib/api';
+import { useAuthStore } from '@/store/authStore';
 import styles from './AuthPage.module.css';
 
 export function VerifyEmail() {
   const [params]   = useSearchParams();
   const navigate   = useNavigate();
+  const refreshMe  = useAuthStore(s => s.refreshMe);
   const [status, setStatus] = useState<'loading' | 'ok' | 'error'>('loading');
 
   useEffect(() => {
     const token = params.get('token');
     if (!token) { setStatus('error'); return; }
     apiVerifyEmail(token)
-      .then(() => setStatus('ok'))
+      .then(() => { refreshMe(); setStatus('ok'); })
       .catch(() => setStatus('error'));
   }, [params]);
 

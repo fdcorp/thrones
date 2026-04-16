@@ -18,8 +18,10 @@ export function MainMenu() {
   const [openMenu, setOpenMenu] = useState<'play' | 'community' | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const { user, loading: authLoading, error: authError, login, register, logout, clearError, forgotPassword, resendVerification } = useAuthStore();
+  const { user, loading: authLoading, error: authError, login, register, logout, clearError, forgotPassword, resendVerification, refreshMe } = useAuthStore();
   const [resendSent, setResendSent] = useState(false);
+
+  useEffect(() => { refreshMe(); }, []);
 
   useEffect(() => {
     if (!openMenu) return;
