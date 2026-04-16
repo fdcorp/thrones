@@ -272,13 +272,15 @@ export function Profile() {
   return (
     <div className={styles.page}>
 
-      {/* Back */}
-      <button className={styles.back} onClick={() => navigate(-1)}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
-        {isOwnProfile ? t.profile.myProfile : profile.username}
-      </button>
+      {/* Top bar */}
+      <header className={styles.topBar}>
+        <button className={styles.back} onClick={() => navigate('/')}>
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Menu
+        </button>
+      </header>
 
       {/* Header */}
       <div className={styles.header}>

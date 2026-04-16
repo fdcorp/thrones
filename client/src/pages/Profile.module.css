@@ -6,28 +6,39 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem 1rem 4rem;
+  padding: 0 1rem 4rem;
 }
 
-/* ── Back button ─────────────────────────────────────────── */
-.back {
-  align-self: flex-start;
+/* ── Top nav bar ─────────────────────────────────────────── */
+.topBar {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  padding: 0.85rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,10,15,0.9);
+  backdrop-filter: blur(12px);
+  margin-bottom: 2rem;
+}
+
+.back {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: 'Lexend', sans-serif;
+  font-weight: 500;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
   background: none;
   border: none;
-  color: var(--muted);
-  font-family: 'Lexend', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 300;
   cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  margin-bottom: 2rem;
-  transition: color 150ms;
+  padding: 0.35rem 0;
+  transition: color 160ms ease;
 }
-.back:hover { color: var(--white); }
-.back svg { width: 1rem; height: 1rem; }
+.back svg { width: 14px; height: 14px; }
+.back:hover { color: rgba(255,255,255,0.7); }
 
 /* ── Header ──────────────────────────────────────────────── */
 .header {
