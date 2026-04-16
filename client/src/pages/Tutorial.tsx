@@ -14,7 +14,7 @@ export function Tutorial() {
           <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: 14, height: 14 }}>
             <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          {t.tutorial_header.back}
+          Menu
         </button>
         <span className={styles.title}>{t.tutorial_header.title}</span>
       </header>
