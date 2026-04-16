@@ -218,7 +218,7 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
 
       {online.error && <div className={styles.error}>{online.error}</div>}
 
-      <button className={styles.btnPrimary} onClick={() => handleMatchmaking(false)} disabled={isLoading}>
+      <button className={styles.btnSecondary} onClick={() => handleMatchmaking(false)} disabled={isLoading}>
         {t.online.casualMode}
       </button>
 

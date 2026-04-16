@@ -218,7 +218,7 @@ export const fr: Translation = {
     mustBeLoggedIn:      'Vous devez être connecté pour jouer en ligne',
     roomNotFound:        'Room introuvable',
     roomFull:            'Room complète',
-    casualMode:          '🎲 Non classé',
+    casualMode:          'Non classé',
     chooseColor:         'CHOISIR SA COULEUR',
     colorGold:           '♔ OR — Jouer en premier',
     colorSilver:         '♔ ARGENT — Jouer en deuxième',
