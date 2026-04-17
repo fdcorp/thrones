@@ -177,38 +177,45 @@ export function playRespawn() {
   } catch (_) {}
 }
 
-// ── Victory — two solid knocks (chess.com style) ─────────────────────────────
+// ── Victory — single final blow ───────────────────────────────────────────────
 export function playVictory() {
   if (muted) return;
   try {
     const ac = getCtx();
-
-    function knock(when: number, vol: number) {
-      // Noise burst filtered low = wooden thud
-      const src = noiseBuffer(ac, 0.15);
-      const lp = ac.createBiquadFilter();
-      lp.type = 'lowpass';
-      lp.frequency.value = 320;
-      const env = ac.createGain();
-      env.gain.setValueAtTime(vol, when);
-      env.gain.exponentialRampToValueAtTime(0.001, when + 0.14);
-      src.connect(lp).connect(env).connect(ac.destination);
-      src.start(when); src.stop(when + 0.15);
-
-      // Sub tone underneath for weight
-      const tone = ac.createOscillator();
-      tone.type = 'sine';
-      tone.frequency.value = 140;
-      const toneEnv = ac.createGain();
-      toneEnv.gain.setValueAtTime(vol * 0.5, when);
-      toneEnv.gain.exponentialRampToValueAtTime(0.001, when + 0.12);
-      tone.connect(toneEnv).connect(ac.destination);
-      tone.start(when); tone.stop(when + 0.13);
-    }
-
     const t = ac.currentTime;
-    knock(t,        0.9);   // first knock
-    knock(t + 0.22, 0.65);  // second knock — slightly softer
+
+    // Sharp crack on impact
+    const crack = noiseBuffer(ac, 0.06);
+    const hp = ac.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 1800;
+    const crackEnv = ac.createGain();
+    crackEnv.gain.setValueAtTime(0.55, t);
+    crackEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+    crack.connect(hp).connect(crackEnv).connect(ac.destination);
+    crack.start(t); crack.stop(t + 0.06);
+
+    // Heavy thud body
+    const thud = noiseBuffer(ac, 0.25);
+    const lp = ac.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 260;
+    const thudEnv = ac.createGain();
+    thudEnv.gain.setValueAtTime(1.1, t);
+    thudEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+    thud.connect(lp).connect(thudEnv).connect(ac.destination);
+    thud.start(t); thud.stop(t + 0.25);
+
+    // Deep resonant tone — long slow decay, the "finality"
+    const sub = ac.createOscillator();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(90, t);
+    sub.frequency.exponentialRampToValueAtTime(55, t + 1.4);
+    const subEnv = ac.createGain();
+    subEnv.gain.setValueAtTime(0.7, t);
+    subEnv.gain.exponentialRampToValueAtTime(0.001, t + 1.6);
+    sub.connect(subEnv).connect(ac.destination);
+    sub.start(t); sub.stop(t + 1.6);
 
   } catch (_) {}
 }
