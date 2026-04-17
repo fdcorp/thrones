@@ -56,7 +56,8 @@ export function Leaderboard() {
                 return (
                   <tr
                     key={entry.id}
-                    className={`${styles.row} ${isMe ? styles.rowMe : ''}`}
+                    className={`${styles.row} ${isMe ? styles.rowMe : ''} ${styles.rowClickable}`}
+                    onClick={() => navigate(`/profile/${entry.username}`)}
                   >
                     <td>
                       <span className={styles.rank}>#{entry.rank}</span>
