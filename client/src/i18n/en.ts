@@ -8,7 +8,7 @@ export const en: Translation = {
     playAI:     'Play vs AI',
     tutorial:   'Tutorial',
     playOnline: 'Play online',
-    copyright:  '© 2026 David Fernandez · Thrones v1 · All rights reserved',
+    copyright:  '© 2026 Thrones v1 · All rights reserved',
     play:       'Play',
     community:  'Community',
     friends:    'Friends',

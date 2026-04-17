@@ -8,7 +8,7 @@ export const fr: Translation = {
     playAI:       "Jouer contre l'IA",
     tutorial:     'Tutoriel',
     playOnline:   'Jouer en ligne',
-    copyright:    '© 2026 David Fernandez · Thrones v1 · Tous droits réservés',
+    copyright:    '© 2026 Thrones v1 · Tous droits réservés',
     play:         'Jouer',
     community:    'Communauté',
     friends:      'Amis',
