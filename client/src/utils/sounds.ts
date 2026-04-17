@@ -177,44 +177,38 @@ export function playRespawn() {
   } catch (_) {}
 }
 
-// ── Victory — heraldic horn fanfare ──────────────────────────────────────────
+// ── Victory — two solid knocks (chess.com style) ─────────────────────────────
 export function playVictory() {
   if (muted) return;
   try {
     const ac = getCtx();
-    const t = ac.currentTime;
 
-    // Single deep bell toll — gravity and weight
-    const bell = ac.createOscillator();
-    bell.type = 'sine';
-    bell.frequency.setValueAtTime(110, t);
-    bell.frequency.exponentialRampToValueAtTime(80, t + 0.4);
-    const bellEnv = ac.createGain();
-    bellEnv.gain.setValueAtTime(0.55, t);
-    bellEnv.gain.exponentialRampToValueAtTime(0.001, t + 1.8);
-    bell.connect(bellEnv).connect(ac.destination);
-    bell.start(t); bell.stop(t + 1.8);
-
-    // Three ascending horn notes — G4, C5, E5
-    // Filtered sawtooth = brass/horn timbre
-    const notes: [number, number][] = [[392, 0.15], [523, 0.55], [659, 0.90]];
-    notes.forEach(([freq, delay]) => {
-      const s = t + delay;
-      const osc = ac.createOscillator();
-      osc.type = 'sawtooth';
-      osc.frequency.value = freq;
+    function knock(when: number, vol: number) {
+      // Noise burst filtered low = wooden thud
+      const src = noiseBuffer(ac, 0.15);
       const lp = ac.createBiquadFilter();
       lp.type = 'lowpass';
-      lp.frequency.value = 900;
-      lp.Q.value = 1.2;
+      lp.frequency.value = 320;
       const env = ac.createGain();
-      env.gain.setValueAtTime(0, s);
-      env.gain.linearRampToValueAtTime(0.18, s + 0.06);
-      env.gain.setValueAtTime(0.18, s + 0.28);
-      env.gain.exponentialRampToValueAtTime(0.001, s + 0.7);
-      osc.connect(lp).connect(env).connect(ac.destination);
-      osc.start(s); osc.stop(s + 0.75);
-    });
+      env.gain.setValueAtTime(vol, when);
+      env.gain.exponentialRampToValueAtTime(0.001, when + 0.14);
+      src.connect(lp).connect(env).connect(ac.destination);
+      src.start(when); src.stop(when + 0.15);
+
+      // Sub tone underneath for weight
+      const tone = ac.createOscillator();
+      tone.type = 'sine';
+      tone.frequency.value = 140;
+      const toneEnv = ac.createGain();
+      toneEnv.gain.setValueAtTime(vol * 0.5, when);
+      toneEnv.gain.exponentialRampToValueAtTime(0.001, when + 0.12);
+      tone.connect(toneEnv).connect(ac.destination);
+      tone.start(when); tone.stop(when + 0.13);
+    }
+
+    const t = ac.currentTime;
+    knock(t,        0.9);   // first knock
+    knock(t + 0.22, 0.65);  // second knock — slightly softer
 
   } catch (_) {}
 }
