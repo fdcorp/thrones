@@ -9,8 +9,8 @@
   transition: opacity 0.4s ease;
 }
 
-.overlay.in   { opacity: 0; }
-.overlay.hold { opacity: 1; }
+.overlay.in   { opacity: 0; pointer-events: none; }
+.overlay.hold { opacity: 1; cursor: pointer; }
 .overlay.out  { opacity: 0; pointer-events: none; }
 
 .inner {

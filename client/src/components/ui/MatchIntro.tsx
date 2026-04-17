@@ -21,6 +21,10 @@ export function MatchIntro({ myUsername, myElo, myInPlacement, mySlot, opponentU
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
+  function dismiss() {
+    if (phase === 'hold') setPhase('out');
+  }
+
   const p1Username    = mySlot === Player.P1 ? myUsername    : opponentUsername;
   const p1Elo         = mySlot === Player.P1 ? myElo         : opponentElo;
   const p1InPlacement = mySlot === Player.P1 ? myInPlacement : opponentInPlacement;
@@ -29,7 +33,7 @@ export function MatchIntro({ myUsername, myElo, myInPlacement, mySlot, opponentU
   const p2InPlacement = mySlot === Player.P2 ? myInPlacement : opponentInPlacement;
 
   return (
-    <div className={`${styles.overlay} ${styles[phase]}`}>
+    <div className={`${styles.overlay} ${styles[phase]}`} onClick={dismiss}>
       <div className={styles.inner}>
 
         {/* Player 1 — Gold */}
