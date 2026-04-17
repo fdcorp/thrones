@@ -98,7 +98,7 @@
 
 /* ── Title ── */
 .title {
-  width: clamp(260px, 55vw, 600px);
+  width: clamp(320px, 72vw, 820px);
   height: auto;
   display: block;
   margin: 0 auto;
