@@ -9,24 +9,24 @@
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.22);
   cursor: pointer;
-  padding: 0.38rem 0.75rem;
+  padding: 0.42rem 0.85rem;
   border-radius: 2px;
   transition: all 180ms ease;
 }
 .badgeBtn:hover {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(201,168,76,0.35);
+  background: rgba(201,168,76,0.1);
+  border-color: rgba(201,168,76,0.5);
 }
 
 .name {
   font-family: 'Lexend', sans-serif;
-  font-weight: 600;
-  font-size: 0.72rem;
+  font-weight: 700;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
-  color: rgba(201,168,76,0.9);
+  color: rgba(201,168,76,0.95);
   text-transform: uppercase;
 }
 
@@ -37,7 +37,7 @@
   color: var(--muted);
   letter-spacing: 0.08em;
   padding: 0.1rem 0.4rem;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 1px;
 }
 
