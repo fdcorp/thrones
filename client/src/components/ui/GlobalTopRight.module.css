@@ -25,22 +25,25 @@
 .badgeBtn {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  background: none;
-  border: none;
+  gap: 0.55rem;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.22);
   cursor: pointer;
-  padding: 0.2rem 0.35rem;
+  padding: 0.42rem 0.85rem;
   border-radius: 2px;
-  transition: background 150ms;
+  transition: all 180ms ease;
 }
-.badgeBtn:hover { background: rgba(255,255,255,0.05); }
+.badgeBtn:hover {
+  background: rgba(201,168,76,0.1);
+  border-color: rgba(201,168,76,0.5);
+}
 
 .name {
   font-family: 'Lexend', sans-serif;
-  font-weight: 600;
-  font-size: 0.68rem;
+  font-weight: 700;
+  font-size: 0.72rem;
   letter-spacing: 0.12em;
-  color: rgba(201,168,76,0.85);
+  color: rgba(201,168,76,0.95);
   text-transform: uppercase;
 }
 
