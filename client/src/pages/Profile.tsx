@@ -475,7 +475,13 @@ export function Profile() {
                               {getResultLabel(entry)}
                             </span>
                             <span className={styles.historyOpponent}>
-                              {entry.opponentUsername ?? '—'}
+                              <span className={styles.historyVs}>VS</span>
+                              {entry.opponentUsername
+                                ? <button className={styles.historyOpponentLink} onClick={() => navigate(`/profile/${entry.opponentUsername}`)}>
+                                    {entry.opponentUsername}
+                                  </button>
+                                : <span>—</span>
+                              }
                             </span>
                             <span className={styles.historyMeta}>
                               <span className={styles.modeBadge}>{getModeLabel(entry.gameMode)}</span>
