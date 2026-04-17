@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { useLang } from '@/i18n';
 import { CustomPanel } from '@/components/ui/CustomPanel';
@@ -103,7 +104,7 @@ export function GlobalTopRight({ inline = false }: Props) {
         </button>
       </div>
 
-      {showAuth && (
+      {showAuth && createPortal(
         <div className={styles.authOverlay} onClick={() => setShowAuth(false)}>
           <div className={styles.authBox} onClick={e => e.stopPropagation()}>
             <div className={styles.authHeader}>
@@ -219,10 +220,14 @@ export function GlobalTopRight({ inline = false }: Props) {
               )}
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
-      <CustomPanel open={showCustom} onClose={() => setShowCustom(false)} />
+      {createPortal(
+        <CustomPanel open={showCustom} onClose={() => setShowCustom(false)} />,
+        document.body
+      )}
     </>
   );
 }
