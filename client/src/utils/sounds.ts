@@ -177,78 +177,43 @@ export function playRespawn() {
   } catch (_) {}
 }
 
-// ── Victory — conquering fanfare ─────────────────────────────────────────────
+// ── Victory — heraldic horn fanfare ──────────────────────────────────────────
 export function playVictory() {
   if (muted) return;
   try {
     const ac = getCtx();
     const t = ac.currentTime;
 
-    // -- Impact drum hit --
-    const drum = noiseBuffer(ac, 0.6);
-    const drumLp = ac.createBiquadFilter();
-    drumLp.type = 'lowpass';
-    drumLp.frequency.value = 180;
-    const drumEnv = ac.createGain();
-    drumEnv.gain.setValueAtTime(1.1, t);
-    drumEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
-    drum.connect(drumLp).connect(drumEnv).connect(ac.destination);
-    drum.start(t); drum.stop(t + 0.6);
+    // Single deep bell toll — gravity and weight
+    const bell = ac.createOscillator();
+    bell.type = 'sine';
+    bell.frequency.setValueAtTime(110, t);
+    bell.frequency.exponentialRampToValueAtTime(80, t + 0.4);
+    const bellEnv = ac.createGain();
+    bellEnv.gain.setValueAtTime(0.55, t);
+    bellEnv.gain.exponentialRampToValueAtTime(0.001, t + 1.8);
+    bell.connect(bellEnv).connect(ac.destination);
+    bell.start(t); bell.stop(t + 1.8);
 
-    // -- Low boom sub --
-    const sub = ac.createOscillator();
-    sub.type = 'sine';
-    sub.frequency.setValueAtTime(60, t);
-    sub.frequency.exponentialRampToValueAtTime(30, t + 0.5);
-    const subEnv = ac.createGain();
-    subEnv.gain.setValueAtTime(0.7, t);
-    subEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
-    sub.connect(subEnv).connect(ac.destination);
-    sub.start(t); sub.stop(t + 0.55);
-
-    // -- Fanfare chords: ascending power chord sequence --
-    // C4 → E4 → G4 → C5  (power + majesty)
-    const fanfare: [number, number, number][] = [
-      [261.6, 0.05, 0.55],   // C4
-      [329.6, 0.22, 0.55],   // E4
-      [392.0, 0.38, 0.60],   // G4
-      [523.3, 0.52, 0.80],   // C5
-      [659.3, 0.60, 0.80],   // E5
-      [784.0, 0.68, 0.90],   // G5
-    ];
-
-    fanfare.forEach(([freq, delay, dur]) => {
-      const s = t + delay;
-      ['sawtooth', 'square'].forEach((type, i) => {
-        const osc = ac.createOscillator();
-        osc.type = type as OscillatorType;
-        osc.frequency.value = freq * (i === 1 ? 1.003 : 1); // slight detune for thickness
-        const hpf = ac.createBiquadFilter();
-        hpf.type = 'highpass';
-        hpf.frequency.value = 120;
-        const env = ac.createGain();
-        const vol = i === 0 ? 0.13 : 0.07;
-        env.gain.setValueAtTime(0, s);
-        env.gain.linearRampToValueAtTime(vol, s + 0.02);
-        env.gain.setValueAtTime(vol, s + dur - 0.12);
-        env.gain.exponentialRampToValueAtTime(0.001, s + dur);
-        osc.connect(hpf).connect(env).connect(ac.destination);
-        osc.start(s); osc.stop(s + dur);
-      });
-    });
-
-    // -- Triumphant high shimmer (bells) --
-    [[1046.5, 0.55], [1318.5, 0.70], [1568.0, 0.82]].forEach(([freq, delay]) => {
+    // Three ascending horn notes — G4, C5, E5
+    // Filtered sawtooth = brass/horn timbre
+    const notes: [number, number][] = [[392, 0.15], [523, 0.55], [659, 0.90]];
+    notes.forEach(([freq, delay]) => {
       const s = t + delay;
       const osc = ac.createOscillator();
-      osc.type = 'sine';
+      osc.type = 'sawtooth';
       osc.frequency.value = freq;
+      const lp = ac.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = 900;
+      lp.Q.value = 1.2;
       const env = ac.createGain();
       env.gain.setValueAtTime(0, s);
-      env.gain.linearRampToValueAtTime(0.22, s + 0.01);
-      env.gain.exponentialRampToValueAtTime(0.001, s + 1.0);
-      osc.connect(env).connect(ac.destination);
-      osc.start(s); osc.stop(s + 1.0);
+      env.gain.linearRampToValueAtTime(0.18, s + 0.06);
+      env.gain.setValueAtTime(0.18, s + 0.28);
+      env.gain.exponentialRampToValueAtTime(0.001, s + 0.7);
+      osc.connect(lp).connect(env).connect(ac.destination);
+      osc.start(s); osc.stop(s + 0.75);
     });
 
   } catch (_) {}
