@@ -41,7 +41,10 @@ export async function handleGameOver(
 ) {
   if (room.players.length < 2) return;
 
-  const [p1, p2] = room.players;
+  // Map by slot — host may have chosen P2, so join order ≠ slot order
+  const slotMap = new Map(room.players.map(p => [p.slot, p]));
+  const p1 = slotMap.get(Player.P1) ?? room.players[0];
+  const p2 = slotMap.get(Player.P2) ?? room.players[1];
   const userP1 = getUserById(p1.userId);
   const userP2 = getUserById(p2.userId);
   if (!userP1 || !userP2) return;
