@@ -17,7 +17,7 @@ import { useSocket, useOnlineStore } from '@/hooks/useSocket';
 import { useAuthStore } from '@/store/authStore';
 import { Player, GamePhase } from '@/engine/types';
 import type { AILevel, GameMode, TurnAction } from '@/engine/types';
-import { isMuted, setMuted } from '@/utils/sounds';
+import { isMuted, setMuted, playMatchFound } from '@/utils/sounds';
 import { useLang } from '@/i18n';
 import colorStyles from './ColorSelect.module.css';
 import { PageLogo } from '@/components/ui/PageLogo';
@@ -63,6 +63,7 @@ export function Game() {
       online.setIsRanked(ranked ?? false);
       if (opponentUsername) {
         online.setOpponent(opponentUsername, opponentElo, opponentInPlacement);
+        playMatchFound();
         // Trigger intro immediately on ROOM_JOINED — both players have slot + opponent info here
         useOnlineStore.getState().setShowIntro(true);
         setTimeout(() => useOnlineStore.getState().setShowIntro(false), 5000);

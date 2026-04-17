@@ -177,6 +177,32 @@ export function playRespawn() {
   } catch (_) {}
 }
 
+// ── Match found — two ascending tones, attention-grabbing ────────────────────
+export function playMatchFound() {
+  try {
+    const ac = getCtx();
+    const t = ac.currentTime;
+
+    // Two short sine tones rising in pitch
+    const freqs = [520, 780];
+    freqs.forEach((freq, i) => {
+      const osc = ac.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+
+      const env = ac.createGain();
+      const start = t + i * 0.18;
+      env.gain.setValueAtTime(0, start);
+      env.gain.linearRampToValueAtTime(0.28, start + 0.03);
+      env.gain.exponentialRampToValueAtTime(0.001, start + 0.22);
+
+      osc.connect(env).connect(ac.destination);
+      osc.start(start);
+      osc.stop(start + 0.22);
+    });
+  } catch (_) {}
+}
+
 // ── Victory — single final blow ───────────────────────────────────────────────
 export function playVictory() {
   if (muted) return;
