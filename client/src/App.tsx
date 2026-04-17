@@ -1,16 +1,21 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Home }          from '@/pages/Home';
-import { Game }          from '@/pages/Game';
-import { Tutorial }      from '@/pages/Tutorial';
-import { Leaderboard }   from '@/pages/Leaderboard';
-import { Players }       from '@/pages/Players';
-import { Profile }       from '@/pages/Profile';
-import { VerifyEmail }   from '@/pages/VerifyEmail';
-import { ResetPassword } from '@/pages/ResetPassword';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { Home }            from '@/pages/Home';
+import { Game }            from '@/pages/Game';
+import { Tutorial }        from '@/pages/Tutorial';
+import { Leaderboard }     from '@/pages/Leaderboard';
+import { Players }         from '@/pages/Players';
+import { Profile }         from '@/pages/Profile';
+import { VerifyEmail }     from '@/pages/VerifyEmail';
+import { ResetPassword }   from '@/pages/ResetPassword';
+import { GlobalTopRight }  from '@/components/ui/GlobalTopRight';
 
-export default function App() {
+function AppInner() {
+  const location = useLocation();
+  const isGame = location.pathname === '/game';
+
   return (
-    <BrowserRouter>
+    <>
+      {!isGame && <GlobalTopRight />}
       <Routes>
         <Route path="/"                    element={<Home />} />
         <Route path="/game"                element={<Game />} />
@@ -21,6 +26,14 @@ export default function App() {
         <Route path="/verify-email"        element={<VerifyEmail />} />
         <Route path="/reset-password"      element={<ResetPassword />} />
       </Routes>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppInner />
     </BrowserRouter>
   );
 }

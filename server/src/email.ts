@@ -1,12 +1,15 @@
 import { Resend } from 'resend';
 import { RESEND_API_KEY, CLIENT_URL } from './config';
 
-const resend = new Resend(RESEND_API_KEY);
-const FROM   = 'Thrones <noreply@thronesonline.com>';
+function getResend() {
+  if (!RESEND_API_KEY) throw new Error('RESEND_API_KEY is not set');
+  return new Resend(RESEND_API_KEY);
+}
+const FROM = 'Thrones <noreply@thronesonline.com>';
 
 export async function sendVerificationEmail(email: string, username: string, token: string) {
   const link = `${CLIENT_URL}/verify-email?token=${token}`;
-  await resend.emails.send({
+  await getResend().emails.send({
     from:    FROM,
     to:      email,
     subject: 'Verify your Thrones account',
@@ -27,7 +30,7 @@ export async function sendVerificationEmail(email: string, username: string, tok
 
 export async function sendPasswordResetEmail(email: string, username: string, token: string) {
   const link = `${CLIENT_URL}/reset-password?token=${token}`;
-  await resend.emails.send({
+  await getResend().emails.send({
     from:    FROM,
     to:      email,
     subject: 'Reset your Thrones password',

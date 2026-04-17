@@ -1,0 +1,283 @@
+.wrap {
+  position: fixed;
+  top: 1.2rem;
+  right: 1.5rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badgeBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0.35rem;
+  border-radius: 2px;
+  transition: background 150ms;
+}
+.badgeBtn:hover { background: rgba(255,255,255,0.05); }
+
+.name {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: rgba(201,168,76,0.85);
+  text-transform: uppercase;
+}
+
+.elo {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 300;
+  font-size: 0.62rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  padding: 0.1rem 0.4rem;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 220ms ease;
+  flex-shrink: 0;
+}
+.iconBtn svg { width: 18px; height: 18px; }
+.iconBtn:hover {
+  color: var(--white);
+  border-color: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.08);
+}
+
+/* ── Auth modal ── */
+.authOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: rgba(0,0,0,0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 180ms ease;
+}
+
+.authBox {
+  background: linear-gradient(145deg, rgba(20,16,10,0.97), rgba(10,10,14,0.98));
+  border: 1px solid rgba(201,168,76,0.18);
+  border-top-color: rgba(201,168,76,0.38);
+  width: min(340px, 90vw);
+  animation: fadeUp 220ms cubic-bezier(0.23,1,0.32,1);
+}
+
+.authHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.4rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(201,168,76,0.03);
+}
+
+.authTitle {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(201,168,76,0.6);
+}
+
+.authClose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.3);
+  cursor: pointer;
+  padding: 0;
+  transition: color 150ms;
+}
+.authClose:hover { color: var(--white); }
+.authClose svg { width: 14px; height: 14px; }
+
+.authBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.4rem 1.4rem 1.6rem;
+}
+
+.authField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.authLabel {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+
+.authInput {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 300;
+  font-size: 0.82rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--white);
+  padding: 0.6rem 0.8rem;
+  outline: none;
+  transition: border-color 180ms ease, background 180ms ease;
+  width: 100%;
+}
+.authInput::placeholder { color: rgba(255,255,255,0.2); }
+.authInput:focus {
+  border-color: rgba(201,168,76,0.45);
+  background: rgba(201,168,76,0.04);
+}
+
+.authLoginBtn {
+  margin-top: 0.25rem;
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: #0a0a0f;
+  border: none;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: filter 180ms ease, transform 120ms ease;
+  width: 100%;
+}
+.authLoginBtn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.authLoginBtn:active { transform: translateY(0); }
+.authLoginBtn:disabled { opacity: 0.5; cursor: default; transform: none; }
+
+.authDivider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgba(255,255,255,0.25);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 300;
+}
+.authDivider::before,
+.authDivider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+}
+
+.authRegisterBtn {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.5);
+  padding: 0.65rem;
+  cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+  width: 100%;
+}
+.authRegisterBtn:hover {
+  background: rgba(201,168,76,0.1);
+  border-color: rgba(201,168,76,0.45);
+  color: rgba(201,168,76,0.95);
+}
+
+.authError {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 400;
+  font-size: 0.65rem;
+  color: #e07070;
+  background: rgba(180,30,30,0.12);
+  border: 1px solid rgba(180,30,30,0.25);
+  padding: 0.5rem 0.75rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.authForgotBtn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.3);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  padding: 0;
+  align-self: flex-end;
+  transition: color 150ms ease;
+}
+.authForgotBtn:hover { color: rgba(255,255,255,0.6); }
+
+.authSuccess {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: rgba(100,200,120,0.9);
+  background: rgba(30,100,50,0.12);
+  border: 1px solid rgba(50,150,80,0.25);
+  padding: 0.6rem 0.75rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.authDesc {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 300;
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  text-align: center;
+  margin: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 639px) {
+  .wrap {
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+}
