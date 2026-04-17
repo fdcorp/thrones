@@ -384,9 +384,6 @@ export function Game() {
               </svg>
             )}
           </button>
-          <button className={styles.quitBtn} onClick={() => { resetGame(); navigate('/'); }}>
-            {t.game.quit}
-          </button>
         </div>
       </header>
 
