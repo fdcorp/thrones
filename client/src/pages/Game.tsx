@@ -128,7 +128,10 @@ export function Game() {
   // Block F5 / tab close
   useEffect(() => {
     if (!isOnlineMatch) return;
-    function handleBeforeUnload(e: BeforeUnloadEvent) { e.preventDefault(); }
+    function handleBeforeUnload(e: BeforeUnloadEvent) {
+      e.preventDefault();
+      e.returnValue = ''; // required by Chrome/Firefox to show native dialog
+    }
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [isOnlineMatch]);
