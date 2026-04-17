@@ -35,6 +35,7 @@ export function Game() {
   const [showOnlineLobby, setShowOnlineLobby] = useState(mode === 'online');
   const [showMobileLog, setShowMobileLog] = useState(false);
   const [showCustom, setShowCustom] = useState(false);
+  const [showSurrenderConfirm, setShowSurrenderConfirm] = useState(false);
 
   const gameState      = useGameStore(s => s.gameState);
   const startGame      = useGameStore(s => s.startGame);
@@ -416,12 +417,7 @@ export function Game() {
               className={`${styles.actionBtn} ${styles.abandonBtn}`}
               onClick={() => {
                 if (gameState.phase !== GamePhase.PLAYING) return;
-                if (mode === 'online') {
-                  // Send SURRENDER to server → server broadcasts GAME_STATE ENDED to both players
-                  sendSurrender();
-                } else {
-                  surrender();
-                }
+                setShowSurrenderConfirm(true);
               }}
               disabled={aiThinking}
               title={t.game.surrenderTitle}
@@ -432,6 +428,31 @@ export function Game() {
               </svg>
               <span>{t.game.surrender}</span>
             </button>
+
+            {showSurrenderConfirm && (
+              <div className={styles.surrenderOverlay} onClick={() => setShowSurrenderConfirm(false)}>
+                <div className={styles.surrenderDialog} onClick={e => e.stopPropagation()}>
+                  <p className={styles.surrenderQuestion}>Êtes-vous sûr de vouloir abandonner ?</p>
+                  <div className={styles.surrenderActions}>
+                    <button
+                      className={`${styles.surrenderBtn} ${styles.surrenderBtnConfirm}`}
+                      onClick={() => {
+                        setShowSurrenderConfirm(false);
+                        if (mode === 'online') sendSurrender(); else surrender();
+                      }}
+                    >
+                      Abandonner
+                    </button>
+                    <button
+                      className={`${styles.surrenderBtn} ${styles.surrenderBtnCancel}`}
+                      onClick={() => setShowSurrenderConfirm(false)}
+                    >
+                      Continuer
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <PlayerPanel
             player={bottomPlayer}
