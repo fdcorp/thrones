@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams, useBlocker } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGameStore } from '@/store/gameStore';
 import { useUIStore } from '@/store/uiStore';
 import { useAI } from '@/hooks/useAI';
@@ -111,20 +111,24 @@ export function Game() {
   useAI();
   useSounds();
 
-  // Block accidental navigation (back button, SPA routing) during an active online match
   const isOnlineMatch = mode === 'online' && !!gameState && gameState.phase === GamePhase.PLAYING;
-  const blocker = useBlocker(isOnlineMatch);
 
-  useEffect(() => {
-    if (blocker.state === 'blocked') setShowLeaveConfirm(true);
-  }, [blocker.state]);
-
-  // Block F5 / tab close / browser-level navigation
+  // Block browser back button during active online match
   useEffect(() => {
     if (!isOnlineMatch) return;
-    function handleBeforeUnload(e: BeforeUnloadEvent) {
-      e.preventDefault();
+    window.history.pushState(null, '', window.location.href);
+    function handlePopState() {
+      window.history.pushState(null, '', window.location.href);
+      setShowLeaveConfirm(true);
     }
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [isOnlineMatch]);
+
+  // Block F5 / tab close
+  useEffect(() => {
+    if (!isOnlineMatch) return;
+    function handleBeforeUnload(e: BeforeUnloadEvent) { e.preventDefault(); }
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [isOnlineMatch]);
@@ -472,7 +476,7 @@ export function Game() {
 
         {/* Leave confirmation — triggered by browser back / router navigation */}
         {showLeaveConfirm && (
-          <div className={styles.surrenderOverlay} onClick={() => { setShowLeaveConfirm(false); blocker.reset?.(); }}>
+          <div className={styles.surrenderOverlay} onClick={() => setShowLeaveConfirm(false)}>
             <div className={styles.surrenderDialog} onClick={e => e.stopPropagation()}>
               <p className={styles.surrenderQuestion}>
                 ⚠️ Vous êtes sur le point de quitter la partie.<br />
@@ -483,13 +487,13 @@ export function Game() {
               <div className={styles.surrenderActions}>
                 <button
                   className={`${styles.surrenderBtn} ${styles.surrenderBtnConfirm}`}
-                  onClick={() => { setShowLeaveConfirm(false); sendSurrender(); blocker.proceed?.(); }}
+                  onClick={() => { setShowLeaveConfirm(false); sendSurrender(); navigate('/'); }}
                 >
                   Quitter
                 </button>
                 <button
                   className={`${styles.surrenderBtn} ${styles.surrenderBtnCancel}`}
-                  onClick={() => { setShowLeaveConfirm(false); blocker.reset?.(); }}
+                  onClick={() => setShowLeaveConfirm(false)}
                 >
                   Rester
                 </button>
