@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useBlocker } from 'react-router-dom';
 import { useGameStore } from '@/store/gameStore';
 import { useUIStore } from '@/store/uiStore';
 import { useAI } from '@/hooks/useAI';
@@ -36,6 +36,7 @@ export function Game() {
   const [showMobileLog, setShowMobileLog] = useState(false);
   const [showCustom, setShowCustom] = useState(false);
   const [showSurrenderConfirm, setShowSurrenderConfirm] = useState(false);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
   const gameState      = useGameStore(s => s.gameState);
   const startGame      = useGameStore(s => s.startGame);
@@ -109,6 +110,24 @@ export function Game() {
   // Activate AI hook
   useAI();
   useSounds();
+
+  // Block accidental navigation (back button, SPA routing) during an active online match
+  const isOnlineMatch = mode === 'online' && !!gameState && gameState.phase === GamePhase.PLAYING;
+  const blocker = useBlocker(isOnlineMatch);
+
+  useEffect(() => {
+    if (blocker.state === 'blocked') setShowLeaveConfirm(true);
+  }, [blocker.state]);
+
+  // Block F5 / tab close / browser-level navigation
+  useEffect(() => {
+    if (!isOnlineMatch) return;
+    function handleBeforeUnload(e: BeforeUnloadEvent) {
+      e.preventDefault();
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isOnlineMatch]);
 
   // Flip board for P2 in online mode once slot is known
   useEffect(() => {
@@ -450,6 +469,34 @@ export function Game() {
             playerName={nameForPlayer(bottomPlayer)}
           />
         </div>
+
+        {/* Leave confirmation — triggered by browser back / router navigation */}
+        {showLeaveConfirm && (
+          <div className={styles.surrenderOverlay} onClick={() => { setShowLeaveConfirm(false); blocker.reset?.(); }}>
+            <div className={styles.surrenderDialog} onClick={e => e.stopPropagation()}>
+              <p className={styles.surrenderQuestion}>
+                ⚠️ Vous êtes sur le point de quitter la partie.<br />
+                <span style={{ fontWeight: 300, fontSize: '0.78rem', opacity: 0.7 }}>
+                  Votre adversaire sera déclaré vainqueur.
+                </span>
+              </p>
+              <div className={styles.surrenderActions}>
+                <button
+                  className={`${styles.surrenderBtn} ${styles.surrenderBtnConfirm}`}
+                  onClick={() => { setShowLeaveConfirm(false); sendSurrender(); blocker.proceed?.(); }}
+                >
+                  Quitter
+                </button>
+                <button
+                  className={`${styles.surrenderBtn} ${styles.surrenderBtnCancel}`}
+                  onClick={() => { setShowLeaveConfirm(false); blocker.reset?.(); }}
+                >
+                  Rester
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Board */}
         <div className={`${styles.boardWrapper} ${
