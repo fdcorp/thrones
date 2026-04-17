@@ -111,9 +111,9 @@ export function Game() {
   useAI();
   useSounds();
 
-  const isOnlineMatch = mode === 'online' && !!gameState && gameState.phase === GamePhase.PLAYING;
+  const isOnlineMatch = !!gameState && gameState.phase === GamePhase.PLAYING;
 
-  // Block browser back button during active online match
+  // Block browser back button during active match
   useEffect(() => {
     if (!isOnlineMatch) return;
     window.history.pushState(null, '', window.location.href);
