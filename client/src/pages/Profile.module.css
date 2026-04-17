@@ -345,6 +345,7 @@
   padding: 0.15rem 0.4rem;
   border-radius: 2px;
   text-align: center;
+  min-width: 4.5rem;
 }
 .resultWin  { background: rgba(100,180,100,0.15); color: #6db86d; border: 1px solid rgba(100,180,100,0.3); }
 .resultLoss { background: rgba(180,60,60,0.15);   color: #c46060; border: 1px solid rgba(180,60,60,0.3); }
