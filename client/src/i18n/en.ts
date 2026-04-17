@@ -251,7 +251,7 @@ export const en: Translation = {
     played:   'Played',
     winRate:  'Win %',
     you:      '(you)',
-    noGames:  'No games played yet',
+    noGames:  'No ranked players yet',
     addFriend: 'Add',
     added:     'Friend',
   },

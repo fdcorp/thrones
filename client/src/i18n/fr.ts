@@ -251,7 +251,7 @@ export const fr: Translation = {
     played:   'Parties',
     winRate:  '% V',
     you:      '(vous)',
-    noGames:  'Aucune partie jouée',
+    noGames:  'Aucun joueur classé pour l\'instant',
     addFriend: 'Ajouter',
     added:     'Ami',
   },
