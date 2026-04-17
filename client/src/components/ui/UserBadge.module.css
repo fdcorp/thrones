@@ -1,0 +1,62 @@
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.badgeBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.14);
+  cursor: pointer;
+  padding: 0.38rem 0.75rem;
+  border-radius: 2px;
+  transition: all 180ms ease;
+}
+.badgeBtn:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(201,168,76,0.35);
+}
+
+.name {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: rgba(201,168,76,0.9);
+  text-transform: uppercase;
+}
+
+.elo {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 300;
+  font-size: 0.62rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  padding: 0.1rem 0.4rem;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 1px;
+}
+
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 220ms ease;
+  flex-shrink: 0;
+}
+.iconBtn svg { width: 16px; height: 16px; }
+.iconBtn:hover {
+  color: var(--white);
+  border-color: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.08);
+}
