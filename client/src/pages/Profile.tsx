@@ -15,6 +15,7 @@ import {
 } from '@/lib/api';
 import type { UserProfile, GameHistoryEntry, FriendEntry, FriendRequest } from '../../../shared/types';
 import { PageLogo } from '@/components/ui/PageLogo';
+import { GlobalTopRight } from '@/components/ui/GlobalTopRight';
 import styles from './Profile.module.css';
 
 // ── Flag image helper (flagcdn.com — reliable on Windows) ─────────
@@ -276,6 +277,7 @@ export function Profile() {
       {/* Top bar */}
       <header className={styles.topBar}>
         <PageLogo />
+        <GlobalTopRight inline />
       </header>
 
       {/* Header */}

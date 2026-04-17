@@ -5,6 +5,7 @@ import { useAuthStore } from '@/store/authStore';
 import { apiGetAllPlayers, apiGetFriends, apiAddFriend } from '@/lib/api';
 import type { LeaderboardEntry } from '../../../shared/types';
 import { PageLogo } from '@/components/ui/PageLogo';
+import { GlobalTopRight } from '@/components/ui/GlobalTopRight';
 import styles from './Players.module.css';
 
 export function Players() {
@@ -67,6 +68,7 @@ export function Players() {
       <header className={styles.header}>
         <PageLogo />
         <span className={styles.headerTitle}>{t.players.title}</span>
+        <GlobalTopRight inline />
       </header>
 
       <div className={styles.content}>

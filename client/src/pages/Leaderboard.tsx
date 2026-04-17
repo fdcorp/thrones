@@ -5,6 +5,7 @@ import { useAuthStore } from '@/store/authStore';
 import { apiGetLeaderboard } from '@/lib/api';
 import type { LeaderboardEntry } from '../../../shared/types';
 import { PageLogo } from '@/components/ui/PageLogo';
+import { GlobalTopRight } from '@/components/ui/GlobalTopRight';
 import styles from './Leaderboard.module.css';
 
 export function Leaderboard() {
@@ -28,6 +29,7 @@ export function Leaderboard() {
       <header className={styles.header}>
         <PageLogo />
         <span className={styles.headerTitle}>{t.leaderboard.title}</span>
+        <GlobalTopRight inline />
       </header>
 
       <div className={styles.content}>

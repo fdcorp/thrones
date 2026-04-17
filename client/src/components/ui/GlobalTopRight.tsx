@@ -5,7 +5,9 @@ import { CustomPanel } from '@/components/ui/CustomPanel';
 import { useAuthStore } from '@/store/authStore';
 import styles from './GlobalTopRight.module.css';
 
-export function GlobalTopRight() {
+interface Props { inline?: boolean; }
+
+export function GlobalTopRight({ inline = false }: Props) {
   const navigate = useNavigate();
   const t = useLang();
 
@@ -48,7 +50,7 @@ export function GlobalTopRight() {
 
   return (
     <>
-      <div className={styles.wrap}>
+      <div className={inline ? styles.wrapInline : styles.wrap}>
         {user ? (
           <div className={styles.badge}>
             <button

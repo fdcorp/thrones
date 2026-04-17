@@ -11,11 +11,11 @@ import { GlobalTopRight }  from '@/components/ui/GlobalTopRight';
 
 function AppInner() {
   const location = useLocation();
-  const isGame = location.pathname === '/game';
+  const isHome = location.pathname === '/';
 
   return (
     <>
-      {!isGame && <GlobalTopRight />}
+      {isHome && <GlobalTopRight />}
       <Routes>
         <Route path="/"                    element={<Home />} />
         <Route path="/game"                element={<Game />} />

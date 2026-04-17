@@ -8,6 +8,14 @@
   gap: 0.75rem;
 }
 
+.wrapInline {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .badge {
   display: flex;
   align-items: center;

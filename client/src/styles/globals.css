@@ -65,7 +65,6 @@ html, body {
   font-size: 16px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  scrollbar-gutter: stable;
   -moz-osx-font-smoothing: grayscale;
 }
 
@@ -74,6 +73,16 @@ html, body {
   display: flex;
   flex-direction: column;
 }
+
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.12);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,0.35); }
+* { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.12) transparent; }
 
 /* SVG unit colorization via CSS filter */
 .unit-p1 {
