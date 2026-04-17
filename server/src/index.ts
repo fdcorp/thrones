@@ -7,6 +7,7 @@ import gameRouter from './api/game';
 import profileRouter from './api/profile';
 import { setupWsServer } from './ws/wsServer';
 import { getDb } from './db/database';
+import { purgeUnverifiedAccounts } from './db/queries';
 
 const app = express();
 
@@ -31,4 +32,12 @@ setupWsServer(server);
 server.listen(PORT, () => {
   console.log(`Thrones server running on http://localhost:${PORT}`);
   console.log(`[WS] Ranked/casual queues active — matchmaking v2`);
+
+  // Purge unverified accounts older than 24h — run on startup then every hour
+  const runPurge = () => {
+    const deleted = purgeUnverifiedAccounts();
+    if (deleted > 0) console.log(`[purge] Deleted ${deleted} unverified account(s)`);
+  };
+  runPurge();
+  setInterval(runPurge, 60 * 60 * 1000); // every hour
 });

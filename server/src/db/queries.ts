@@ -419,6 +419,7 @@ export function getAllPlayers(): LeaderboardEntry[] {
   const rows = db.prepare(`
     SELECT id, username, elo, games_played, games_won, provisional_games_left, country
     FROM users
+    WHERE email_verified = 1
     ORDER BY username ASC
   `).all() as { id: number; username: string; elo: number; games_played: number; games_won: number; provisional_games_left: number; country: string | null }[];
 
@@ -435,6 +436,16 @@ export function getAllPlayers(): LeaderboardEntry[] {
     isInPlacement: row.provisional_games_left > 0,
     country:       row.country ?? undefined,
   }));
+}
+
+export function purgeUnverifiedAccounts(): number {
+  const db = getDb();
+  const result = db.prepare(`
+    DELETE FROM users
+    WHERE email_verified = 0
+      AND created_at <= datetime('now', '-24 hours')
+  `).run();
+  return result.changes;
 }
 
 export function getLeaderboard(limit = 50): LeaderboardEntry[] {
