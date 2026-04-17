@@ -190,7 +190,7 @@ export function playVictory() {
     hp.type = 'highpass';
     hp.frequency.value = 1800;
     const crackEnv = ac.createGain();
-    crackEnv.gain.setValueAtTime(0.55, t);
+    crackEnv.gain.setValueAtTime(0.28, t);
     crackEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
     crack.connect(hp).connect(crackEnv).connect(ac.destination);
     crack.start(t); crack.stop(t + 0.06);
@@ -201,7 +201,7 @@ export function playVictory() {
     lp.type = 'lowpass';
     lp.frequency.value = 260;
     const thudEnv = ac.createGain();
-    thudEnv.gain.setValueAtTime(1.1, t);
+    thudEnv.gain.setValueAtTime(0.6, t);
     thudEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
     thud.connect(lp).connect(thudEnv).connect(ac.destination);
     thud.start(t); thud.stop(t + 0.25);
@@ -212,7 +212,7 @@ export function playVictory() {
     sub.frequency.setValueAtTime(90, t);
     sub.frequency.exponentialRampToValueAtTime(55, t + 1.4);
     const subEnv = ac.createGain();
-    subEnv.gain.setValueAtTime(0.7, t);
+    subEnv.gain.setValueAtTime(0.38, t);
     subEnv.gain.exponentialRampToValueAtTime(0.001, t + 1.6);
     sub.connect(subEnv).connect(ac.destination);
     sub.start(t); sub.stop(t + 1.6);
