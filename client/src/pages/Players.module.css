@@ -6,6 +6,7 @@
 }
 
 .header {
+  position: relative;
   display: flex;
   align-items: center;
   padding: 0.85rem 1.5rem;
@@ -41,8 +42,10 @@
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: rgba(201,168,76,0.75);
-  margin-left: auto;
-  margin-right: auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
 }
 
 .searchInput {
