@@ -63,9 +63,16 @@ export function useSocket(handlers: Partial<SocketEventMap>) {
           case 'OPPONENT_JOINED':
             handlersRef.current.onOpponentJoined?.(msg.opponentUsername);
             break;
-          case 'GAME_STATE':
+          case 'GAME_STATE': {
+            // Switch active clock slot instantly when turn changes — don't wait for next CLOCK_UPDATE
+            const gs = msg.state as { currentPlayer?: string } | null;
+            if (gs?.currentPlayer) {
+              const newSlot: 0 | 1 = gs.currentPlayer === 'P2' ? 1 : 0;
+              useOnlineStore.getState().setActiveSlot(newSlot);
+            }
             handlersRef.current.onGameState?.(msg.state);
             break;
+          }
           case 'GAME_OVER':
             handlersRef.current.onGameOver?.(msg.winner, msg.isDraw, msg.eloChangeMe, msg.newEloMe);
             break;
@@ -170,6 +177,7 @@ interface OnlineActions {
   setShowIntro(v: boolean): void;
   setIsRanked(v: boolean): void;
   setClocks(clocks: [number, number], activeSlot: 0 | 1): void;
+  setActiveSlot(slot: 0 | 1): void;
   setTimerEnabled(v: boolean): void;
   reset(): void;
 }
@@ -199,6 +207,7 @@ export const useOnlineStore = create<OnlineState & OnlineActions>()((set) => ({
   setShowIntro:     (v)          => set({ showIntro: v }),
   setIsRanked:      (v)          => set({ isRanked: v }),
   setClocks:        (clocks, activeSlot) => set({ clocks, activeSlot, clockSyncTime: Date.now() }),
+  setActiveSlot:    (activeSlot) => set({ activeSlot, clockSyncTime: Date.now() }),
   setTimerEnabled:  (v)          => set({ timerEnabled: v }),
   reset:            ()           => set({ roomCode: null, mySlot: null, opponentUsername: null, opponentElo: null, opponentInPlacement: false, status: 'idle', eloChange: null, newElo: null, error: null, showIntro: false, isRanked: false, clocks: null, activeSlot: null, clockSyncTime: 0, timerEnabled: false }),
 }));
