@@ -4,4 +4,23 @@
   background: var(--bg);
   background-image:
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(35, 30, 20, 0.15) 0%, transparent 60%);
+  position: relative;
+}
+
+.bgBoard {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.055;
+  overflow: hidden;
+}
+
+.bgBoard > * {
+  width: 140%;
+  height: 140%;
+  max-width: none;
 }
