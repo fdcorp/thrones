@@ -99,6 +99,18 @@
   min-height: 0;
 }
 
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  flex-shrink: 0;
+  border-left: 1px solid rgba(201,168,76,0.1);
+  background: rgba(10,10,10,0.72);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  overflow: hidden;
+}
+
 /* Left side panels */
 .sideLeft {
   display: flex;

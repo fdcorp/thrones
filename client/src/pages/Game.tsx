@@ -577,20 +577,22 @@ export function Game() {
         </div>
 
         {/* Right column: Game Log + Chat (online only) */}
-        <GameLog
-          entries={gameState.log}
-          turnNumber={gameState.turnNumber}
-          mobileOpen={showMobileLog}
-          onClose={() => setShowMobileLog(false)}
-          hideRappel={mode === 'online'}
-        />
-        {mode === 'online' && user && (
-          <GameChat
-            myUsername={user.username}
-            sendChatMessage={sendChatMessage}
-            onMessage={registerChatHandler}
+        <div className={styles.rightCol}>
+          <GameLog
+            entries={gameState.log}
+            turnNumber={gameState.turnNumber}
+            mobileOpen={showMobileLog}
+            onClose={() => setShowMobileLog(false)}
+            hideRappel={mode === 'online'}
           />
-        )}
+          {mode === 'online' && user && (
+            <GameChat
+              myUsername={user.username}
+              sendChatMessage={sendChatMessage}
+              onMessage={registerChatHandler}
+            />
+          )}
+        </div>
       </div>
 
       <CustomPanel open={showCustom} onClose={() => setShowCustom(false)} />
