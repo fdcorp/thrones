@@ -6,7 +6,8 @@ import { JWT_SECRET } from '../config';
 import {
   createRoom, joinRoom, getRoomByUserId, getRoomByWs,
   removePlayerFromRoomByWs, getRoom,
-  type RoomPlayer,
+  CLOCK_INITIAL, CLOCK_INCREMENT,
+  type RoomPlayer, type Room,
 } from './roomManager';
 import { broadcast, sendTo, handleGameOver } from './gameSession';
 import { Player } from '../../../shared/types';
@@ -15,6 +16,62 @@ import { getUserById } from '../db/queries';
 
 // The engine is pure TS with zero browser deps — safe to import server-side
 import { applyAction, initGame } from '../../../client/src/engine/gameState';
+
+// ── Chess clock helpers ──────────────────────────────────────────────────────
+
+function getActiveSlot(room: Room): 0 | 1 {
+  const gs = room.gameState as { currentPlayer: string } | null;
+  return gs?.currentPlayer === Player.P2 ? 1 : 0;
+}
+
+function startClock(room: Room) {
+  if (!room.timerEnabled) return;
+  room.clocks = [CLOCK_INITIAL, CLOCK_INITIAL];
+  room.lastActionTime = Date.now();
+  room.clockTick = setInterval(() => tickClock(room), 1000);
+}
+
+function stopClock(room: Room) {
+  if (room.clockTick) {
+    clearInterval(room.clockTick);
+    room.clockTick = undefined;
+  }
+}
+
+function tickClock(room: Room) {
+  if (!room.timerEnabled || room.status !== 'playing') { stopClock(room); return; }
+  const gs = room.gameState as { currentPlayer: string; phase: string; turnNumber: number } | null;
+  if (!gs || gs.phase === 'ENDED') { stopClock(room); return; }
+
+  const slot = getActiveSlot(room);
+  const elapsed = Date.now() - room.lastActionTime;
+  const remaining = room.clocks[slot] - elapsed;
+
+  if (remaining <= 0) {
+    stopClock(room);
+    const winnerSlot = slot === 0 ? Player.P2 : Player.P1;
+    const newState = { ...(gs as object), phase: 'ENDED', winner: winnerSlot, isDraw: false, drawReason: null };
+    room.gameState = newState;
+    room.status = 'finished';
+    broadcast(room, { type: 'GAME_STATE', state: newState });
+    handleGameOver(room, winnerSlot, false, gs.turnNumber, room.ranked ? 'online_ranked' : room.isMatchmaking ? 'online_casual' : 'online_custom');
+    return;
+  }
+
+  const clocksNow: [number, number] = [
+    slot === 0 ? remaining : room.clocks[0],
+    slot === 1 ? remaining : room.clocks[1],
+  ];
+  broadcast(room, { type: 'CLOCK_UPDATE', clocks: clocksNow, activeSlot: slot });
+}
+
+function updateClockOnAction(room: Room) {
+  if (!room.timerEnabled) return;
+  const slot = getActiveSlot(room);
+  const elapsed = Date.now() - room.lastActionTime;
+  room.clocks[slot] = Math.max(0, room.clocks[slot] - elapsed + CLOCK_INCREMENT);
+  room.lastActionTime = Date.now();
+}
 
 // Matchmaking queues — separate ranked and casual to avoid cross-mode matches
 const rankedQueue:  RoomPlayer[] = [];
@@ -65,7 +122,7 @@ export function setupWsServer(httpServer: Server) {
             : msg.preferredSlot === Player.P1 ? Player.P1
             : (Math.random() < 0.5 ? Player.P1 : Player.P2);
           const player: RoomPlayer = { ws, userId, username, slot: hostSlot };
-          const room = createRoom(player);
+          const room = createRoom(player, false, false, msg.timerEnabled ?? false);
           sendTo(player, { type: 'ROOM_JOINED', roomCode: room.code, playerSlot: hostSlot });
           break;
         }
@@ -102,6 +159,7 @@ export function setupWsServer(httpServer: Server) {
           const gameState = initGame('online');
           joined.gameState = gameState;
           broadcast(joined, { type: 'GAME_STATE', state: gameState });
+          startClock(joined);
           break;
         }
 
@@ -130,12 +188,14 @@ export function setupWsServer(httpServer: Server) {
           if (gs.currentPlayer !== player.slot) return;
 
           try {
+            updateClockOnAction(room);
             const newState = applyAction(room.gameState as Parameters<typeof applyAction>[0], msg.action as Parameters<typeof applyAction>[1]);
             room.gameState = newState;
             broadcast(room, { type: 'GAME_STATE', state: newState });
 
             const ns = newState as { phase: string; winner: string | null; isDraw: boolean; turnNumber: number };
             if (ns.phase === 'ENDED') {
+              stopClock(room);
               const winnerSlot = ns.winner as Player | null;
               handleGameOver(room, winnerSlot, ns.isDraw, ns.turnNumber, room.ranked ? 'online_ranked' : room.isMatchmaking ? 'online_casual' : 'online_custom');
             }
@@ -152,6 +212,7 @@ export function setupWsServer(httpServer: Server) {
           const gs = room.gameState as { phase: string; turnNumber: number };
           if (gs.phase === 'ENDED') break;
 
+          stopClock(room);
           const opponent = room.players.find(p => p.ws !== ws);
           const winnerSlot = opponent?.slot ?? null;
 
@@ -203,6 +264,7 @@ export function setupWsServer(httpServer: Server) {
 
             const gameState = initGame('online');
             joined.gameState = gameState;
+            joined.timerEnabled = true; // matchmaking always has timer
 
             // Notify both with ROOM_JOINED so each client knows their slot and room code
             const hostUser2  = getUserById(host.userId);
@@ -210,6 +272,7 @@ export function setupWsServer(httpServer: Server) {
             sendTo(host,  { type: 'ROOM_JOINED', roomCode: joined.code, playerSlot: Player.P1, opponentUsername: guest.username, opponentElo: guestUser2?.elo, opponentInPlacement: (guestUser2?.provisional_games_left ?? 0) > 0, ranked: isRanked });
             sendTo(guest, { type: 'ROOM_JOINED', roomCode: joined.code, playerSlot: Player.P2, opponentUsername: host.username,  opponentElo: hostUser2?.elo, opponentInPlacement: (hostUser2?.provisional_games_left  ?? 0) > 0, ranked: isRanked });
             broadcast(joined, { type: 'GAME_STATE', state: gameState });
+            startClock(joined);
           }
           break;
         }
@@ -251,6 +314,7 @@ export function setupWsServer(httpServer: Server) {
       const gs = room.gameState as { phase: string; turnNumber: number } | null;
 
       if (room.status === 'playing' && gs?.phase === 'PLAYING') {
+        stopClock(room);
         // Game in progress — remaining player wins by forfeit
         const winner = room.players.find(p => p.ws !== ws);
         if (winner) {

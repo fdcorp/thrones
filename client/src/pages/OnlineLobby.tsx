@@ -10,7 +10,7 @@ import { Player } from '@/engine/types';
 interface OnlineLobbyProps {
   onGameReady: () => void;
   onBack: () => void;
-  createRoom: (preferredSlot?: Player) => Promise<void>;
+  createRoom: (preferredSlot?: Player, timerEnabled?: boolean) => Promise<void>;
   joinRoom: (code: string) => Promise<void>;
   joinQueue: (ranked: boolean) => Promise<void>;
   leaveQueue: () => void;
@@ -26,6 +26,7 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
   const [isLoading, setIsLoading]         = useState(false);
   const [showColorPick, setShowColorPick] = useState(false);
   const [showCustom, setShowCustom]       = useState(false);
+  const [timerEnabled, setTimerEnabled]   = useState(false);
 
   async function handleColorPicked(choice: Player | 'random') {
     const slot = choice === 'random'
@@ -35,7 +36,7 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
     setIsLoading(true);
     online.reset();
     try {
-      await createRoom(slot);
+      await createRoom(slot, timerEnabled);
       online.setStatus('creating');
     } catch {
       online.setError(t.online.mustBeLoggedIn);
@@ -156,6 +157,16 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
         <div className={styles.title}>{t.online.customGame}</div>
 
         {online.error && <div className={styles.error}>{online.error}</div>}
+
+        <button
+          className={styles.timerToggle}
+          onClick={() => setTimerEnabled(v => !v)}
+          type="button"
+        >
+          <span className={`${styles.timerDot} ${timerEnabled ? styles.timerDotOn : ''}`} />
+          <span>Chrono 10 min + 10s/coup</span>
+          <span className={`${styles.timerBadge} ${timerEnabled ? styles.timerBadgeOn : ''}`}>{timerEnabled ? 'ON' : 'OFF'}</span>
+        </button>
 
         <button className={styles.btnPrimary} onClick={() => setShowColorPick(true)} disabled={isLoading}>
           {t.online.createRoom}

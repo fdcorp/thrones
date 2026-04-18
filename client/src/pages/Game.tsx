@@ -7,6 +7,7 @@ import { useSounds } from '@/hooks/useSounds';
 import { HexBoard } from '@/components/board/HexBoard';
 import { AshParticles } from '@/components/board/AshParticles';
 import { PlayerPanel } from '@/components/ui/PlayerPanel';
+import { GameClock } from '@/components/ui/GameClock';
 import { GameLog } from '@/components/ui/GameLog';
 import { GameChat } from '@/components/ui/GameChat';
 import { EndScreen } from '@/components/ui/EndScreen';
@@ -57,6 +58,8 @@ export function Game() {
   const user   = useAuthStore(s => s.user);
   const online = useOnlineStore();
   const { setOnlineState, setOnlineDispatch } = useGameStore();
+  const { clocks, activeSlot, clockSyncTime } = online;
+  const showClocks = mode === 'online' && clocks !== null;
 
   // Chat — incoming message handler ref (set by GameChat)
   const chatHandlerRef = useRef<((username: string, text: string, timestamp: number) => void) | null>(null);
@@ -436,6 +439,13 @@ export function Game() {
             playerElo={eloForPlayer(topPlayer)}
             playerInPlacement={inPlacementForPlayer(topPlayer)}
           />
+          {/* ── Top clock zone (opponent) ── */}
+          <div className={styles.clockZone}>
+            {showClocks && (() => {
+              const topIdx = topPlayer === Player.P1 ? 0 : 1;
+              return <GameClock timeMs={clocks![topIdx]} syncTime={clockSyncTime} isActive={activeSlot === topIdx} player={topPlayer} />;
+            })()}
+          </div>
           {/* ── Action buttons ── */}
           <div className={styles.actionZone}>
             <button
@@ -490,6 +500,13 @@ export function Game() {
                 </div>
               </div>
             )}
+          </div>
+          {/* ── Bottom clock zone (human) ── */}
+          <div className={styles.clockZone}>
+            {showClocks && (() => {
+              const bottomIdx = bottomPlayer === Player.P1 ? 0 : 1;
+              return <GameClock timeMs={clocks![bottomIdx]} syncTime={clockSyncTime} isActive={activeSlot === bottomIdx} player={bottomPlayer} />;
+            })()}
           </div>
           <PlayerPanel
             player={bottomPlayer}

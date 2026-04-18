@@ -73,7 +73,7 @@ export interface RoomInfo {
 
 // ── WebSocket messages (client → server) ─────────────────────────
 export type ClientMessage =
-  | { type: 'CREATE_ROOM'; preferredSlot?: Player }
+  | { type: 'CREATE_ROOM'; preferredSlot?: Player; timerEnabled?: boolean }
   | { type: 'JOIN_ROOM'; roomCode: string }
   | { type: 'ACTION'; action: unknown }   // TurnAction — typed on each side
   | { type: 'SURRENDER' }
@@ -90,6 +90,7 @@ export type ServerMessage =
   | { type: 'GAME_OVER';            winner: Player | null; isDraw: boolean; eloChangeMe: number; eloChangeOpp: number; newEloMe: number }
   | { type: 'PLAYER_DISCONNECTED' }
   | { type: 'CHAT_MESSAGE';         username: string; text: string; timestamp: number }
+  | { type: 'CLOCK_UPDATE';         clocks: [number, number]; activeSlot: 0 | 1 }
   | { type: 'ERROR';                message: string }
   | { type: 'PONG' };
 

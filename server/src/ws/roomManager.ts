@@ -17,6 +17,10 @@ export interface Room {
   ranked: boolean;
   isMatchmaking: boolean;
   createdAt: Date;
+  timerEnabled: boolean;
+  clocks: [number, number];
+  lastActionTime: number;
+  clockTick?: ReturnType<typeof setInterval>;
 }
 
 const rooms = new Map<string, Room>();
@@ -30,7 +34,10 @@ function generateCode(): string {
   return code;
 }
 
-export function createRoom(player: RoomPlayer, ranked = false, isMatchmaking = false): Room {
+export const CLOCK_INITIAL = 10 * 60 * 1000; // 10 minutes in ms
+export const CLOCK_INCREMENT = 10 * 1000;    // +10 seconds per move
+
+export function createRoom(player: RoomPlayer, ranked = false, isMatchmaking = false, timerEnabled = false): Room {
   let code: string;
   do { code = generateCode(); } while (rooms.has(code));
 
@@ -42,6 +49,9 @@ export function createRoom(player: RoomPlayer, ranked = false, isMatchmaking = f
     ranked,
     isMatchmaking,
     createdAt: new Date(),
+    timerEnabled,
+    clocks: [CLOCK_INITIAL, CLOCK_INITIAL],
+    lastActionTime: 0,
   };
   rooms.set(code, room);
   return room;

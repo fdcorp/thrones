@@ -122,8 +122,16 @@
   -webkit-backdrop-filter: blur(12px);
 }
 
-.actionZone {
+.clockZone {
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.75rem;
+  min-height: 60px;
+}
+
+.actionZone {
   border-top: 1px solid rgba(255,255,255,0.05);
   border-bottom: 1px solid rgba(255,255,255,0.05);
   display: flex;
@@ -369,9 +377,14 @@
     background: rgba(6, 6, 6, 0.6);
   }
 
+  /* Clock zones hidden on mobile — no room in horizontal strip */
+  .clockZone {
+    display: none;
+  }
+
   /* Action zone compact — horizontal, icon-only */
   .actionZone {
-    flex: 0 0 auto;
+    flex: 1;
     flex-direction: row;
     border-top: none;
     border-bottom: none;

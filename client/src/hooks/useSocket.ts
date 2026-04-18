@@ -72,6 +72,9 @@ export function useSocket(handlers: Partial<SocketEventMap>) {
           case 'PLAYER_DISCONNECTED':
             handlersRef.current.onPlayerDisconnected?.();
             break;
+          case 'CLOCK_UPDATE':
+            useOnlineStore.getState().setClocks(msg.clocks, msg.activeSlot);
+            break;
           case 'CHAT_MESSAGE':
             handlersRef.current.onChatMessage?.(msg.username, msg.text, msg.timestamp);
             break;
@@ -88,9 +91,9 @@ export function useSocket(handlers: Partial<SocketEventMap>) {
     wsRef.current = null;
   }, []);
 
-  const createRoom = useCallback(async (preferredSlot?: Player) => {
+  const createRoom = useCallback(async (preferredSlot?: Player, timerEnabled?: boolean) => {
     await connect();
-    send({ type: 'CREATE_ROOM', preferredSlot });
+    send({ type: 'CREATE_ROOM', preferredSlot, timerEnabled });
   }, [connect, send]);
 
   const joinRoom = useCallback(async (roomCode: string) => {
@@ -152,6 +155,10 @@ interface OnlineState {
   error:            string | null;
   showIntro:        boolean;
   isRanked:         boolean;
+  clocks:           [number, number] | null;
+  activeSlot:       0 | 1 | null;
+  clockSyncTime:    number;
+  timerEnabled:     boolean;
 }
 
 interface OnlineActions {
@@ -162,6 +169,8 @@ interface OnlineActions {
   setError(msg: string): void;
   setShowIntro(v: boolean): void;
   setIsRanked(v: boolean): void;
+  setClocks(clocks: [number, number], activeSlot: 0 | 1): void;
+  setTimerEnabled(v: boolean): void;
   reset(): void;
 }
 
@@ -177,15 +186,21 @@ export const useOnlineStore = create<OnlineState & OnlineActions>()((set) => ({
   error:            null,
   showIntro:        false,
   isRanked:         false,
+  clocks:           null,
+  activeSlot:       null,
+  clockSyncTime:    0,
+  timerEnabled:     false,
 
-  setRoom:        (code, slot) => set({ roomCode: code, mySlot: slot }),
-  setOpponent:    (username, elo, inPlacement) => set({ opponentUsername: username, opponentElo: elo ?? null, opponentInPlacement: inPlacement ?? false, status: 'playing' }),
-  setStatus:      (status)     => set({ status }),
-  setGameOver:    (eloChange, newElo) => set({ eloChange, newElo }),
-  setError:       (error)      => set({ error }),
-  setShowIntro:   (v)          => set({ showIntro: v }),
-  setIsRanked:    (v)          => set({ isRanked: v }),
-  reset:          ()           => set({ roomCode: null, mySlot: null, opponentUsername: null, opponentElo: null, opponentInPlacement: false, status: 'idle', eloChange: null, newElo: null, error: null, showIntro: false, isRanked: false }),
+  setRoom:          (code, slot) => set({ roomCode: code, mySlot: slot }),
+  setOpponent:      (username, elo, inPlacement) => set({ opponentUsername: username, opponentElo: elo ?? null, opponentInPlacement: inPlacement ?? false, status: 'playing' }),
+  setStatus:        (status)     => set({ status }),
+  setGameOver:      (eloChange, newElo) => set({ eloChange, newElo }),
+  setError:         (error)      => set({ error }),
+  setShowIntro:     (v)          => set({ showIntro: v }),
+  setIsRanked:      (v)          => set({ isRanked: v }),
+  setClocks:        (clocks, activeSlot) => set({ clocks, activeSlot, clockSyncTime: Date.now() }),
+  setTimerEnabled:  (v)          => set({ timerEnabled: v }),
+  reset:            ()           => set({ roomCode: null, mySlot: null, opponentUsername: null, opponentElo: null, opponentInPlacement: false, status: 'idle', eloChange: null, newElo: null, error: null, showIntro: false, isRanked: false, clocks: null, activeSlot: null, clockSyncTime: 0, timerEnabled: false }),
 }));
 
 // Re-export Player for convenience
