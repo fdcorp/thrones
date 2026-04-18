@@ -288,6 +288,17 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+.mobileIcon {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: rgba(201,168,76,0.85);
+}
+
+.flagImg {
+  display: block;
+}
+
 @media (max-width: 639px) {
   .wrap {
     top: 0.75rem;
@@ -304,13 +315,3 @@
   .flagImg    { display: none; }
 }
 
-.mobileIcon {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  color: rgba(201,168,76,0.85);
-}
-
-.flagImg {
-  display: block;
-}
