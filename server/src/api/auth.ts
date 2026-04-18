@@ -26,8 +26,8 @@ router.post('/register', async (req, res) => {
     res.status(400).json({ error: 'Username must be 2–20 characters' });
     return;
   }
-  if (password.length < 6) {
-    res.status(400).json({ error: 'Password must be at least 6 characters' });
+  if (password.length < 6 || password.length > 128) {
+    res.status(400).json({ error: 'Password must be 6–128 characters' });
     return;
   }
   if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
@@ -156,7 +156,7 @@ router.post('/forgot-password', async (req, res) => {
 router.post('/reset-password', async (req, res) => {
   const { token, password } = req.body as { token?: string; password?: string };
   if (!token || !password) { res.status(400).json({ error: 'Token and password required' }); return; }
-  if (password.length < 6) { res.status(400).json({ error: 'Password must be at least 6 characters' }); return; }
+  if (password.length < 6 || password.length > 128) { res.status(400).json({ error: 'Password must be 6–128 characters' }); return; }
   try {
     const user = getUserByResetToken(token);
     if (!user) { res.status(400).json({ error: 'Invalid or expired reset link' }); return; }

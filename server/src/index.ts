@@ -1,6 +1,7 @@
 import http from 'http';
 import express from 'express';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import { PORT, CLIENT_ORIGIN } from './config';
 import authRouter from './api/auth';
 import gameRouter from './api/game';
@@ -14,6 +15,18 @@ const app = express();
 const allowedOrigins = CLIENT_ORIGIN.split(',').map(s => s.trim()).filter(Boolean);
 app.use(cors({ origin: allowedOrigins.length === 1 ? allowedOrigins[0] : allowedOrigins, credentials: true }));
 app.use(express.json());
+
+// Rate limiting on auth endpoints — prevents brute-force and account spam
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20,
+  message: { error: 'Too many requests, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/login', authLimiter);
+app.use('/api/register', authLimiter);
+app.use('/api/forgot-password', authLimiter);
 
 // Health check
 app.get('/health', (_req, res) => res.json({ ok: true }));
