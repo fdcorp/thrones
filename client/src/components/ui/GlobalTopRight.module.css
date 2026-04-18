@@ -301,10 +301,16 @@
     justify-content: center;
   }
   .mobileIcon { display: flex; }
+  .flagImg    { display: none; }
 }
 
 .mobileIcon {
   display: none;
   align-items: center;
   justify-content: center;
+  color: rgba(201,168,76,0.85);
+}
+
+.flagImg {
+  display: block;
 }
