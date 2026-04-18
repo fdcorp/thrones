@@ -35,7 +35,7 @@ function generateCode(): string {
 }
 
 export const CLOCK_INITIAL = 10 * 60 * 1000; // 10 minutes in ms
-export const CLOCK_INCREMENT = 10 * 1000;    // +10 seconds per move
+export const CLOCK_INCREMENT = 3 * 1000;     // +3 seconds per move
 
 export function createRoom(player: RoomPlayer, ranked = false, isMatchmaking = false, timerEnabled = false): Room {
   let code: string;
