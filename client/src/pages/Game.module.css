@@ -193,6 +193,28 @@
   color: rgba(255,120,120,0.85);
 }
 
+/* Board column — wraps mobile clocks + board on mobile */
+.boardCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Mobile clock row — hidden on desktop, shown on mobile */
+.mobileClockZone {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.mobileClockZone:last-child {
+  border-bottom: none;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
 /* Board area */
 .boardWrapper {
   flex: 1;
@@ -377,9 +399,15 @@
     background: rgba(6, 6, 6, 0.6);
   }
 
-  /* Clock zones hidden on mobile — no room in horizontal strip */
+  /* Clock zones in sideLeft hidden on mobile — shown above/below board instead */
   .clockZone {
     display: none;
+  }
+
+  /* Mobile clock zones shown above and below the board */
+  .mobileClockZone {
+    display: flex;
+    padding: 0.35rem 0.5rem;
   }
 
   /* Action zone compact — horizontal, icon-only */

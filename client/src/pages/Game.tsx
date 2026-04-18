@@ -546,51 +546,73 @@ export function Game() {
           </div>
         )}
 
-        {/* Board */}
-        <div className={`${styles.boardWrapper} ${
-          !boardFlipped
-            ? (gameState.currentPlayer === Player.P1 ? styles.boardWrapperP1 : styles.boardWrapperP2)
-            : (gameState.currentPlayer === Player.P1 ? styles.boardWrapperP1Flipped : styles.boardWrapperP2Flipped)
-        }`}>
-          <AshParticles player={gameState.currentPlayer} flipped={boardFlipped} />
-          {/* Rappel hover button */}
-          <div className={styles.rappelBtn}>
-            <span>?</span>
-            <img
-              src="/assets/fight_logic_vertical_white.png"
-              className={styles.rappelPopup}
-              alt="Rappel des règles"
-            />
+        {/* Board column — wraps mobile clocks + board */}
+        <div className={styles.boardCol}>
+          {/* Mobile clock — opponent (top) */}
+          {showClocks && (() => {
+            const topIdx = topPlayer === Player.P1 ? 0 : 1;
+            return (
+              <div className={styles.mobileClockZone}>
+                <GameClock timeMs={clocks![topIdx]} syncTime={clockSyncTime} isActive={activeSlot === topIdx} player={topPlayer} />
+              </div>
+            );
+          })()}
+
+          <div className={`${styles.boardWrapper} ${
+            !boardFlipped
+              ? (gameState.currentPlayer === Player.P1 ? styles.boardWrapperP1 : styles.boardWrapperP2)
+              : (gameState.currentPlayer === Player.P1 ? styles.boardWrapperP1Flipped : styles.boardWrapperP2Flipped)
+          }`}>
+            <AshParticles player={gameState.currentPlayer} flipped={boardFlipped} />
+            {/* Rappel hover button */}
+            <div className={styles.rappelBtn}>
+              <span>?</span>
+              <img
+                src="/assets/fight_logic_vertical_white.png"
+                className={styles.rappelPopup}
+                alt="Rappel des règles"
+              />
+            </div>
+            {isEnded && (
+              <EndScreen
+                winner={gameState.winner}
+                isDraw={gameState.isDraw}
+                drawReason={gameState.drawReason}
+                mySlot={mode === 'online' ? online.mySlot : null}
+                winnerName={
+                  gameState.winner == null ? undefined :
+                  mode === 'online'
+                    ? (gameState.winner === online.mySlot ? (user?.username ?? undefined) : (online.opponentUsername ?? undefined))
+                    : (gameState.winner === Player.P1 ? t.panel.player1 : t.panel.player2)
+                }
+                winnerLabel={(() => {
+                  if (mode !== 'ai' || gameState.winner == null) return undefined;
+                  const botPlayer = humanPlayer === Player.P1 ? Player.P2 : Player.P1;
+                  if (gameState.winner !== botPlayer) return undefined;
+                  const labels: Record<string, string> = {
+                    easy: 'BOT FACILE', medium: 'BOT MOYEN',
+                    hard: 'BOT DIFFICILE', expert: 'BOT EXPERT',
+                  };
+                  return aiLevel ? labels[aiLevel] : 'BOT';
+                })()}
+                onReplay={handleReplay}
+                onFindMatch={mode === 'online' ? handleFindMatch : undefined}
+                isRanked={online.isRanked}
+                eloChange={mode === 'online' ? online.eloChange : null}
+              />
+            )}
+            <HexBoard localPlayer={mode === 'online' ? online.mySlot : null} />
           </div>
-          {isEnded && (
-            <EndScreen
-              winner={gameState.winner}
-              isDraw={gameState.isDraw}
-              drawReason={gameState.drawReason}
-              mySlot={mode === 'online' ? online.mySlot : null}
-              winnerName={
-                gameState.winner == null ? undefined :
-                mode === 'online'
-                  ? (gameState.winner === online.mySlot ? (user?.username ?? undefined) : (online.opponentUsername ?? undefined))
-                  : (gameState.winner === Player.P1 ? t.panel.player1 : t.panel.player2)
-              }
-              winnerLabel={(() => {
-                if (mode !== 'ai' || gameState.winner == null) return undefined;
-                const botPlayer = humanPlayer === Player.P1 ? Player.P2 : Player.P1;
-                if (gameState.winner !== botPlayer) return undefined;
-                const labels: Record<string, string> = {
-                  easy: 'BOT FACILE', medium: 'BOT MOYEN',
-                  hard: 'BOT DIFFICILE', expert: 'BOT EXPERT',
-                };
-                return aiLevel ? labels[aiLevel] : 'BOT';
-              })()}
-              onReplay={handleReplay}
-              onFindMatch={mode === 'online' ? handleFindMatch : undefined}
-              isRanked={online.isRanked}
-              eloChange={mode === 'online' ? online.eloChange : null}
-            />
-          )}
-          <HexBoard localPlayer={mode === 'online' ? online.mySlot : null} />
+
+          {/* Mobile clock — me (bottom) */}
+          {showClocks && (() => {
+            const bottomIdx = bottomPlayer === Player.P1 ? 0 : 1;
+            return (
+              <div className={styles.mobileClockZone}>
+                <GameClock timeMs={clocks![bottomIdx]} syncTime={clockSyncTime} isActive={activeSlot === bottomIdx} player={bottomPlayer} />
+              </div>
+            );
+          })()}
         </div>
 
         {/* Right column: Game Log + Chat (online only) */}
