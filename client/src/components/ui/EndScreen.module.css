@@ -113,6 +113,28 @@
   z-index: 1;
 }
 
+.eloGain {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 0.12em;
+  color: var(--gold-light);
+  filter: drop-shadow(0 0 12px rgba(201,168,76,0.5));
+  position: relative;
+  z-index: 1;
+}
+
+.eloLoss {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 0.12em;
+  color: var(--silver);
+  filter: drop-shadow(0 0 12px rgba(168,180,192,0.4));
+  position: relative;
+  z-index: 1;
+}
+
 .actions {
   display: flex;
   gap: 1rem;

@@ -537,6 +537,7 @@ export function Game() {
               onReplay={handleReplay}
               onFindMatch={mode === 'online' ? handleFindMatch : undefined}
               isRanked={online.isRanked}
+              eloChange={mode === 'online' ? online.eloChange : null}
             />
           )}
           <HexBoard localPlayer={mode === 'online' ? online.mySlot : null} />

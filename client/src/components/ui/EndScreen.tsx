@@ -14,9 +14,10 @@ interface EndScreenProps {
   onReplay: () => void;
   onFindMatch?: () => void;
   isRanked?: boolean;
+  eloChange?: number | null;
 }
 
-export function EndScreen({ winner, isDraw, drawReason, mySlot, winnerName, winnerLabel, onReplay, onFindMatch, isRanked }: EndScreenProps) {
+export function EndScreen({ winner, isDraw, drawReason, mySlot, winnerName, winnerLabel, onReplay, onFindMatch, isRanked, eloChange }: EndScreenProps) {
   const navigate = useNavigate();
   const t = useLang();
   const isP1 = winner === Player.P1;
@@ -54,6 +55,11 @@ export function EndScreen({ winner, isDraw, drawReason, mySlot, winnerName, winn
             {winnerName && (
               <div className={styles.subtitle}>
                 <span className={styles.winnerName}>{winnerName}</span> {t.end.conquered}
+              </div>
+            )}
+            {isRanked && eloChange != null && (
+              <div className={eloChange >= 0 ? styles.eloGain : styles.eloLoss}>
+                {eloChange >= 0 ? `+${eloChange}` : eloChange} ELO
               </div>
             )}
           </>

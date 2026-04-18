@@ -60,3 +60,100 @@
   border-color: rgba(255,255,255,0.25);
   background: rgba(255,255,255,0.08);
 }
+
+/* Logout confirmation modal */
+.confirmOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 150ms ease-out;
+}
+
+.confirmCard {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem 2.5rem;
+  background: rgba(12,12,18,0.96);
+  border: 1px solid rgba(201,168,76,0.2);
+  box-shadow: 0 0 40px rgba(0,0,0,0.8), 0 0 1px rgba(201,168,76,0.3);
+  min-width: 280px;
+  animation: cardIn 180ms cubic-bezier(0.23,1,0.32,1);
+}
+
+.confirmTitle {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+.confirmText {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 300;
+  font-size: 0.8rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.confirmActions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.25rem;
+}
+
+.confirmCancel {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.45rem 1rem;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+.confirmCancel:hover {
+  border-color: rgba(255,255,255,0.28);
+  color: var(--white);
+}
+
+.confirmLogout {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.45rem 1rem;
+  background: rgba(180,30,30,0.15);
+  border: 1px solid rgba(180,30,30,0.4);
+  color: #e07070;
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+.confirmLogout:hover {
+  background: rgba(180,30,30,0.28);
+  border-color: rgba(220,60,60,0.6);
+  color: #f09090;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
