@@ -17,9 +17,11 @@ interface PlayerPanelProps {
   gameState: GameState;
   isActive: boolean;
   playerName?: string;
+  playerElo?: number | null;
+  playerInPlacement?: boolean;
 }
 
-export function PlayerPanel({ player, gameState, isActive, playerName }: PlayerPanelProps) {
+export function PlayerPanel({ player, gameState, isActive, playerName, playerElo, playerInPlacement }: PlayerPanelProps) {
   const ui = useUIStore();
   const t = useLang();
   const isP1 = player === Player.P1;
@@ -47,6 +49,10 @@ export function PlayerPanel({ player, gameState, isActive, playerName }: PlayerP
         <span className={styles.name}>
           {playerName ?? (isP1 ? t.panel.player1 : t.panel.player2)}
         </span>
+        {playerInPlacement
+          ? <span className={styles.eloTag}>UNRANKED</span>
+          : playerElo != null && <span className={styles.eloTag}>{playerElo} ELO</span>
+        }
       </div>
 
       <div className={styles.divider} />

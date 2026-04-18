@@ -314,6 +314,16 @@ export function Game() {
     const resolvedSlot = mySlot ?? effectiveHuman;
     return p === resolvedSlot ? myName : opponentName;
   };
+  const eloForPlayer = (p: Player): number | null => {
+    if (mode !== 'online') return null;
+    const resolvedSlot = mySlot ?? effectiveHuman;
+    return p === resolvedSlot ? (user?.elo ?? null) : (online.opponentElo ?? null);
+  };
+  const inPlacementForPlayer = (p: Player): boolean => {
+    if (mode !== 'online') return false;
+    const resolvedSlot = mySlot ?? effectiveHuman;
+    return p === resolvedSlot ? (user?.rank?.isInPlacement ?? false) : online.opponentInPlacement;
+  };
 
   return (
     <div className={styles.page}>
@@ -413,6 +423,8 @@ export function Game() {
             gameState={gameState}
             isActive={gameState.currentPlayer === topPlayer && !aiThinking}
             playerName={nameForPlayer(topPlayer)}
+            playerElo={eloForPlayer(topPlayer)}
+            playerInPlacement={inPlacementForPlayer(topPlayer)}
           />
           {/* ── Action buttons ── */}
           <div className={styles.actionZone}>
@@ -474,6 +486,8 @@ export function Game() {
             gameState={gameState}
             isActive={gameState.currentPlayer === bottomPlayer && !aiThinking}
             playerName={nameForPlayer(bottomPlayer)}
+            playerElo={eloForPlayer(bottomPlayer)}
+            playerInPlacement={inPlacementForPlayer(bottomPlayer)}
           />
         </div>
 

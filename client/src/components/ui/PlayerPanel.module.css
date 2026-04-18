@@ -92,6 +92,18 @@
 .panel.p2 .name { color: var(--silver); }
 .panel:not(.active) .name { opacity: 0.6; }
 
+.eloTag {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 300;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 0.1rem 0.35rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
