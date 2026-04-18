@@ -13,6 +13,7 @@ type SocketEventMap = {
   onGameOver:            (winner: Player | null, isDraw: boolean, eloChangeMe: number, newEloMe: number) => void;
   onPlayerDisconnected:  () => void;
   onError:               (message: string) => void;
+  onChatMessage:         (username: string, text: string, timestamp: number) => void;
 };
 
 export function useSocket(handlers: Partial<SocketEventMap>) {
@@ -71,6 +72,9 @@ export function useSocket(handlers: Partial<SocketEventMap>) {
           case 'PLAYER_DISCONNECTED':
             handlersRef.current.onPlayerDisconnected?.();
             break;
+          case 'CHAT_MESSAGE':
+            handlersRef.current.onChatMessage?.(msg.username, msg.text, msg.timestamp);
+            break;
           case 'ERROR':
             handlersRef.current.onError?.(msg.message);
             break;
@@ -111,6 +115,10 @@ export function useSocket(handlers: Partial<SocketEventMap>) {
     send({ type: 'SURRENDER' });
   }, [send]);
 
+  const sendChatMessage = useCallback((text: string) => {
+    send({ type: 'CHAT_MESSAGE', text });
+  }, [send]);
+
   // PING keepalive — prevents nginx proxy from closing idle connections
   useEffect(() => {
     const interval = setInterval(() => {
@@ -126,7 +134,7 @@ export function useSocket(handlers: Partial<SocketEventMap>) {
     return () => { wsRef.current?.close(); };
   }, []);
 
-  return { createRoom, joinRoom, joinQueue, leaveQueue, sendAction, sendSurrender, disconnect };
+  return { createRoom, joinRoom, joinQueue, leaveQueue, sendAction, sendSurrender, sendChatMessage, disconnect };
 }
 
 // Singleton store for online state (separate from game store to keep concerns clean)

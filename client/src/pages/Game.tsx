@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGameStore } from '@/store/gameStore';
 import { useUIStore } from '@/store/uiStore';
@@ -8,6 +8,7 @@ import { HexBoard } from '@/components/board/HexBoard';
 import { AshParticles } from '@/components/board/AshParticles';
 import { PlayerPanel } from '@/components/ui/PlayerPanel';
 import { GameLog } from '@/components/ui/GameLog';
+import { GameChat } from '@/components/ui/GameChat';
 import { EndScreen } from '@/components/ui/EndScreen';
 import { MatchIntro } from '@/components/ui/MatchIntro';
 import { CustomPanel } from '@/components/ui/CustomPanel';
@@ -57,8 +58,14 @@ export function Game() {
   const online = useOnlineStore();
   const { setOnlineState, setOnlineDispatch } = useGameStore();
 
+  // Chat — incoming message handler ref (set by GameChat)
+  const chatHandlerRef = useRef<((username: string, text: string, timestamp: number) => void) | null>(null);
+  const registerChatHandler = useCallback((fn: (username: string, text: string, timestamp: number) => void) => {
+    chatHandlerRef.current = fn;
+  }, []);
+
   // Socket lives here so it persists after OnlineLobby unmounts
-  const { createRoom, joinRoom, joinQueue, leaveQueue, sendAction, sendSurrender, disconnect } = useSocket({
+  const { createRoom, joinRoom, joinQueue, leaveQueue, sendAction, sendSurrender, sendChatMessage, disconnect } = useSocket({
     onRoomJoined: (code, slot, opponentUsername, opponentElo, opponentInPlacement, ranked) => {
       online.setRoom(code, slot);
       online.setIsRanked(ranked ?? false);
@@ -97,6 +104,9 @@ export function Game() {
       online.setGameOver(eloChange, newElo);
       // Refresh full user profile so header shows updated ELO, rank, placement counter
       useAuthStore.getState().refreshMe();
+    },
+    onChatMessage: (username, text, timestamp) => {
+      chatHandlerRef.current?.(username, text, timestamp);
     },
   });
 
@@ -526,6 +536,15 @@ export function Game() {
             : (gameState.currentPlayer === Player.P1 ? styles.boardWrapperP1Flipped : styles.boardWrapperP2Flipped)
         }`}>
           <AshParticles player={gameState.currentPlayer} flipped={boardFlipped} />
+          {/* Rappel hover button */}
+          <div className={styles.rappelBtn}>
+            <span>?</span>
+            <img
+              src="/assets/fight_logic_vertical_white.png"
+              className={styles.rappelPopup}
+              alt="Rappel des règles"
+            />
+          </div>
           {isEnded && (
             <EndScreen
               winner={gameState.winner}
@@ -557,13 +576,21 @@ export function Game() {
           <HexBoard localPlayer={mode === 'online' ? online.mySlot : null} />
         </div>
 
-        {/* Right column: Game Log */}
+        {/* Right column: Game Log + Chat (online only) */}
         <GameLog
           entries={gameState.log}
           turnNumber={gameState.turnNumber}
           mobileOpen={showMobileLog}
           onClose={() => setShowMobileLog(false)}
+          hideRappel={mode === 'online'}
         />
+        {mode === 'online' && user && (
+          <GameChat
+            myUsername={user.username}
+            sendChatMessage={sendChatMessage}
+            onMessage={registerChatHandler}
+          />
+        )}
       </div>
 
       <CustomPanel open={showCustom} onClose={() => setShowCustom(false)} />

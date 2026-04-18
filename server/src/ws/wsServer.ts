@@ -219,6 +219,22 @@ export function setupWsServer(httpServer: Server) {
           break;
         }
 
+        case 'CHAT_MESSAGE': {
+          if (!msg.text || typeof msg.text !== 'string') break;
+          const clean = msg.text.trim().slice(0, 200);
+          const URL_RE = /https?:\/\/\S+|www\.\S+|\S+\.\S{2,}\/\S*/i;
+          if (!clean || URL_RE.test(clean)) break;
+
+          const room = getRoomByWs(ws);
+          if (!room || room.status !== 'playing') break;
+
+          const other = room.players.find(p => p.ws !== ws);
+          if (other) {
+            sendTo(other, { type: 'CHAT_MESSAGE', username, text: clean, timestamp: Date.now() });
+          }
+          break;
+        }
+
         case 'PING':
           ws.send(JSON.stringify({ type: 'PONG' }));
           break;

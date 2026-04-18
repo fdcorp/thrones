@@ -9,6 +9,7 @@ interface GameLogProps {
   turnNumber: number;
   mobileOpen?: boolean;
   onClose?: () => void;
+  hideRappel?: boolean;
 }
 
 function renderLogEntry(entry: LogEntry, t: ReturnType<typeof useLang>): string {
@@ -43,7 +44,7 @@ function CombatReminder({ label }: { label: string }) {
   );
 }
 
-export function GameLog({ entries, turnNumber, mobileOpen, onClose }: GameLogProps) {
+export function GameLog({ entries, turnNumber, mobileOpen, onClose, hideRappel }: GameLogProps) {
   const t = useLang();
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -86,7 +87,7 @@ export function GameLog({ entries, turnNumber, mobileOpen, onClose }: GameLogPro
       </div>
 
       {/* ── Bottom half: combat reminder ── */}
-      <CombatReminder label={t.log.combatReminder} />
+      {!hideRappel && <CombatReminder label={t.log.combatReminder} />}
     </div>
   );
 }

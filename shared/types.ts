@@ -79,6 +79,7 @@ export type ClientMessage =
   | { type: 'SURRENDER' }
   | { type: 'MATCHMAKING_JOIN'; ranked: boolean }
   | { type: 'MATCHMAKING_LEAVE' }
+  | { type: 'CHAT_MESSAGE'; text: string }
   | { type: 'PING' };
 
 // ── WebSocket messages (server → client) ─────────────────────────
@@ -88,6 +89,7 @@ export type ServerMessage =
   | { type: 'GAME_STATE';           state: unknown }  // GameState — typed on each side
   | { type: 'GAME_OVER';            winner: Player | null; isDraw: boolean; eloChangeMe: number; eloChangeOpp: number; newEloMe: number }
   | { type: 'PLAYER_DISCONNECTED' }
+  | { type: 'CHAT_MESSAGE';         username: string; text: string; timestamp: number }
   | { type: 'ERROR';                message: string }
   | { type: 'PONG' };
 
