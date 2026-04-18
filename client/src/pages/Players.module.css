@@ -46,6 +46,14 @@
   left: 50%;
   transform: translateX(-50%);
   pointer-events: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 639px) {
+  .headerTitle {
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+  }
 }
 
 .searchInput {

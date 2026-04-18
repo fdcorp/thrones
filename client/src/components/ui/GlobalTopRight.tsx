@@ -59,7 +59,7 @@ export function GlobalTopRight({ inline = false }: Props) {
               onClick={() => navigate(`/profile/${user.username}`)}
               title={t.profile.viewProfile}
             >
-              {user.country && (
+              {user.country ? (
                 <img
                   src={`https://flagcdn.com/20x15/${user.country.toLowerCase()}.png`}
                   srcSet={`https://flagcdn.com/40x30/${user.country.toLowerCase()}.png 2x`}
@@ -68,6 +68,12 @@ export function GlobalTopRight({ inline = false }: Props) {
                   alt={user.country}
                   style={{ borderRadius: '1px', verticalAlign: 'middle', flexShrink: 0 }}
                 />
+              ) : (
+                <span className={styles.mobileIcon}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'rgba(201,168,76,0.8)' }}>
+                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                  </svg>
+                </span>
               )}
               <span className={styles.name}>{user.username}</span>
               <span className={styles.elo}>

@@ -293,4 +293,18 @@
     top: 0.75rem;
     right: 0.75rem;
   }
+  .name { display: none; }
+  .elo  { display: none; }
+  .badgeBtn {
+    padding: 0 0.5rem;
+    min-width: 38px;
+    justify-content: center;
+  }
+  .mobileIcon { display: flex; }
+}
+
+.mobileIcon {
+  display: none;
+  align-items: center;
+  justify-content: center;
 }
