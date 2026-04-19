@@ -161,26 +161,26 @@
 }
 .btnCasual:disabled { opacity: 0.45; cursor: default; transform: none; }
 
-/* Custom — ghost, clearly tertiary */
+/* Custom — white outline, tertiary but distinct from back button */
 .btnCustom {
   font-family: 'Lexend', sans-serif;
-  font-weight: 500;
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
+  font-weight: 600;
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  padding: 0.75rem 1.5rem;
+  padding: 0.8rem 1.5rem;
   width: 100%;
   text-align: center;
   cursor: pointer;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.6);
   transition: all 200ms ease;
 }
 .btnCustom:hover {
-  background: rgba(255,255,255,0.04);
-  border-color: rgba(255,255,255,0.2);
-  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.38);
+  color: rgba(255,255,255,0.85);
   transform: translateY(-1px);
 }
 .btnCustom:disabled { opacity: 0.45; cursor: default; transform: none; }
