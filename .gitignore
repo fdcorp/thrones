@@ -10,3 +10,7 @@ Thumbs.db
 *.db
 *.db-shm
 *.db-wal
+
+# Capacitor native projects (contain signing keys — manage locally)
+client/ios/
+client/android/
