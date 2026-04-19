@@ -132,7 +132,11 @@ export function MainMenu() {
         </button>
       </div>
 
-      <p className={styles.version}>{t.menu.copyright}</p>
+      <p className={styles.version}>
+        {t.menu.copyright}
+        {' · '}
+        <a className={styles.contactLink} href="mailto:thronesonlinegame@gmail.com">contact</a>
+      </p>
     </div>
   );
 }

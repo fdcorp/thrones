@@ -415,6 +415,15 @@
   text-transform: uppercase;
 }
 
+.contactLink {
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+.contactLink:hover {
+  color: var(--gold);
+}
+
 /* ── Animations ── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(28px); }
