@@ -10,6 +10,9 @@
 }
 
 .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-family: 'Lexend', sans-serif;
   font-weight: 700;
   font-size: 0.65rem;
@@ -141,4 +144,29 @@
   .panel {
     display: none;
   }
+  .panel.mobileOpen {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: var(--bg);
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.closeBtn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.2rem;
+  line-height: 0;
+}
+.closeBtn svg { width: 16px; height: 16px; }
+.closeBtn:hover { color: var(--white); }
+
+@media (max-width: 1023px) {
+  .closeBtn { display: flex; }
 }

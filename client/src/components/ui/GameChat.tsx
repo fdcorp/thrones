@@ -14,9 +14,11 @@ interface GameChatProps {
   myUsername: string;
   sendChatMessage: (text: string) => void;
   onMessage: (handler: (username: string, text: string, timestamp: number) => void) => void;
+  mobileOpen?: boolean;
+  onClose?: () => void;
 }
 
-export function GameChat({ myUsername, sendChatMessage, onMessage }: GameChatProps) {
+export function GameChat({ myUsername, sendChatMessage, onMessage, mobileOpen, onClose }: GameChatProps) {
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [input, setInput]       = useState('');
   const bottomRef               = useRef<HTMLDivElement>(null);
@@ -43,8 +45,17 @@ export function GameChat({ myUsername, sendChatMessage, onMessage }: GameChatPro
   };
 
   return (
-    <div className={styles.panel}>
-      <div className={styles.header}>CHAT</div>
+    <div className={`${styles.panel} ${mobileOpen ? styles.mobileOpen : ''}`}>
+      <div className={styles.header}>
+        CHAT
+        {onClose && (
+          <button className={styles.closeBtn} onClick={onClose} aria-label="Fermer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        )}
+      </div>
 
       <div className={styles.messages}>
         {messages.length === 0 && (

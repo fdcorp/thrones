@@ -231,7 +231,7 @@
   overflow: hidden;
 }
 
-/* ── Rappel hover button ── */
+/* ── Rappel button ── */
 .rappelBtn {
   position: absolute;
   top: 0.75rem;
@@ -249,15 +249,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: default;
+  cursor: pointer;
   transition: border-color 200ms ease, background 200ms ease;
 }
 
-.rappelBtn:hover {
+.rappelBtn:hover,
+.rappelBtnActive {
   border-color: rgba(255,255,255,0.28);
   background: rgba(255,255,255,0.08);
 }
 
+/* Desktop: popup on hover */
 .rappelPopup {
   display: none;
   position: absolute;
@@ -270,6 +272,30 @@
 
 .rappelBtn:hover .rappelPopup {
   display: block;
+}
+
+/* Mobile overlay — full screen, tap to dismiss */
+.rappelOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(0,0,0,0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.rappelOverlayImg {
+  max-height: 80vh;
+  max-width: 100%;
+  object-fit: contain;
+  opacity: 0.95;
+}
+
+/* On mobile, hide the inline popup (we use the overlay instead) */
+@media (max-width: 639px) {
+  .rappelBtn:hover .rappelPopup { display: none; }
 }
 
 /* Subtle ambient border animation */

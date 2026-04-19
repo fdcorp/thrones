@@ -36,7 +36,9 @@ export function Game() {
   const [showColorSelect, setShowColorSelect] = useState(mode !== 'online');
   const [showAIConfig, setShowAIConfig] = useState(false);
   const [showOnlineLobby, setShowOnlineLobby] = useState(mode === 'online');
-  const [showMobileLog, setShowMobileLog] = useState(false);
+  const [showMobileLog, setShowMobileLog]   = useState(false);
+  const [showMobileChat, setShowMobileChat] = useState(false);
+  const [showRappel, setShowRappel]         = useState(false);
   const [showCustom, setShowCustom] = useState(false);
   const [showSurrenderConfirm, setShowSurrenderConfirm] = useState(false);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
@@ -361,21 +363,34 @@ export function Game() {
           <path d="M1164.291,142.447c0,11.141 -2.98,20.84 -8.94,29.098c-5.96,8.258 -14.315,14.413 -25.066,18.464c-10.751,4.051 -23.684,6.077 -38.797,6.077c-17.529,0 -33.578,-2.96 -48.146,-8.881l0,-45.926c7.012,5.142 14.763,9.29 23.255,12.446c8.492,3.155 16.399,4.733 23.723,4.733c5.531,0 9.816,-0.993 12.855,-2.98c3.038,-1.987 4.558,-4.889 4.558,-8.706c0,-2.727 -0.76,-5.122 -2.279,-7.187c-1.519,-2.065 -3.817,-3.993 -6.895,-5.785c-3.077,-1.792 -8.784,-4.246 -17.12,-7.362c-26.956,-10.362 -40.434,-27.112 -40.434,-50.25c0,-16.205 6.155,-29.157 18.464,-38.856c12.309,-9.699 28.825,-14.549 49.549,-14.549c5.843,0 11.219,0.234 16.127,0.701c4.908,0.467 9.368,1.052 13.38,1.753c4.012,0.701 9.641,2.026 16.886,3.973l0,42.654c-14.101,-7.713 -27.968,-11.569 -41.602,-11.569c-5.609,0 -10.128,1.052 -13.556,3.155c-3.428,2.103 -5.142,4.986 -5.142,8.648c0,3.506 1.383,6.408 4.149,8.706c2.766,2.298 8.55,5.278 17.354,8.94c17.373,7.012 29.663,14.685 36.869,23.021c7.206,8.336 10.81,18.23 10.81,29.682Z"/>
         </svg>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          {/* Log toggle — visible on mobile only via CSS */}
-          <button
-            className={styles.logToggleBtn}
-            onClick={() => setShowMobileLog(v => !v)}
-            aria-label="Toggle log"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10 9 9 9 8 9"/>
-            </svg>
-            LOG
-          </button>
+          {/* Chat toggle (online) or Log toggle (local/AI) — mobile only */}
+          {mode === 'online' ? (
+            <button
+              className={styles.logToggleBtn}
+              onClick={() => setShowMobileChat(v => !v)}
+              aria-label="Toggle chat"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              CHAT
+            </button>
+          ) : (
+            <button
+              className={styles.logToggleBtn}
+              onClick={() => setShowMobileLog(v => !v)}
+              aria-label="Toggle log"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+              </svg>
+              LOG
+            </button>
+          )}
           {mode === 'local' && (
             <button
               className={`${styles.muteBtn} ${autoRotate ? styles.muteBtnActive : ''}`}
@@ -560,15 +575,25 @@ export function Game() {
               : (gameState.currentPlayer === Player.P1 ? styles.boardWrapperP1Flipped : styles.boardWrapperP2Flipped)
           }`}>
             <AshParticles player={gameState.currentPlayer} flipped={boardFlipped} />
-            {/* Rappel hover button */}
-            <div className={styles.rappelBtn}>
+            {/* Rappel button — hover on desktop, tap on mobile */}
+            <button
+              className={`${styles.rappelBtn} ${showRappel ? styles.rappelBtnActive : ''}`}
+              onClick={() => setShowRappel(v => !v)}
+              aria-label="Rappel des règles"
+            >
               <span>?</span>
               <img
                 src="/assets/fight_logic_vertical_white.png"
                 className={styles.rappelPopup}
                 alt="Rappel des règles"
               />
-            </div>
+            </button>
+            {/* Mobile rappel overlay */}
+            {showRappel && (
+              <div className={styles.rappelOverlay} onClick={() => setShowRappel(false)}>
+                <img src="/assets/fight_logic_vertical_white.png" className={styles.rappelOverlayImg} alt="Rappel des règles" />
+              </div>
+            )}
             {isEnded && (
               <EndScreen
                 winner={gameState.winner}
@@ -625,6 +650,8 @@ export function Game() {
               myUsername={user.username}
               sendChatMessage={sendChatMessage}
               onMessage={registerChatHandler}
+              mobileOpen={showMobileChat}
+              onClose={() => setShowMobileChat(false)}
             />
           )}
         </div>
