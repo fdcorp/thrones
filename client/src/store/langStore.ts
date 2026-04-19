@@ -5,6 +5,7 @@ export type Lang = 'fr' | 'en';
 
 interface LangStore {
   lang: Lang;
+  userOverride: boolean;
   setLang: (lang: Lang) => void;
   toggle: () => void;
 }
@@ -18,9 +19,20 @@ export const useLangStore = create<LangStore>()(
   persist(
     (set, get) => ({
       lang: detectLang(),
-      setLang: (lang) => set({ lang }),
-      toggle: () => set({ lang: get().lang === 'fr' ? 'en' : 'fr' }),
+      userOverride: false,
+      setLang: (lang) => set({ lang, userOverride: true }),
+      toggle: () => set({ lang: get().lang === 'fr' ? 'en' : 'fr', userOverride: true }),
     }),
-    { name: 'thrones-lang' },
+    {
+      name: 'thrones-lang',
+      merge: (persisted, current) => {
+        const stored = persisted as { lang?: Lang; userOverride?: boolean } | null;
+        // If the user never explicitly chose a language, always re-detect from browser
+        if (!stored?.userOverride) {
+          return { ...current, lang: detectLang(), userOverride: false };
+        }
+        return { ...current, ...stored };
+      },
+    },
   ),
 );
