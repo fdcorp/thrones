@@ -239,11 +239,7 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
 
       {online.error && <div className={styles.error}>{online.error}</div>}
 
-      <button className={styles.btnSecondary} onClick={() => handleMatchmaking(false)} disabled={isLoading}>
-        {t.online.casualMode}
-      </button>
-
-      <button className={styles.btnSecondary} onClick={() => handleMatchmaking(true)} disabled={isLoading}>
+      <button className={styles.btnRanked} onClick={() => handleMatchmaking(true)} disabled={isLoading}>
         <span>{t.online.rankedMode}</span>
         <span className={styles.eloTag}>
           {user.rank?.isInPlacement
@@ -252,7 +248,11 @@ export function OnlineLobby({ onGameReady: _onGameReady, onBack, createRoom, joi
         </span>
       </button>
 
-      <button className={styles.btnSecondary} onClick={() => setShowCustom(true)} disabled={isLoading}>
+      <button className={styles.btnCasual} onClick={() => handleMatchmaking(false)} disabled={isLoading}>
+        {t.online.casualMode}
+      </button>
+
+      <button className={styles.btnCustom} onClick={() => setShowCustom(true)} disabled={isLoading}>
         {t.online.customGame}
       </button>
 

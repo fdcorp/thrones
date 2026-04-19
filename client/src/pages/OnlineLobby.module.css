@@ -102,6 +102,89 @@
   gap: 0.35rem;
 }
 
+/* Ranked — gold fill, premium feel */
+.btnRanked {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 1rem 1.5rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.38rem;
+  cursor: pointer;
+  background: linear-gradient(135deg, #c9a84c 0%, #e8c96a 50%, #c9a84c 100%);
+  border: none;
+  color: #0a0a0f;
+  box-shadow: 0 4px 24px rgba(201,168,76,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+  transition: filter 200ms ease, transform 120ms ease, box-shadow 200ms ease;
+}
+.btnRanked:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 32px rgba(201,168,76,0.5);
+}
+.btnRanked:disabled { opacity: 0.45; cursor: default; transform: none; filter: none; }
+
+.btnRanked .eloTag {
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: rgba(10,10,15,0.6);
+  text-transform: uppercase;
+}
+
+/* Casual — silver border, understated */
+.btnCasual {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: 0.76rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.85rem 1.5rem;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  background: rgba(168,180,192,0.06);
+  border: 1px solid rgba(168,180,192,0.28);
+  color: rgba(168,180,192,0.8);
+  transition: all 200ms ease;
+}
+.btnCasual:hover {
+  background: rgba(168,180,192,0.12);
+  border-color: rgba(168,180,192,0.5);
+  color: rgba(205,214,222,0.95);
+  transform: translateY(-1px);
+}
+.btnCasual:disabled { opacity: 0.45; cursor: default; transform: none; }
+
+/* Custom — ghost, clearly tertiary */
+.btnCustom {
+  font-family: 'Lexend', sans-serif;
+  font-weight: 500;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.5rem;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.35);
+  transition: all 200ms ease;
+}
+.btnCustom:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.6);
+  transform: translateY(-1px);
+}
+.btnCustom:disabled { opacity: 0.45; cursor: default; transform: none; }
+
 .eloTag {
   font-size: 0.6rem;
   font-weight: 300;
