@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLang } from '@/i18n';
 import { useAuthStore } from '@/store/authStore';
+import { ContactModal } from './ContactModal';
 import styles from './MainMenu.module.css';
 
 export function MainMenu() {
@@ -12,6 +13,7 @@ export function MainMenu() {
 
   const { user, resendVerification, refreshMe } = useAuthStore();
   const [resendSent, setResendSent] = useState(false);
+  const [showContact, setShowContact] = useState(false);
 
   useEffect(() => { refreshMe(); }, []);
 
@@ -135,8 +137,9 @@ export function MainMenu() {
       <p className={styles.version}>
         {t.menu.copyright}
         {' · '}
-        <a className={styles.contactLink} href="mailto:thronesonlinegame@gmail.com">contact</a>
+        <button className={styles.contactLink} onClick={() => setShowContact(true)}>contact</button>
       </p>
+      {showContact && <ContactModal onClose={() => setShowContact(false)} />}
     </div>
   );
 }

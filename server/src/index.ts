@@ -27,6 +27,7 @@ const authLimiter = rateLimit({
 app.use('/api/login', authLimiter);
 app.use('/api/register', authLimiter);
 app.use('/api/forgot-password', authLimiter);
+app.use('/api/contact', rateLimit({ windowMs: 60 * 60 * 1000, max: 5, message: { error: 'Too many messages, try again later.' } }));
 
 // Health check
 app.get('/health', (_req, res) => res.json({ ok: true }));
@@ -35,6 +36,22 @@ app.get('/health', (_req, res) => res.json({ ok: true }));
 app.use('/api', authRouter);
 app.use('/api', gameRouter);
 app.use('/api', profileRouter);
+
+// Contact form
+import { sendContactEmail } from './email';
+app.post('/api/contact', async (req, res) => {
+  const { email, subject, message } = req.body as { email?: string; subject?: string; message?: string };
+  if (!email || !subject || !message) { res.status(400).json({ error: 'All fields are required.' }); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { res.status(400).json({ error: 'Invalid email address.' }); return; }
+  if (subject.length > 120 || message.length > 2000) { res.status(400).json({ error: 'Content too long.' }); return; }
+  try {
+    await sendContactEmail(email.trim(), subject.trim(), message.trim());
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[contact]', err);
+    res.status(500).json({ error: 'Failed to send email.' });
+  }
+});
 
 // Init DB on startup
 getDb();

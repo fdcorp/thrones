@@ -28,6 +28,24 @@ export async function sendVerificationEmail(email: string, username: string, tok
   });
 }
 
+export async function sendContactEmail(fromEmail: string, subject: string, message: string) {
+  await getResend().emails.send({
+    from:     FROM,
+    to:       'thronesonlinegame@gmail.com',
+    replyTo:  fromEmail,
+    subject:  `[Contact] ${subject}`,
+    html: `
+      <div style="background:#0a0a0f;color:#f0ece4;font-family:sans-serif;padding:40px;max-width:560px;margin:0 auto;">
+        <h1 style="color:#c9a84c;letter-spacing:0.2em;font-size:1.4rem;margin-bottom:8px;">THRONES</h1>
+        <p style="color:#6b6760;margin-bottom:32px;font-size:0.85rem;">thronesonline.com — message de contact</p>
+        <p style="color:#a8b4c0;font-size:0.82rem;margin-bottom:4px;">De : <strong style="color:#f0ece4;">${fromEmail}</strong></p>
+        <p style="color:#a8b4c0;font-size:0.82rem;margin-bottom:24px;">Objet : <strong style="color:#f0ece4;">${subject}</strong></p>
+        <div style="border-left:2px solid #c9a84c;padding-left:16px;color:#d0ccc4;line-height:1.7;white-space:pre-wrap;">${message}</div>
+      </div>
+    `,
+  });
+}
+
 export async function sendPasswordResetEmail(email: string, username: string, token: string) {
   const link = `${CLIENT_URL}/reset-password?token=${token}`;
   await getResend().emails.send({

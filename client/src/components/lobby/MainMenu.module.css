@@ -416,8 +416,16 @@
 }
 
 .contactLink {
-  color: rgba(255,255,255,0.45);
-  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: 'Lexend', sans-serif;
+  font-weight: 600;
+  font-size: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: rgba(201,168,76,0.7);
+  cursor: pointer;
   transition: color 180ms ease;
 }
 .contactLink:hover {
