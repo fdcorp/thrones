@@ -473,6 +473,11 @@
     flex: 1;
     min-height: 0;
   }
+
+  /* Right column (log/chat) hidden on mobile — uses overlays instead */
+  .rightCol {
+    display: none;
+  }
 }
 
 /* AI thinking indicator */
