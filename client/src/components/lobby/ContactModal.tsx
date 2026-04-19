@@ -6,13 +6,20 @@ interface Props {
 }
 
 export function ContactModal({ onClose }: Props) {
-  const [email,   setEmail]   = useState('');
-  const [subject, setSubject] = useState('');
-  const [message, setMessage] = useState('');
-  const [status,  setStatus]  = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
-  const [errMsg,  setErrMsg]  = useState('');
+  const [email,       setEmail]       = useState('');
+  const [subject,     setSubject]     = useState('');
+  const [message,     setMessage]     = useState('');
+  const [status,      setStatus]      = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [errMsg,      setErrMsg]      = useState('');
+  const [showConfirm, setShowConfirm] = useState(false);
 
+  const isDirty = email.trim() || subject.trim() || message.trim();
   const canSend = email.trim() && subject.trim() && message.trim() && status === 'idle';
+
+  const tryClose = () => {
+    if (isDirty && status !== 'sent') { setShowConfirm(true); return; }
+    onClose();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,11 +41,11 @@ export function ContactModal({ onClose }: Props) {
   };
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles.overlay} onClick={tryClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
           <span className={styles.title}>CONTACT</span>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Fermer">
+          <button className={styles.closeBtn} onClick={tryClose} aria-label="Fermer">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
@@ -88,14 +95,22 @@ export function ContactModal({ onClose }: Props) {
 
             {status === 'error' && <p className={styles.errorMsg}>{errMsg}</p>}
 
-            <button
-              className={styles.sendBtn}
-              type="submit"
-              disabled={!canSend}
-            >
+            <button className={styles.sendBtn} type="submit" disabled={!canSend}>
               {status === 'sending' ? 'Envoi…' : 'ENVOYER'}
             </button>
           </form>
+        )}
+
+        {showConfirm && (
+          <div className={styles.confirmOverlay} onClick={() => setShowConfirm(false)}>
+            <div className={styles.confirmBox} onClick={e => e.stopPropagation()}>
+              <p className={styles.confirmText}>Votre message n'a pas été envoyé. Quitter quand même ?</p>
+              <div className={styles.confirmActions}>
+                <button className={styles.confirmLeave} onClick={onClose}>Quitter</button>
+                <button className={styles.confirmStay}  onClick={() => setShowConfirm(false)}>Continuer</button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>
