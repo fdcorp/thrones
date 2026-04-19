@@ -35,9 +35,21 @@ export interface DbUser {
   promotion_losses: number;
 }
 
+function getLeaderboardPosition(userId: number, isInPlacement: boolean): number | null {
+  if (isInPlacement) return null;
+  const db = getDb();
+  const row = db.prepare(`
+    SELECT COUNT(*) + 1 AS position
+    FROM users
+    WHERE provisional_games_left = 0 AND elo > (SELECT elo FROM users WHERE id = ?)
+  `).get(userId) as { position: number };
+  return row.position;
+}
+
 export function toUserProfile(u: DbUser): UserProfile {
   const playerRank = dbUserToPlayerRank(u);
   const visibleRank = _rankedSystem.getVisibleRank(playerRank);
+  const isInPlacement = visibleRank.is_in_placement;
   return {
     id:          u.id,
     username:    u.username,
@@ -54,12 +66,13 @@ export function toUserProfile(u: DbUser): UserProfile {
       leaguePoints:           visibleRank.league_points,
       display:                visibleRank.display,
       isProvisional:          visibleRank.is_provisional,
-      isInPlacement:          visibleRank.is_in_placement,
+      isInPlacement,
       provisionalGamesLeft:   playerRank.provisional_games_left,
       totalRankedGamesPlayed: playerRank.total_ranked_games_played,
       inPromotionSeries:      visibleRank.in_promotion_series,
       promotionWins:          visibleRank.promotion_wins,
       promotionLosses:        visibleRank.promotion_losses,
+      leaderboardPosition:    getLeaderboardPosition(u.id, isInPlacement),
     },
   };
 }

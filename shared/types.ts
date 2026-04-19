@@ -35,6 +35,8 @@ export interface UserProfile {
     inPromotionSeries: boolean;
     promotionWins: number;
     promotionLosses: number;
+    /** Leaderboard position (1-based). null if still in placement. */
+    leaderboardPosition: number | null;
   };
 }
 

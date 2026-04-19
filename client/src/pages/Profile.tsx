@@ -283,6 +283,9 @@ export function Profile() {
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.usernameRow}>
+          {profile.rank?.leaderboardPosition != null && (
+            <span className={styles.rankPosition}>#{profile.rank.leaderboardPosition}</span>
+          )}
           <div className={styles.username}>{profile.username}</div>
           <div className={styles.eloTag}>
             {profile.rank?.isInPlacement

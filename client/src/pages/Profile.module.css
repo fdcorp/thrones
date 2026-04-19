@@ -82,6 +82,13 @@
   gap: 1rem;
 }
 
+.rankPosition {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
 .username {
   font-size: 1.6rem;
   font-weight: 800;
