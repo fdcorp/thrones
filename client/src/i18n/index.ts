@@ -1,10 +1,14 @@
 import { useLangStore } from '@/store/langStore';
 import { fr } from './fr';
 import { en } from './en';
+import { es } from './es';
+import { pt } from './pt';
+import { de } from './de';
+import { ru } from './ru';
 import type { UnitType } from '@/engine/types';
 
 export interface Translation {
-  lang: 'fr' | 'en';
+  lang: 'fr' | 'en' | 'es' | 'pt' | 'de' | 'ru';
 
   menu: {
     playLocal: string;
@@ -294,7 +298,7 @@ export interface Translation {
   };
 }
 
-const translations: Record<'fr' | 'en', Translation> = { fr, en };
+const translations: Record<'fr' | 'en' | 'es' | 'pt' | 'de' | 'ru', Translation> = { fr, en, es, pt, de, ru };
 
 export function useLang(): Translation {
   const lang = useLangStore(s => s.lang);

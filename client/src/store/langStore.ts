@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type Lang = 'fr' | 'en';
+export type Lang = 'fr' | 'en' | 'es' | 'pt' | 'de' | 'ru';
 
 interface LangStore {
   lang: Lang;
@@ -11,8 +11,13 @@ interface LangStore {
 }
 
 function detectLang(): Lang {
-  const browser = navigator.language || 'en';
-  return browser.toLowerCase().startsWith('fr') ? 'fr' : 'en';
+  const browser = (navigator.language || 'en').toLowerCase();
+  if (browser.startsWith('fr')) return 'fr';
+  if (browser.startsWith('es')) return 'es';
+  if (browser.startsWith('pt')) return 'pt';
+  if (browser.startsWith('de')) return 'de';
+  if (browser.startsWith('ru')) return 'ru';
+  return 'en';
 }
 
 export const useLangStore = create<LangStore>()(
