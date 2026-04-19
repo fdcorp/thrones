@@ -364,7 +364,7 @@ export function Game() {
         </svg>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           {/* Chat toggle (online) or Log toggle (local/AI) — mobile only */}
-          {mode === 'online' ? (
+          {mode === 'online' && (
             <button
               className={styles.logToggleBtn}
               onClick={() => setShowMobileChat(v => !v)}
@@ -374,21 +374,6 @@ export function Game() {
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
               </svg>
               CHAT
-            </button>
-          ) : (
-            <button
-              className={styles.logToggleBtn}
-              onClick={() => setShowMobileLog(v => !v)}
-              aria-label="Toggle log"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="16" y1="13" x2="8" y2="13"/>
-                <line x1="16" y1="17" x2="8" y2="17"/>
-                <polyline points="10 9 9 9 8 9"/>
-              </svg>
-              LOG
             </button>
           )}
           {mode === 'local' && (
@@ -588,12 +573,6 @@ export function Game() {
                 alt="Rappel des règles"
               />
             </button>
-            {/* Mobile rappel overlay */}
-            {showRappel && (
-              <div className={styles.rappelOverlay} onClick={() => setShowRappel(false)}>
-                <img src="/assets/fight_logic_vertical_white.png" className={styles.rappelOverlayImg} alt="Rappel des règles" />
-              </div>
-            )}
             {isEnded && (
               <EndScreen
                 winner={gameState.winner}
@@ -658,6 +637,13 @@ export function Game() {
       </div>
 
       <CustomPanel open={showCustom} onClose={() => setShowCustom(false)} />
+
+      {/* Rappel overlay — outside boardWrapper to avoid iOS overflow:hidden clip */}
+      {showRappel && (
+        <div className={styles.rappelOverlay} onClick={() => setShowRappel(false)}>
+          <img src="/assets/fight_logic_vertical_white.png" className={styles.rappelOverlayImg} alt="Rappel des règles" />
+        </div>
+      )}
     </div>
   );
 }
